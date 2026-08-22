@@ -11,6 +11,8 @@ RecordingStudioPwa.configure do |config|
   # config.timeout = 5
 
   # Host-level PWA chrome. One installable app per host, not per workspace.
+  # The gem reads this name (then Recording Studio app_name, then "App").
+  # It does not default to Addon Template or gem_template.
   # config.name = "My App"
   # config.short_name = "My App"
   # config.description = "Installable Recording Studio host"

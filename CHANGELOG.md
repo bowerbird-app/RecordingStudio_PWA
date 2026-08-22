@@ -21,6 +21,9 @@ Host-level PWA foundation. Hosts stay thin; other gems add a slice later.
 
 ### Changed
 - Dummy no longer owns the rounded-theme head workaround or the PWA views
+- Dummy host name, document title fallback, and install-prompt chrome use **Recording Studio PWA** (not Addon Template / gem_template)
+- Dummy `/icon.png` and `/icon.svg` are a monochrome charcoal host mark, not the red template circle
+- `/pwa/install` uses FlatPack `Alert::Component` (`style: :info`) for the browser-install note
 - Install generator enables Rails PWA routes and documents opt-in slices
 
 ### Upgrade notes
@@ -30,6 +33,8 @@ Host-level PWA foundation. Hosts stay thin; other gems add a slice later.
 - PWA chrome does not need extra tables
 - Service worker caches FlatPack assets and configured public pages only. Do not expect authenticated HTML to work offline
 - This gem does not implement web push or offline-first sync
+- Set the host PWA name on the host (`RecordingStudioPwa.configuration.name` or `RecordingStudio.configuration.app_name`). The gem reads that value and does not default to Addon Template
+- Replace leftover template `/icon.png` / `/icon.svg` (the red circle) with the host icon. Dummy now ships a charcoal mark at those paths
 
 ## [0.1.0] - 2026-08-22
 

@@ -2,7 +2,7 @@ RecordingStudioPwa install complete.
 
 Next steps:
 
-1. Review config/initializers/recording_studio_pwa.rb and set the app name, theme color, and public page paths if you need to override the defaults.
+1. Review config/initializers/recording_studio_pwa.rb and set the host app name (`config.name` / `config.short_name`), theme color, and public page paths. The gem reads the host name (or Recording Studio `app_name`) and does not ship Addon Template as a default.
 2. If you use environment-specific settings, create config/recording_studio_pwa.yml.
 3. Confirm the host routes include `rails/pwa#manifest` and `rails/pwa#service_worker`.
 4. Use `RecordingStudio::UsesDefaultLayout` or `RecordingStudioPwa::UsesPwaLayout` so pages get the shared Recording Studio chrome and the PWA head tags. Do not copy the default layout into the host app.

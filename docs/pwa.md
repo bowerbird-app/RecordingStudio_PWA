@@ -34,7 +34,9 @@ include RecordingStudio::UsesDefaultLayout
 include RecordingStudioPwa::UsesPwaLayout
 ```
 
-`UsesPwaLayout` includes `UsesDefaultLayout` and sets `layout "recording_studio_pwa"`. That layout only adds head content, then renders Recording Studio's default layout:
+`UsesPwaLayout` includes `UsesDefaultLayout` and sets `layout "recording_studio_pwa"`. That layout only adds head content, then renders Recording Studio's default layout.
+
+The installable name comes from the host. Set `RecordingStudioPwa.configuration.name` (and optionally `short_name`) on the host. If those are blank, the gem reads `RecordingStudio.configuration.app_name`, then `"App"`. It does not ship Addon Template or gem_template as a default name.
 
 ```erb
 <% content_for :head do %>
@@ -89,7 +91,11 @@ end
 
 `test/dummy` proves the foundation:
 
-- `/` is still the Template Demo on Recording Studio's default layout
-- `/pwa/install` is the example slice on the same layout
+- The dummy host name is **Recording Studio PWA**. That value is what `/manifest`, `apple-mobile-web-app-title`, and the browser install prompt should show.
+- Dummy icons are `/icon.png` and `/icon.svg` — a charcoal rounded-theme mark, not the red template circle.
+- `/` is still the Template Demo on Recording Studio's default layout. That page is dummy chrome, not a product screen.
+- `/pwa/install` is the example slice on the same layout. The “does not send notifications” note is FlatPack `Alert::Component` with `style: :info`.
 - `/manifest` and `/service-worker` are the Rails PWA endpoints
 - Workspace enables `:install`; Folder and Page do not
+
+Review shots live in `docs/dummy-shots/`. The product shot is `pwa-install-slice.png` (phone-width `/pwa/install`, PageNav cropped). `pwa-beforeinstallprompt.png` is extra browser chrome only when the dialog shows Recording Studio PWA and the charcoal icon.

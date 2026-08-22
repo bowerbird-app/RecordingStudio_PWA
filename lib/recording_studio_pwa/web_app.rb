@@ -5,6 +5,7 @@ module RecordingStudioPwa
     module_function
 
     def name
+      # Host-owned. Never default to gem_template / Addon Template chrome.
       RecordingStudioPwa.configuration.name.presence || recording_studio_app_name || "App"
     end
 

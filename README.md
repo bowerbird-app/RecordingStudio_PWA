@@ -15,7 +15,7 @@ See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, and service-worke
 - **Recording Studio** 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.2.0`)
 - **FlatPack** UI (`~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.133`)
 - **Rails** 8.1
-- **Dummy app** (`test/dummy/`) with Devise sign-in, the Template Demo at `/`, an example install slice at `/pwa/install`, and FlatPack's rounded theme on `<html>`
+- **Dummy app** (`test/dummy/`) with Devise sign-in, host name **Recording Studio PWA**, charcoal host icons, the Template Demo at `/`, an example install slice at `/pwa/install`, and FlatPack's rounded theme on `<html>`
 
 Authenticated dummy pages use the PWA wrap around Recording Studio's shared default layout (`RecordingStudio::UsesDefaultLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout and still receives the PWA head tags. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
 
@@ -62,11 +62,12 @@ The home page in `test/dummy/app/views/home/index.html.erb` stays a minimal Temp
 
 ### Viewport screenshots
 
-Run the dummy app, sign in, then capture:
+Phone-width review shots live in `docs/dummy-shots/`. Crop PageNav so Sign out / Root Switchable is not in the slot.
 
-1. **Install** — `/pwa/install` in a normal browser window
-2. **Home as a PWA** — add the app to the home screen (or use the browser install action), then open `/` in standalone chrome
-3. **Extra slice** — `/pwa/install` from that installed app
+1. **Install (product)** — `pwa-install-slice.png` is `GET /pwa/install`
+2. **Install dialog (extra)** — `pwa-beforeinstallprompt.png` only when Chrome shows **Recording Studio PWA** and the charcoal icon
+
+Do not treat the Template Demo home page as a product screen.
 
 ```bash
 cd test/dummy

@@ -34,6 +34,13 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav[aria-label='Page navigation']", count: 1
     assert_select "link[rel='manifest']", count: 1
+    assert_select "meta[name='apple-mobile-web-app-title'][content='Recording Studio PWA']", count: 1
+    assert_select "meta[name='application-name'][content='Recording Studio PWA']", count: 1
+    assert_select "[role='alert']", count: 1
+    assert_includes response.body, "border-[var(--alert-info-border-color)]"
+    assert_includes response.body, "Install from your browser"
+    refute_includes response.body, "Addon Template"
+    refute_includes response.body, "GemTemplate"
     assert_includes response.body, 'document.documentElement.setAttribute("data-theme", "rounded")'
     assert_includes response.body, "Add to Home Screen"
   end
@@ -71,7 +78,11 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_equal "/", manifest.fetch("scope")
     assert_equal "standalone", manifest.fetch("display")
     assert_equal "#333333", manifest.fetch("theme_color")
+    assert_equal "Recording Studio PWA", manifest.fetch("name")
+    assert_equal "Recording Studio PWA", manifest.fetch("short_name")
+    assert(manifest.fetch("icons").all? { |icon| icon.fetch("src") == "/icon.png" })
     assert(manifest.fetch("shortcuts").any? { |shortcut| shortcut.fetch("url") == "/pwa/install" })
+    refute_equal "Addon Template", manifest.fetch("name")
   end
 
   test "service worker does not register web push and skips authenticated html" do
