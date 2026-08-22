@@ -8,11 +8,9 @@ module RecordingStudioPwa
 
     module ClassMethods
       def recording_studio_pwa_slices(&block)
-        @recording_studio_pwa_slices_definition = if block
-          build_recording_studio_pwa_slices_definition(block)
-        else
-          SlicesDefinition.new
-        end
+        definition = SlicesDefinition.new
+        definition.instance_eval(&block) if block
+        @recording_studio_pwa_slices_definition = definition
       end
 
       def recording_studio_pwa_slice_keys
@@ -20,12 +18,6 @@ module RecordingStudioPwa
         return unless definition
 
         RecordingStudioPwa.normalize_slice_keys(definition.keys)
-      end
-
-      private
-
-      def build_recording_studio_pwa_slices_definition(block)
-        SlicesDefinition.new.tap { |definition| definition.instance_eval(&block) }
       end
     end
 

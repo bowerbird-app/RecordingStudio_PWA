@@ -53,6 +53,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get "/pwa/install"
     assert_response :not_found
 
+    sign_in @user
     get root_path
     assert_response :success
     assert_select "h1", text: "Template Demo"
@@ -61,7 +62,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
   end
 
   test "manifest is a host-level standalone app with the install shortcut" do
-    get pwa_manifest_path
+    get pwa_manifest_path(format: :json)
 
     assert_response :success
     manifest = JSON.parse(response.body)
@@ -74,7 +75,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
   end
 
   test "service worker does not register web push and skips authenticated html" do
-    get pwa_service_worker_path
+    get pwa_service_worker_path(format: :js)
 
     assert_response :success
     refute_includes response.body, 'addEventListener("push"'

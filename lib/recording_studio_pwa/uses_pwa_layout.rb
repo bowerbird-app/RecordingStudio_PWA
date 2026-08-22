@@ -8,6 +8,7 @@ module RecordingStudioPwa
 
     included do
       include RecordingStudio::UsesDefaultLayout
+
       layout "recording_studio_pwa"
     end
   end

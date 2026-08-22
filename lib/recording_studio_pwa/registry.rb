@@ -16,9 +16,7 @@ module RecordingStudioPwa
       return klass if existing.equal?(klass)
       return @slices[key] = klass if existing && existing.name == klass.name
 
-      if existing
-        raise ArgumentError, "#{key.inspect} is already registered for #{existing.name}"
-      end
+      raise ArgumentError, "#{key.inspect} is already registered for #{existing.name}" if existing
 
       @slices[key] = klass
     end

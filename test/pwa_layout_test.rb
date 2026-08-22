@@ -13,7 +13,7 @@ class PwaLayoutTest < Minitest::Test
 
     refute File.exist?(copied_layout)
     assert_includes wrap_layout, 'render template: "layouts/recording_studio/default_layout"'
-    refute_includes wrap_layout, "PageNav"
+    refute_includes wrap_layout, "FlatPack::PageNav"
     refute_includes wrap_layout, "og:title"
     refute_includes wrap_layout, "flat_pack/variables"
     refute_includes gem_views, "FlatPack::PageNav::Component"

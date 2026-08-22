@@ -52,7 +52,7 @@ Register globally in `to_prepare`:
 
 ```ruby
 Rails.application.config.to_prepare do
-  RecordingStudioPwa.register_slice(Pwa::InstallSlice)
+  RecordingStudioPwa.register_slice(InstallSlice)
 end
 ```
 

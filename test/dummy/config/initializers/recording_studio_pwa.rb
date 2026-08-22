@@ -5,5 +5,5 @@ RecordingStudioPwa.configure do |config|
 end
 
 Rails.application.config.to_prepare do
-  RecordingStudioPwa.register_slice(Pwa::InstallSlice)
+  RecordingStudioPwa.register_slice(InstallSlice)
 end

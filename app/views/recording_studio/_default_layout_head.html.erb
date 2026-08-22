@@ -4,13 +4,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="<%= RecordingStudioPwa.web_app_name %>">
 <% if respond_to?(:pwa_manifest_path) %>
-  <link rel="manifest" href="<%= pwa_manifest_path %>">
+  <link rel="manifest" href="<%= pwa_manifest_path(format: :json) %>">
 <% end %>
 <% if respond_to?(:pwa_service_worker_path) %>
   <%= javascript_tag nonce: true do %>
     document.documentElement.setAttribute("data-theme", "rounded");
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("<%= pwa_service_worker_path %>");
+      navigator.serviceWorker.register("<%= pwa_service_worker_path(format: :js) %>");
     }
   <% end %>
 <% else %>
