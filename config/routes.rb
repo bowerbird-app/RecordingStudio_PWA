@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-GemTemplate::Engine.routes.draw do
+RecordingStudioPwa::Engine.routes.draw do
   root "home#index"
 end

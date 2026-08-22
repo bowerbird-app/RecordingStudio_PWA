@@ -1,6 +1,6 @@
 # Dummy App
 
-This Rails app exists to validate the Recording Studio addon template in a real host application.
+This Rails app exists to validate the Recording Studio PWA addon in a real host application.
 
 ## What It Covers
 
@@ -37,7 +37,7 @@ Then open the app and sign in with:
 
 ## Why This App Exists
 
-Use this app to verify the generated addon experience before renaming the gem or copying patterns into another host app. If a layout, route, asset source, or Recording Studio initializer change breaks here, the template likely needs adjustment before reuse.
+Use this app to verify the addon in a host application before copying patterns into another app. If a layout, route, asset source, or Recording Studio initializer change breaks here, the gem likely needs adjustment before reuse.
 
 Authenticated pages use Recording Studio's shared default layout. Devise sign-in keeps `layouts/application`. Replace dummy docs page content so it matches the gem's actual concepts.
 
