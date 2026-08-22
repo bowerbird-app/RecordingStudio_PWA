@@ -1,19 +1,27 @@
 # Recording Studio PWA
 
-A Recording Studio addon for host apps that need a Progressive Web App shell. This gem is `recording_studio_pwa` (`RecordingStudioPwa`) and is pinned to the Recording Studio 4.x family.
+A Recording Studio addon that gives a host app one installable Progressive Web App. This gem is `recording_studio_pwa` (`RecordingStudioPwa`) and is pinned to the Recording Studio 4.x family.
 
-Phase 1 is the rename and dependency pins only. Manifest, service worker, layouts, and slice API work belong in a later stacked PR.
+Hosts stay thin. This gem owns the host-level shell: manifest, service worker, icons, theme color, and a layout wrap around Recording Studio's default layout. Other gems add a slice later.
+
+See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, and service-worker rules.
 
 ## What's Included
 
+- **One PWA per host** — web app manifest, service worker, icons, `theme-color`, `start_url`, and `scope`
+- **Rails 8 PWA routes** — this gem owns the `rails/pwa#manifest` and `#service_worker` views; hosts enable the routes
+- **Layout wrap** — `RecordingStudioPwa::UsesPwaLayout` wraps `recording_studio/default_layout` and does not copy PageNav, flash, Open Graph, or FlatPack CSS
+- **Slice API** — register slices globally, enable them per recordable type; installing the gem does not opt a host in
 - **Recording Studio** 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.2.0`)
 - **FlatPack** UI (`~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.133`)
 - **Rails** 8.1
-- **Dummy app** (`test/dummy/`) with Devise sign-in, a home page on Recording Studio's default layout, mounted Recording Studio routes, and FlatPack's rounded theme on `<html>`
+- **Dummy app** (`test/dummy/`) with Devise sign-in, the Template Demo at `/`, an example install slice at `/pwa/install`, and FlatPack's rounded theme on `<html>`
 
-Authenticated dummy pages use Recording Studio's shared default layout (`RecordingStudio::UsesDefaultLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
+Authenticated dummy pages use the PWA wrap around Recording Studio's shared default layout (`RecordingStudio::UsesDefaultLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout and still receives the PWA head tags. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
 
 The dummy still wires optional host addons that the demo shell uses: Accessible (`v0.7.0`) on Workspace and Root Switchable (`v0.5.0`) for the workspace switcher. Those are dummy-app dependencies, not gemspec dependencies of `recording_studio_pwa`.
+
+This gem does not own web push, notifications, offline-first sync, a second admin, or per-gem mobile redesigns.
 
 ## Quick Start
 
@@ -29,7 +37,7 @@ The dummy still wires optional host addons that the demo shell uses: Accessible 
    ```
 4. Open port 3000 — you'll land on the dummy app home page and can sign in at `/users/sign_in`
 
-The dummy app is the host-app validation surface for authentication, FlatPack rendering, Tailwind source scanning, and Recording Studio route wiring.
+The dummy app is the host-app validation surface for authentication, FlatPack rendering, Tailwind source scanning, PWA chrome, and Recording Studio route wiring.
 
 ### Login Credentials
 
@@ -42,12 +50,46 @@ The login form is prefilled with these credentials for fast access.
 
 ### Useful Routes
 
-- `/` — dummy app home page
+- `/` — Template Demo on the shared Recording Studio layout
+- `/pwa/install` — example slice page for adding the app to a home screen
+- `/manifest` — host web app manifest
+- `/service-worker` — host service worker
 - `/users/sign_in` — Devise sign-in page
 - `/recording_studio` — redirect to `/` while the mounted Recording Studio engine remains data/API-focused
 - `/docs/install`, `/docs/config`, `/docs/recordable_types`, `/docs/recordings_tree`, `/docs/gem_views`, `/docs/methods` — dummy-only starter pages
 
-The home page in `test/dummy/app/views/home/index.html.erb` is a starting point for a minimal demo of the gem. Keep deeper explanations on the dummy docs pages, not in this README.
+The home page in `test/dummy/app/views/home/index.html.erb` stays a minimal Template Demo. Keep deeper explanations on the dummy docs pages and in [docs/pwa.md](docs/pwa.md), not in a wall of home-page copy.
+
+### Viewport screenshots
+
+Run the dummy app, sign in, then capture:
+
+1. **Install** — `/pwa/install` in a normal browser window
+2. **Home as a PWA** — add the app to the home screen (or use the browser install action), then open `/` in standalone chrome
+3. **Extra slice** — `/pwa/install` from that installed app
+
+```bash
+cd test/dummy
+bin/rails db:setup
+bin/dev
+```
+
+Sign in with `admin@admin.com` / `Password`. Confirm `/` still shows Template Demo and `/pwa/install` uses the same page navigation and rounded theme.
+
+## Host install
+
+1. Add the gem and run `bundle install`.
+2. Run `rails generate recording_studio_pwa:install` to mount the engine, add configuration, and enable `/manifest` plus `/service-worker`.
+3. Include `RecordingStudio::UsesDefaultLayout` or `RecordingStudioPwa::UsesPwaLayout` on host controllers. Do not copy the default layout.
+4. Enable slices only on the types that should offer them:
+
+   ```ruby
+   class Workspace < ApplicationRecord
+     recording_studio_pwa_slices { slice :install }
+   end
+   ```
+
+Installing the gem does not enable slices. PWA chrome does not need extra tables in v1.
 
 ## Architecture
 
@@ -142,7 +184,7 @@ Use the live FlatPack demo app at [flatpack.bowerbird.io](https://flatpack.bower
 
 See the [FlatPack README](https://github.com/bowerbird-app/flatpack) for full documentation.
 
-Recording Studio's default layout still puts `data-theme` on `<body>`. The dummy copies FlatPack's `rounded` theme onto `<html>` through `test/dummy/app/views/layouts/_default_layout_head.html.erb`, rendered from the core `recording_studio/default_layout_head` hook. Devise sign-in already sets `data-theme="rounded"` on the `<html>` element.
+Recording Studio's default layout still puts `data-theme` on `<body>`. This gem copies FlatPack's `rounded` theme onto `<html>` through `app/views/recording_studio/_default_layout_head.html.erb`. The rounded dummy is monochrome charcoal via that named theme, not a CSS fork. Devise sign-in already sets `data-theme="rounded"` on the `<html>` element and also renders the same head partial so the manifest is linked there too.
 
 ## Tech Stack
 
@@ -158,8 +200,8 @@ Recording Studio's default layout still puts `data-theme` on `<body>`. The dummy
 | Root Switchable | dummy GitHub tag `v0.5.0` (host demo only) |
 | Devise          | latest  |
 
-The dummy Gemfile keeps `github:` sources so Bundler can fetch those gems. The gemspec declares `recording_studio` and `flat_pack` so host apps get those runtime dependencies even when GitHub is the fetch source.
+The dummy Gemfile keeps `github:` sources so Bundler can fetch those gems. The gemspec declares `recording_studio` and `flat_pack` so host apps get those runtime dependencies even when GitHub is the fetch source. The gemspec does not depend on `recording_studio_admin`.
 
 ## Documentation
 
-The original gem template documentation is preserved in `docs/gem_template/` as architectural reference material. Use it as background on the engine conventions; this README and the dummy app are the source of truth for this addon.
+The original gem template documentation is preserved in `docs/gem_template/` as architectural reference material. Use it as background on the engine conventions. This README, [docs/pwa.md](docs/pwa.md), and the dummy app are the source of truth for this addon.

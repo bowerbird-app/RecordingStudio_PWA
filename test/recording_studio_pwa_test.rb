@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.1.0", ::RecordingStudioPwa::VERSION
+    assert_equal "0.2.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -57,7 +57,8 @@ class RecordingStudioPwaTest < Minitest::Test
     controller_source = File.read(application_controller_path)
 
     assert_includes controller_source, "include RecordingStudio::UsesDefaultLayout"
-    assert_includes controller_source, '"recording_studio/default_layout"'
+    assert_includes controller_source, "include RecordingStudioPwa::UsesPwaLayout"
+    assert_includes controller_source, '"recording_studio_pwa"'
     assert_includes controller_source, "devise_controller? ? \"application\""
     refute_includes controller_source, "flat_pack_sidebar"
     refute File.exist?(File.expand_path("dummy/app/views/layouts/flat_pack_sidebar.html.erb", __dir__))
@@ -76,12 +77,13 @@ class RecordingStudioPwaTest < Minitest::Test
     refute_includes application_layout, "flat_pack_sidebar"
   end
 
-  def test_dummy_copies_rounded_theme_onto_html_for_default_layout
-    layout_head = File.read(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
-    core_hook = File.read(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
+  def test_gem_copies_rounded_theme_onto_html_for_default_layout
+    layout_head = File.read(File.expand_path("../app/views/recording_studio/_default_layout_head.html.erb", __dir__))
 
     assert_includes layout_head, 'document.documentElement.setAttribute("data-theme", "rounded")'
-    assert_includes core_hook, 'render "layouts/default_layout_head"'
+    assert_includes layout_head, 'rel="manifest"'
+    refute File.exist?(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
+    refute File.exist?(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
   end
 
   def test_dummy_tailwind_keeps_flatpack_theme_selection_in_flatpack
@@ -114,6 +116,8 @@ class RecordingStudioPwaTest < Minitest::Test
     assert_includes readme_source, "This Rails app exists to validate the Recording Studio PWA addon"
     assert_includes readme_source, "/recording_studio"
     assert_includes readme_source, "redirects to `/`"
+    assert_includes readme_source, "/pwa/install"
+    assert_includes readme_source, "/manifest"
     refute_includes readme_source, "flat_pack_sidebar"
   end
 

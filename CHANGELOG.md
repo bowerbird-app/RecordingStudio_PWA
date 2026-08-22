@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-22
+
+Host-level PWA foundation. Hosts stay thin; other gems add a slice later.
+
+### Added
+- One PWA per host: web app manifest, service worker, icons, theme color, start URL, and scope
+- Gem-owned `rails/pwa#manifest` and `#service_worker` views, with dummy and install-generator routes
+- `RecordingStudioPwa::UsesPwaLayout` wrap around `recording_studio/default_layout`
+- Gem `recording_studio/_default_layout_head` partial for `rel=manifest`, theme-color, service-worker registration, and FlatPack `rounded` on `<html>`
+- Slice API shaped like Admin sections, without a `recording_studio_admin` dependency
+- Dummy example `:install` slice at `/pwa/install`, enabled on Workspace only
+
+### Changed
+- Dummy no longer owns the rounded-theme head workaround or the PWA views
+- Install generator enables Rails PWA routes and documents opt-in slices
+
+### Upgrade notes
+- Hosts that want installable chrome should run the install generator (or add `rails/pwa#manifest` and `rails/pwa#service_worker` routes) and include `RecordingStudio::UsesDefaultLayout` or `RecordingStudioPwa::UsesPwaLayout`
+- Remove any host copy of `layouts/_default_layout_head` that only set `data-theme="rounded"`; the gem now owns that hook
+- Installing the gem still does not enable slices. Add `recording_studio_pwa_slices { slice :install }` on the types that should offer extra PWA pages
+- PWA chrome does not need extra tables
+- Service worker caches FlatPack assets and configured public pages only. Do not expect authenticated HTML to work offline
+- This gem does not implement web push or offline-first sync
+
 ## [0.1.0] - 2026-08-22
 
 First release of `recording_studio_pwa` after renaming the copied Recording Studio gem template.
@@ -25,5 +49,6 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.0
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.1.0

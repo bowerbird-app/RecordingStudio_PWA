@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
 RecordingStudioPwa.configure do |config|
-  # config.api_key = "..."
+  config.public_page_paths = ["/users/sign_in"]
+end
+
+Rails.application.config.to_prepare do
+  RecordingStudioPwa.register_slice(Pwa::InstallSlice)
 end

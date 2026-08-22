@@ -37,6 +37,19 @@ class InstallGeneratorTest < Minitest::Test
     assert_equal ["mount RecordingStudioPwa::Engine, at: \"/addons/recording\""], routes
   end
 
+  def test_enable_pwa_routes_adds_rails_pwa_endpoints
+    generator = build_generator("/tmp")
+    routes = []
+
+    generator.stub(:route, ->(value) { routes << value }) do
+      generator.enable_pwa_routes
+    end
+
+    assert_equal 1, routes.size
+    assert_includes routes.first, 'get "manifest" => "rails/pwa#manifest", as: :pwa_manifest'
+    assert_includes routes.first, 'get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker'
+  end
+
   def test_add_tailwind_source_injects_engine_and_flatpack_sources
     with_temp_app do |dir|
       css_path = File.join(dir, "app/assets/tailwind/application.css")
@@ -140,7 +153,8 @@ class InstallGeneratorTest < Minitest::Test
 
     assert_includes install_guide, "bin/rails generate recording_studio_pwa:migrations"
     assert_includes install_guide, "bin/rails db:migrate"
-    assert_includes install_guide, "auth, layout, and current actor integration"
+    assert_includes install_guide, "rails/pwa#manifest"
+    assert_includes install_guide, "recording_studio_pwa_slices"
     assert_includes install_guide, "recording_studio_recordable"
     refute_includes install_guide, "RecordingStudio v3"
   end

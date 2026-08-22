@@ -8,6 +8,7 @@
 - FlatPack `~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.133`
 - Accessible dummy tag `v0.7.0` and Root Switchable dummy tag `v0.5.0` (dummy host only)
 - Public RubyGems and GitHub access for dependency installation
+- Hosts that already ran the 0.1.0 install should add Rails PWA routes and drop any dummy-only `_default_layout_head` workaround. See the 0.2.0 upgrade notes in `CHANGELOG.md`.
 
 ## Verification
 

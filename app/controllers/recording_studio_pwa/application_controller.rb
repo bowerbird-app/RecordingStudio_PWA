@@ -2,7 +2,8 @@
 
 module RecordingStudioPwa
   class ApplicationController < ActionController::Base
+    include RecordingStudioPwa::UsesPwaLayout
+
     protect_from_forgery with: :exception
-    layout "application"
   end
 end

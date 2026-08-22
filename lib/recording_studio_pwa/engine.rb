@@ -97,6 +97,18 @@ module RecordingStudioPwa
       RecordingStudioPwa.configuration.hooks.run(:after_initialize, self)
     end
 
+    initializer "recording_studio_pwa.host_view_paths" do
+      ActiveSupport.on_load(:action_controller) do
+        append_view_path RecordingStudioPwa::Engine.root.join("app/views")
+      end
+    end
+
+    initializer "recording_studio_pwa.active_record" do
+      ActiveSupport.on_load(:active_record) do
+        include RecordingStudioPwa::AllowsPwaSlices
+      end
+    end
+
     # Apply model extensions when models are loaded
     initializer "recording_studio_pwa.apply_model_extensions" do
       config.to_prepare do

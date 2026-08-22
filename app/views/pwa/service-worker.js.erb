@@ -1,0 +1,103 @@
+const CACHE_NAME = "recording-studio-pwa-<%= RecordingStudioPwa::VERSION %>";
+const PUBLIC_PAGE_PATHS = new Set(<%= raw RecordingStudioPwa.service_worker_extra_routes.to_json %>);
+const OFFLINE_FALLBACK = <%= raw RecordingStudioPwa.offline_fallback_path.to_json %>;
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
+  );
+});
+
+function isFlatpackAsset(url) {
+  return url.pathname.includes("flat_pack") || url.pathname.includes("/assets/flat_pack");
+}
+
+function isPublicIcon(url) {
+  return url.pathname === "/icon.png" || url.pathname === "/icon.svg";
+}
+
+function isPublicPage(url) {
+  return PUBLIC_PAGE_PATHS.has(url.pathname);
+}
+
+function isHtmlNavigation(request) {
+  if (request.mode === "navigate") {
+    return true;
+  }
+
+  const accept = request.headers.get("accept") || "";
+  return accept.includes("text/html");
+}
+
+async function cacheFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  if (cached) {
+    return cached;
+  }
+
+  const response = await fetch(request);
+  if (response.ok) {
+    cache.put(request, response.clone());
+  }
+  return response;
+}
+
+async function networkFirstPublicPage(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    const cached = await cache.match(request);
+    if (cached) {
+      return cached;
+    }
+
+    if (OFFLINE_FALLBACK) {
+      const fallback = await cache.match(OFFLINE_FALLBACK);
+      if (fallback) {
+        return fallback;
+      }
+    }
+
+    throw error;
+  }
+}
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET") {
+    return;
+  }
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  if (isFlatpackAsset(url) || isPublicIcon(url)) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
+  // Do not cache authenticated HTML as a static app. Public pages are opt-in.
+  if (isHtmlNavigation(request) && !isPublicPage(url)) {
+    return;
+  }
+
+  if (isPublicPage(url)) {
+    event.respondWith(networkFirstPublicPage(request));
+  }
+});

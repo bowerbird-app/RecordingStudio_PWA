@@ -1,0 +1,54 @@
+<% dummy_page_nav(title: "Add to home screen", back_url: root_path) %>
+
+<div class="flex w-full flex-col gap-6">
+  <%= render FlatPack::PageTitle::Component.new(
+    title: "Add to home screen",
+    subtitle: "Install this app so it opens in its own window, like any other app on your phone or computer.",
+    variant: :h1
+  ) %>
+
+  <%= render FlatPack::Alert::Component.new(
+    description: "Use your browser’s Add to Home Screen or Install app action. This page does not send notifications.",
+    style: :info
+  ) %>
+
+  <div class="grid gap-6 lg:grid-cols-2">
+    <%= render FlatPack::Card::Component.new(style: :default) do |card| %>
+      <% card.header do %>
+        <%= render FlatPack::PageTitle::Component.new(
+          title: "On a phone",
+          subtitle: "Safari on iPhone, or Chrome on Android.",
+          variant: :h3,
+          class: "mb-0 pb-0"
+        ) %>
+      <% end %>
+
+      <% card.body do %>
+        <ol class="space-y-3 text-sm leading-6 list-decimal pl-5">
+          <li>Open the share or browser menu.</li>
+          <li>Choose Add to Home Screen or Install app.</li>
+          <li>Confirm. The app icon appears on your home screen.</li>
+        </ol>
+      <% end %>
+    <% end %>
+
+    <%= render FlatPack::Card::Component.new(style: :outlined) do |card| %>
+      <% card.header do %>
+        <%= render FlatPack::PageTitle::Component.new(
+          title: "On a computer",
+          subtitle: "Chrome, Edge, and other installable browsers.",
+          variant: :h3,
+          class: "mb-0 pb-0"
+        ) %>
+      <% end %>
+
+      <% card.body do %>
+        <ol class="space-y-3 text-sm leading-6 list-decimal pl-5">
+          <li>Look for the install icon in the address bar.</li>
+          <li>Choose Install.</li>
+          <li>The app opens in its own window the next time you launch it.</li>
+        </ol>
+      <% end %>
+    <% end %>
+  </div>
+</div>
