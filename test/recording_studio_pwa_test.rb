@@ -2,41 +2,46 @@
 
 require "test_helper"
 
-class GemTemplateTest < Minitest::Test
+class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.2.0", ::GemTemplate::VERSION
+    assert_equal "0.1.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
-    assert_kind_of Class, ::GemTemplate::Engine
+    assert_kind_of Class, ::RecordingStudioPwa::Engine
   end
 
-  def test_gemspec_pins_recording_studio_4_1
-    gemspec = File.read(File.expand_path("../gem_template.gemspec", __dir__))
+  def test_gemspec_pins_4x_family_dependencies
+    gemspec = File.read(File.expand_path("../recording_studio_pwa.gemspec", __dir__))
 
-    assert_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
+    assert_includes gemspec, 'spec.add_dependency "rails", "~> 8.1.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
+    assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.133"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_accessible"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
   end
 
   def test_dummy_gemfile_pins_verified_4x_github_tags
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.2.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.6.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.7.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.5.0"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.133"'
     refute_includes gemfile, "recording_studio/v3.0.0"
+    refute_includes gemfile, 'tag: "v0.6.0"'
     refute_includes gemfile, 'tag: "v0.1.134"'
     refute_includes gemfile, 'tag: "0.3.1"'
   end
 
   def test_template_does_not_ship_copied_core_hooks_or_base_service
-    refute File.exist?(File.expand_path("../lib/gem_template/hooks.rb", __dir__))
-    refute File.exist?(File.expand_path("../lib/gem_template/services/base_service.rb", __dir__))
-    refute File.exist?(File.expand_path("../lib/gem_template/services/example_service.rb", __dir__))
+    refute File.exist?(File.expand_path("../lib/recording_studio_pwa/hooks.rb", __dir__))
+    refute File.exist?(File.expand_path("../lib/recording_studio_pwa/services/base_service.rb", __dir__))
+    refute File.exist?(File.expand_path("../lib/recording_studio_pwa/services/example_service.rb", __dir__))
   end
 
   def test_example_capability_wraps_include_for_and_is_not_enabled_globally
-    source = File.read(File.expand_path("../lib/gem_template/capabilities/example.rb", __dir__))
+    source = File.read(File.expand_path("../lib/recording_studio_pwa/capabilities/example.rb", __dir__))
 
     assert_includes source, "def self.to(**)"
     assert_includes source, "RecordingStudio::Capabilities.include_for(:example, **)"
@@ -63,11 +68,20 @@ class GemTemplateTest < Minitest::Test
     application_layout = File.read(File.expand_path("dummy/app/views/layouts/application.html.erb", __dir__))
 
     assert_includes application_layout, '<html data-theme="rounded">'
+    refute_match(/<body[^>]*data-theme=/, application_layout)
     assert_includes application_layout, 'stylesheet_link_tag "flat_pack/variables"'
     assert_includes application_layout, "javascript_importmap_tags"
     assert_includes application_layout, "min-h-screen"
     refute_includes application_layout, "mt-28"
     refute_includes application_layout, "flat_pack_sidebar"
+  end
+
+  def test_dummy_copies_rounded_theme_onto_html_for_default_layout
+    layout_head = File.read(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
+    core_hook = File.read(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
+
+    assert_includes layout_head, 'document.documentElement.setAttribute("data-theme", "rounded")'
+    assert_includes core_hook, 'render "layouts/default_layout_head"'
   end
 
   def test_dummy_tailwind_keeps_flatpack_theme_selection_in_flatpack
@@ -97,7 +111,7 @@ class GemTemplateTest < Minitest::Test
     readme_path = File.expand_path("dummy/README.md", __dir__)
     readme_source = File.read(readme_path)
 
-    assert_includes readme_source, "This Rails app exists to validate the Recording Studio addon template"
+    assert_includes readme_source, "This Rails app exists to validate the Recording Studio PWA addon"
     assert_includes readme_source, "/recording_studio"
     assert_includes readme_source, "redirects to `/`"
     refute_includes readme_source, "flat_pack_sidebar"
@@ -172,7 +186,7 @@ class GemTemplateTest < Minitest::Test
   end
 
   def test_engine_does_not_ship_a_home_view
-    view_path = File.expand_path("../app/views/gem_template/home/index.html.erb", __dir__)
+    view_path = File.expand_path("../app/views/recording_studio_pwa/home/index.html.erb", __dir__)
 
     refute File.exist?(view_path)
   end
