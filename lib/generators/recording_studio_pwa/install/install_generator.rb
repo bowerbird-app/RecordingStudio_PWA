@@ -25,7 +25,9 @@ module RecordingStudioPwa
       end
 
       def add_yaml_config
-        return unless yes?("Would you like to add `config/recording_studio_pwa.yml` for environment-specific settings? [y/N]")
+        yaml_prompt = "Would you like to add `config/recording_studio_pwa.yml` " \
+                      "for environment-specific settings? [y/N]"
+        return unless yes?(yaml_prompt)
 
         template "recording_studio_pwa.yml", "config/recording_studio_pwa.yml"
       end
@@ -96,7 +98,8 @@ module RecordingStudioPwa
       def tailwind_source_lines
         [
           '@source "../../vendor/bundle/**/recording_studio_pwa/app/views/**/*.erb";',
-          '@source "../../../../../../usr/local/bundle/ruby/**/bundler/gems/recording_studio_pwa-*/app/views/**/*.erb";',
+          "@source \"../../../../../../usr/local/bundle/ruby/**/bundler/gems/" \
+          "recording_studio_pwa-*/app/views/**/*.erb\";",
           '@source "../../vendor/bundle/**/flatpack/app/components/**/*.{rb,erb}";',
           '@source "../../../../../../usr/local/bundle/ruby/**/bundler/gems/flatpack-*/app/components/**/*.{rb,erb}";'
         ]
