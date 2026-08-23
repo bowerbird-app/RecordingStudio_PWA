@@ -31,7 +31,7 @@ Then open the app and sign in with:
 ## Useful Routes
 
 - `/` - Template Demo on the shared Recording Studio layout
-- `/pwa/install` - example slice for adding the app to a home screen (FlatPack info alert, not a custom outline box)
+- `/pwa/install` - example slice titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC
 - `/manifest` - host web app manifest (`name` / `short_name` are Recording Studio PWA)
 - `/service-worker` - host service worker
 - `/recording_studio` - redirects to `/` while the mounted Recording Studio engine stays available under that prefix for non-root routes

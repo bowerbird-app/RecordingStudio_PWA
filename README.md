@@ -51,7 +51,7 @@ The login form is prefilled with these credentials for fast access.
 ### Useful Routes
 
 - `/` — Template Demo on the shared Recording Studio layout
-- `/pwa/install` — example slice page for adding the app to a home screen
+- `/pwa/install` — example slice titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC
 - `/manifest` — host web app manifest
 - `/service-worker` — host service worker
 - `/users/sign_in` — Devise sign-in page

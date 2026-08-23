@@ -23,7 +23,7 @@ Host-level PWA foundation. Hosts stay thin; other gems add a slice later.
 - Dummy no longer owns the rounded-theme head workaround or the PWA views
 - Dummy host name, document title fallback, and install-prompt chrome use **Recording Studio PWA** (not Addon Template / gem_template)
 - Dummy `/icon.png` and `/icon.svg` are a monochrome charcoal host mark, not the red template circle
-- `/pwa/install` uses FlatPack `Alert::Component` (`style: :info`) for the browser-install note
+- `/pwa/install` is titled **Install app** and uses FlatPack `Accordion::Component` (iPhone, Android, Mac, PC)
 - Install generator enables Rails PWA routes and documents opt-in slices
 
 ### Upgrade notes

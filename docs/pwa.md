@@ -94,7 +94,7 @@ end
 - The dummy host name is **Recording Studio PWA**. That value is what `/manifest`, `apple-mobile-web-app-title`, and the browser install prompt should show.
 - Dummy icons are `/icon.png` and `/icon.svg` — a charcoal rounded-theme mark, not the red template circle.
 - `/` is still the Template Demo on Recording Studio's default layout. That page is dummy chrome, not a product screen.
-- `/pwa/install` is the example slice on the same layout. The “does not send notifications” note is FlatPack `Alert::Component` with `style: :info`.
+- `/pwa/install` is the example slice on the same layout. The page title is **Install app**. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC).
 - `/manifest` and `/service-worker` are the Rails PWA endpoints
 - Workspace enables `:install`; Folder and Page do not
 

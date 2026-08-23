@@ -89,9 +89,16 @@ class RecordingStudioPwaTest < Minitest::Test
     assert_includes pwa_initializer, 'config.name = "Recording Studio PWA"'
     assert_includes pwa_initializer, 'config.short_name = "Recording Studio PWA"'
     refute_includes pwa_initializer, "Addon Template"
-    assert_includes install_view, "FlatPack::Alert::Component.new"
-    assert_includes install_view, "style: :info"
-    refute_includes install_view, "border-black"
+    assert_includes install_view, 'dummy_page_nav(title: "Install app"'
+    assert_includes install_view, 'title: "Install app"'
+    assert_includes install_view, "FlatPack::Accordion::Component.new"
+    assert_includes install_view, 'accordion.item(id: "iphone", title: "iPhone")'
+    assert_includes install_view, 'accordion.item(id: "android", title: "Android")'
+    assert_includes install_view, 'accordion.item(id: "mac", title: "Mac")'
+    assert_includes install_view, 'accordion.item(id: "pc", title: "PC")'
+    refute_includes install_view, "FlatPack::Card::Component"
+    refute_includes install_view, "Add to home screen"
+    refute_includes install_view, "allow_multiple: true"
     assert_includes icon_svg, 'fill="#333333"'
     refute_includes icon_svg, 'fill="red"'
     assert_nil RecordingStudioPwa::Configuration::DEFAULTS.fetch(:name)

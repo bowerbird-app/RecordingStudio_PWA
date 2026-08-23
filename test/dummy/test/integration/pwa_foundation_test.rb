@@ -30,15 +30,19 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Add to home screen"
+    assert_select "h1", text: "Install app"
+    assert_select "title", text: "Install app"
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav[aria-label='Page navigation']", count: 1
     assert_select "link[rel='manifest']", count: 1
     assert_select "meta[name='apple-mobile-web-app-title'][content='Recording Studio PWA']", count: 1
     assert_select "meta[name='application-name'][content='Recording Studio PWA']", count: 1
-    assert_select "[role='alert']", count: 1
-    assert_includes response.body, "border-[var(--alert-info-border-color)]"
-    assert_includes response.body, "Install from your browser"
+    assert_select "#iphone-content", count: 1
+    assert_select "#android-content", count: 1
+    assert_select "#mac-content", count: 1
+    assert_select "#pc-content", count: 1
+    refute_includes response.body, "On a phone"
+    refute_includes response.body, "On a computer"
     refute_includes response.body, "Addon Template"
     refute_includes response.body, "GemTemplate"
     assert_includes response.body, 'document.documentElement.setAttribute("data-theme", "rounded")'
