@@ -91,6 +91,7 @@ class RecordingStudioPwaTest < Minitest::Test
     refute_includes pwa_initializer, "Addon Template"
     assert_includes install_view, 'dummy_page_nav(title: "Install app"'
     assert_includes install_view, 'title: "Install app"'
+    refute_includes install_view, "subtitle:"
     assert_includes install_view, "FlatPack::Accordion::Component.new"
     assert_includes install_view, 'accordion.item(id: "iphone", title: "iPhone")'
     assert_includes install_view, 'accordion.item(id: "android", title: "Android")'

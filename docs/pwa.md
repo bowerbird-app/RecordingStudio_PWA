@@ -98,4 +98,4 @@ end
 - `/manifest` and `/service-worker` are the Rails PWA endpoints
 - Workspace enables `:install`; Folder and Page do not
 
-Review shots live in `docs/dummy-shots/`. The product shot is `pwa-install-slice.png` (phone-width `/pwa/install`, PageNav cropped). `pwa-beforeinstallprompt.png` is extra browser chrome only when the dialog shows Recording Studio PWA and the charcoal icon.
+Review shots live in `docs/dummy-shots/`. The closed product shot is `pwa-install-slice.png`. Open-panel shots are `pwa-install-iphone.png`, `pwa-install-android.png`, `pwa-install-mac.png`, and `pwa-install-pc.png` (phone-width `/pwa/install`, PageNav cropped). `pwa-beforeinstallprompt.png` is extra browser chrome only when the dialog shows Recording Studio PWA and the charcoal icon.
