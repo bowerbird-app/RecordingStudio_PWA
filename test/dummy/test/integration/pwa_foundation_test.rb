@@ -105,6 +105,9 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
   end
 
   test "service worker includes registered import scripts and extension partials" do
+    original_registry = RecordingStudioPwa.instance_variable_get(:@registry)
+    RecordingStudioPwa.instance_variable_set(:@registry, RecordingStudioPwa::Registry.new)
+
     RecordingStudioPwa.register_service_worker_import_script(
       "/assets/recording_studio_notifications_push/firebase-messaging-sw.js"
     )
@@ -118,8 +121,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "recording-studio-pwa-test-extension"
     assert_includes response.body, 'addEventListener("push"'
   ensure
-    RecordingStudioPwa.registry.service_worker_import_scripts.clear
-    RecordingStudioPwa.registry.service_worker_extensions.clear
+    RecordingStudioPwa.instance_variable_set(:@registry, original_registry)
   end
 
   test "layout exposes serviceWorkerReady for other gems" do

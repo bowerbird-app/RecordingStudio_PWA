@@ -107,5 +107,5 @@ self.addEventListener("fetch", (event) => {
 importScripts(<%= raw script_url.to_json %>);
 <% end %>
 <% RecordingStudioPwa.service_worker_extensions.each do |partial| %>
-<%= render partial: partial %>
+<%= render partial: partial, formats: [ :js ] %>
 <% end %>

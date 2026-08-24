@@ -39,6 +39,7 @@ class PwaLayoutTest < Minitest::Test
     assert_includes head, "serviceWorker"
     assert_includes head, "RecordingStudioPwa.serviceWorkerReady"
     assert_includes head, "navigator.serviceWorker.ready"
+    assert_includes head, "PWA service worker route is not mounted"
     refute File.exist?(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
     refute File.exist?(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
   end

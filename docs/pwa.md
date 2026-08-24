@@ -96,7 +96,9 @@ Register in `to_prepare` (or an engine initializer):
 ```ruby
 Rails.application.config.to_prepare do
   RecordingStudioPwa.register_service_worker_import_script(
-    "/assets/recording_studio_notifications_push/firebase-messaging-sw.js"
+    ActionController::Base.helpers.asset_path(
+      "recording_studio_notifications_push/firebase-messaging-sw.js"
+    )
   )
   # Optional: ERB partial rendered as JS at the end of the worker
   RecordingStudioPwa.register_service_worker_extension(
@@ -105,17 +107,21 @@ Rails.application.config.to_prepare do
 end
 ```
 
+Use a **stable URL** for import scripts. Digested Propshaft/Sprockets paths change per build and will 404 if hard-coded. Prefer `asset_path` / `path_to_asset` at registration time, a non-digested public path, or an engine route that serves the script. Relative same-origin paths are fine; absolute third-party URLs are allowed but load that origin's code into the worker.
+
 Rendered worker shape:
 
 1. Existing cache / install / activate / fetch logic from this gem
 2. `importScripts(...)` for each registered URL (order preserved)
 3. Rendered JS for each registered extension partial (order preserved)
 
+Registered scripts and partials run **after** this gem's install, activate, and fetch handlers. That ordering matters for FCM background setup.
+
 Default behaviour is unchanged: when nothing is registered, the worker still has no `push` or `showNotification` handlers.
 
 **What belongs here:** only the hook — URLs and partial names.
 
-**What does not belong in this gem:** Firebase JS SDK, VAPID keys, notification permission UI, FID / FCM token APIs, device storage, or FCM HTTP v1 send. Those stay in the push gem and host credentials.
+**What does not belong in this gem:** Firebase JS SDK, VAPID keys, notification permission UI, FID / FCM token APIs, device storage, or FCM HTTP v1 send. Those stay in the push gem and host credentials. Extension partials are public JS — do not embed credentials or per-user data.
 
 ### Reusing registration from page JS
 
