@@ -20,6 +20,13 @@ module RecordingStudioPwa
         route %(mount RecordingStudioPwa::Engine, at: "#{options[:mount_path]}")
       end
 
+      def enable_pwa_routes
+        route <<~RUBY.rstrip
+          get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+          get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+        RUBY
+      end
+
       def copy_initializer
         template "recording_studio_pwa_initializer.rb", "config/initializers/recording_studio_pwa.rb"
       end

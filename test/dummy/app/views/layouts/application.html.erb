@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html data-theme="rounded">
   <head>
-    <title><%= content_for(:title) || "Dummy" %></title>
+    <title><%= content_for(:title) || RecordingStudioPwa.web_app_name %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Dummy">
+    <meta name="apple-mobile-web-app-title" content="<%= RecordingStudioPwa.web_app_name %>">
+    <meta name="application-name" content="<%= RecordingStudioPwa.web_app_name %>">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
+    <%= render "recording_studio/default_layout_head" %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">

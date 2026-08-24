@@ -79,5 +79,9 @@ class RecordingStudioTemplateTest < ActiveSupport::TestCase
     refute RecordingStudio.capability_enabled?(:example, for: Page)
     assert_equal [ "Workspace" ], RecordingStudio.configuration.enabled_recordable_types_for(:example)
     assert_includes ApplicationController.ancestors, RecordingStudio::UsesDefaultLayout
+    assert_includes ApplicationController.ancestors, RecordingStudioPwa::UsesPwaLayout
+    assert RecordingStudioPwa.slice_enabled?(:install, recordable_class: Workspace)
+    refute RecordingStudioPwa.slice_enabled?(:install, recordable_class: Folder)
+    refute RecordingStudioPwa.slice_enabled?(:install, recordable_class: Page)
   end
 end

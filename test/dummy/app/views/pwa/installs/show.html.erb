@@ -1,0 +1,42 @@
+<% dummy_page_nav(title: "Install app", back_url: root_path) %>
+
+<div class="flex w-full flex-col gap-6">
+  <%= render FlatPack::PageTitle::Component.new(
+    title: "Install app",
+    variant: :h1
+  ) %>
+
+  <%= render FlatPack::Accordion::Component.new do |accordion| %>
+    <% accordion.item(id: "iphone", title: "iPhone") do %>
+      <ol class="space-y-3 text-sm leading-6 list-decimal pl-5">
+        <li>Open Share in Safari.</li>
+        <li>Choose Add to Home Screen.</li>
+        <li>Tap Add. The icon appears on your home screen.</li>
+      </ol>
+    <% end %>
+
+    <% accordion.item(id: "android", title: "Android") do %>
+      <ol class="space-y-3 text-sm leading-6 list-decimal pl-5">
+        <li>Open the Chrome menu.</li>
+        <li>Choose Install app or Add to Home Screen.</li>
+        <li>Confirm. The icon appears on your home screen.</li>
+      </ol>
+    <% end %>
+
+    <% accordion.item(id: "mac", title: "Mac") do %>
+      <ol class="space-y-3 text-sm leading-6 list-decimal pl-5">
+        <li>Look for the install icon in the toolbar.</li>
+        <li>Choose Install.</li>
+        <li>The app opens in its own window the next time you launch it.</li>
+      </ol>
+    <% end %>
+
+    <% accordion.item(id: "pc", title: "PC") do %>
+      <ol class="space-y-3 text-sm leading-6 list-decimal pl-5">
+        <li>Look for the install icon in the address bar.</li>
+        <li>Choose Install.</li>
+        <li>The app opens in its own window the next time you launch it.</li>
+      </ol>
+    <% end %>
+  <% end %>
+</div>

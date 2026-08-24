@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.1.0", ::RecordingStudioPwa::VERSION
+    assert_equal "0.2.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -57,7 +57,8 @@ class RecordingStudioPwaTest < Minitest::Test
     controller_source = File.read(application_controller_path)
 
     assert_includes controller_source, "include RecordingStudio::UsesDefaultLayout"
-    assert_includes controller_source, '"recording_studio/default_layout"'
+    assert_includes controller_source, "include RecordingStudioPwa::UsesPwaLayout"
+    assert_includes controller_source, '"recording_studio_pwa"'
     assert_includes controller_source, "devise_controller? ? \"application\""
     refute_includes controller_source, "flat_pack_sidebar"
     refute File.exist?(File.expand_path("dummy/app/views/layouts/flat_pack_sidebar.html.erb", __dir__))
@@ -69,19 +70,51 @@ class RecordingStudioPwaTest < Minitest::Test
 
     assert_includes application_layout, '<html data-theme="rounded">'
     refute_match(/<body[^>]*data-theme=/, application_layout)
+    assert_includes application_layout, "RecordingStudioPwa.web_app_name"
+    assert_includes application_layout, "apple-mobile-web-app-title"
     assert_includes application_layout, 'stylesheet_link_tag "flat_pack/variables"'
     assert_includes application_layout, "javascript_importmap_tags"
     assert_includes application_layout, "min-h-screen"
+    refute_includes application_layout, "Addon Template"
+    refute_includes application_layout, 'content="Dummy"'
     refute_includes application_layout, "mt-28"
     refute_includes application_layout, "flat_pack_sidebar"
   end
 
-  def test_dummy_copies_rounded_theme_onto_html_for_default_layout
-    layout_head = File.read(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
-    core_hook = File.read(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
+  def test_dummy_host_owns_pwa_name_and_charcoal_icons
+    pwa_initializer = File.read(File.expand_path("dummy/config/initializers/recording_studio_pwa.rb", __dir__))
+    install_view = File.read(File.expand_path("dummy/app/views/pwa/installs/show.html.erb", __dir__))
+    icon_svg = File.read(File.expand_path("dummy/public/icon.svg", __dir__))
+
+    assert_includes pwa_initializer, 'config.name = "Recording Studio PWA"'
+    assert_includes pwa_initializer, 'config.short_name = "Recording Studio PWA"'
+    refute_includes pwa_initializer, "Addon Template"
+    assert_includes install_view, 'dummy_page_nav(title: "Install app"'
+    assert_includes install_view, 'title: "Install app"'
+    refute_includes install_view, "subtitle:"
+    assert_includes install_view, "FlatPack::Accordion::Component.new"
+    assert_includes install_view, 'accordion.item(id: "iphone", title: "iPhone")'
+    assert_includes install_view, 'accordion.item(id: "android", title: "Android")'
+    assert_includes install_view, 'accordion.item(id: "mac", title: "Mac")'
+    assert_includes install_view, 'accordion.item(id: "pc", title: "PC")'
+    refute_includes install_view, "FlatPack::Card::Component"
+    refute_includes install_view, "Add to home screen"
+    refute_includes install_view, "allow_multiple: true"
+    assert_includes icon_svg, 'fill="#333333"'
+    refute_includes icon_svg, 'fill="red"'
+    assert_nil RecordingStudioPwa::Configuration::DEFAULTS.fetch(:name)
+  end
+
+  def test_gem_copies_rounded_theme_onto_html_for_default_layout
+    layout_head = File.read(File.expand_path("../app/views/recording_studio/_default_layout_head.html.erb", __dir__))
 
     assert_includes layout_head, 'document.documentElement.setAttribute("data-theme", "rounded")'
-    assert_includes core_hook, 'render "layouts/default_layout_head"'
+    assert_includes layout_head, 'rel="manifest"'
+    assert_includes layout_head, "apple-mobile-web-app-title"
+    assert_includes layout_head, "application-name"
+    assert_includes layout_head, "RecordingStudioPwa.web_app_name"
+    refute File.exist?(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
+    refute File.exist?(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
   end
 
   def test_dummy_tailwind_keeps_flatpack_theme_selection_in_flatpack
@@ -102,6 +135,9 @@ class RecordingStudioPwaTest < Minitest::Test
 
     assert_includes initializer_source, "config.require_recordable_declarations = true"
     assert_includes initializer_source, "config.recordable_types = [ \"Workspace\", \"Folder\", \"Page\" ]"
+    assert_includes initializer_source, 'config.app_name = "Recording Studio PWA"'
+    refute_includes initializer_source, "Addon Template"
+    refute_includes initializer_source, "GemTemplate"
     refute_includes initializer_source, "config.include_children"
     refute_includes initializer_source, "config.features."
     refute_includes initializer_source, "v3"
@@ -114,6 +150,8 @@ class RecordingStudioPwaTest < Minitest::Test
     assert_includes readme_source, "This Rails app exists to validate the Recording Studio PWA addon"
     assert_includes readme_source, "/recording_studio"
     assert_includes readme_source, "redirects to `/`"
+    assert_includes readme_source, "/pwa/install"
+    assert_includes readme_source, "/manifest"
     refute_includes readme_source, "flat_pack_sidebar"
   end
 
