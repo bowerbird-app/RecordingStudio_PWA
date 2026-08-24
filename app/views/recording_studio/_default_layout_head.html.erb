@@ -10,12 +10,23 @@
 <% if respond_to?(:pwa_service_worker_path) %>
   <%= javascript_tag nonce: true do %>
     document.documentElement.setAttribute("data-theme", "rounded");
+    window.RecordingStudioPwa = window.RecordingStudioPwa || {};
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("<%= pwa_service_worker_path(format: :js) %>");
+      window.RecordingStudioPwa.serviceWorkerReady = navigator.serviceWorker
+        .register("<%= pwa_service_worker_path(format: :js) %>")
+        .then(function () { return navigator.serviceWorker.ready; });
+    } else {
+      window.RecordingStudioPwa.serviceWorkerReady = Promise.reject(
+        new Error("Service workers are not supported")
+      );
     }
   <% end %>
 <% else %>
   <%= javascript_tag nonce: true do %>
     document.documentElement.setAttribute("data-theme", "rounded");
+    window.RecordingStudioPwa = window.RecordingStudioPwa || {};
+    window.RecordingStudioPwa.serviceWorkerReady = Promise.reject(
+      new Error("PWA service worker route is not mounted")
+    );
   <% end %>
 <% end %>

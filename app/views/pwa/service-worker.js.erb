@@ -101,3 +101,11 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(networkFirstPublicPage(request));
   }
 });
+
+<%# Addon composition seam. Empty by default — this gem does not own web push. %>
+<% RecordingStudioPwa.service_worker_import_scripts.each do |script_url| %>
+importScripts(<%= raw script_url.to_json %>);
+<% end %>
+<% RecordingStudioPwa.service_worker_extensions.each do |partial| %>
+<%= render partial: partial, formats: [ :js ] %>
+<% end %>

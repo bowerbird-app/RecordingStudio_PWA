@@ -96,9 +96,40 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_response :success
     refute_includes response.body, 'addEventListener("push"'
     refute_includes response.body, "showNotification"
+    refute_includes response.body, "importScripts("
+    refute_includes response.body, "recording-studio-pwa-test-extension"
     assert_includes response.body, "flat_pack"
     assert_includes response.body, "Do not cache authenticated HTML as a static app"
     assert_includes response.body, "/users/sign_in"
     refute_includes response.body, '"/pwa/install"'
+  end
+
+  test "service worker includes registered import scripts and extension partials" do
+    original_registry = RecordingStudioPwa.instance_variable_get(:@registry)
+    RecordingStudioPwa.instance_variable_set(:@registry, RecordingStudioPwa::Registry.new)
+
+    RecordingStudioPwa.register_service_worker_import_script(
+      "/assets/recording_studio_notifications_push/firebase-messaging-sw.js"
+    )
+    RecordingStudioPwa.register_service_worker_extension("pwa/service_worker_test_extension")
+
+    get pwa_service_worker_path(format: :js)
+
+    assert_response :success
+    assert_includes response.body,
+                    'importScripts("/assets/recording_studio_notifications_push/firebase-messaging-sw.js");'
+    assert_includes response.body, "recording-studio-pwa-test-extension"
+    assert_includes response.body, 'addEventListener("push"'
+  ensure
+    RecordingStudioPwa.instance_variable_set(:@registry, original_registry)
+  end
+
+  test "layout exposes serviceWorkerReady for other gems" do
+    get root_path
+
+    assert_response :success
+    assert_includes response.body, "window.RecordingStudioPwa = window.RecordingStudioPwa || {}"
+    assert_includes response.body, "RecordingStudioPwa.serviceWorkerReady"
+    assert_includes response.body, "navigator.serviceWorker.ready"
   end
 end
