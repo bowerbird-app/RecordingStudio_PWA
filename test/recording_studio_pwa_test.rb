@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.2.0", ::RecordingStudioPwa::VERSION
+    assert_equal "0.3.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists

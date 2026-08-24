@@ -37,6 +37,8 @@ class PwaLayoutTest < Minitest::Test
     assert_includes head, "apple-mobile-web-app-title"
     assert_includes head, "RecordingStudioPwa.web_app_name"
     assert_includes head, "serviceWorker"
+    assert_includes head, "RecordingStudioPwa.serviceWorkerReady"
+    assert_includes head, "navigator.serviceWorker.ready"
     refute File.exist?(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
     refute File.exist?(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
   end
@@ -46,6 +48,8 @@ class PwaLayoutTest < Minitest::Test
 
     assert_includes worker, "isFlatpackAsset"
     assert_includes worker, "Do not cache authenticated HTML as a static app"
+    assert_includes worker, "service_worker_import_scripts"
+    assert_includes worker, "service_worker_extensions"
     refute_includes worker, 'addEventListener("push"'
     refute_includes worker, "showNotification"
   end

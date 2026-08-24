@@ -4,7 +4,7 @@ A Recording Studio addon that gives a host app one installable Progressive Web A
 
 Hosts stay thin. This gem owns the host-level shell: manifest, service worker, icons, theme color, and a layout wrap around Recording Studio's default layout. Other gems add a slice later.
 
-See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, and service-worker rules.
+See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, service-worker rules, and the composition seam other gems use to attach background handlers (for example web push) without putting Firebase logic in this gem.
 
 ## What's Included
 
@@ -12,6 +12,7 @@ See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, and service-worke
 - **Rails 8 PWA routes** — this gem owns the `rails/pwa#manifest` and `#service_worker` views; hosts enable the routes
 - **Layout wrap** — `RecordingStudioPwa::UsesPwaLayout` wraps `recording_studio/default_layout` and does not copy PageNav, flash, Open Graph, or FlatPack CSS
 - **Slice API** — register slices globally, enable them per recordable type; installing the gem does not opt a host in
+- **Service worker composition seam** — other gems can register `importScripts` URLs or JS partials on the same `/service-worker` without forking it; default worker stays push-free
 - **Recording Studio** 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.2.0`)
 - **FlatPack** UI (`~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.133`)
 - **Rails** 8.1

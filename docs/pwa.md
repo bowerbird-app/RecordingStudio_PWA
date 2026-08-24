@@ -8,7 +8,7 @@ This gem owns host-level chrome only:
 - A layout wrap around Recording Studio's default layout
 - A slice registry other gems can register into
 
-It does not own web push, offline-first sync, a second admin, or per-gem mobile redesigns.
+It does not own web push, offline-first sync, a second admin, or per-gem mobile redesigns. Other gems may attach background handlers through the service worker composition seam documented below.
 
 ## One PWA per host
 
@@ -86,6 +86,47 @@ RecordingStudioPwa.configure do |config|
   config.public_page_paths = ["/users/sign_in"]
 end
 ```
+
+### Composition seam for other gems
+
+Other gems (starting with `recording_studio_notifications_push`) may attach scripts or handlers to the **same** canonical `/service-worker`. Do not fork or replace the worker in the host.
+
+Register in `to_prepare` (or an engine initializer):
+
+```ruby
+Rails.application.config.to_prepare do
+  RecordingStudioPwa.register_service_worker_import_script(
+    "/assets/recording_studio_notifications_push/firebase-messaging-sw.js"
+  )
+  # Optional: ERB partial rendered as JS at the end of the worker
+  RecordingStudioPwa.register_service_worker_extension(
+    "recording_studio_notifications_push/service_worker_push"
+  )
+end
+```
+
+Rendered worker shape:
+
+1. Existing cache / install / activate / fetch logic from this gem
+2. `importScripts(...)` for each registered URL (order preserved)
+3. Rendered JS for each registered extension partial (order preserved)
+
+Default behaviour is unchanged: when nothing is registered, the worker still has no `push` or `showNotification` handlers.
+
+**What belongs here:** only the hook — URLs and partial names.
+
+**What does not belong in this gem:** Firebase JS SDK, VAPID keys, notification permission UI, FID / FCM token APIs, device storage, or FCM HTTP v1 send. Those stay in the push gem and host credentials.
+
+### Reusing registration from page JS
+
+The default layout head registers the worker and exposes a promise other gems can await:
+
+```js
+const registration = await window.RecordingStudioPwa.serviceWorkerReady;
+// same as navigator.serviceWorker.ready after this gem's register()
+```
+
+Prefer that promise (or `navigator.serviceWorker.ready` / `getRegistration()`) instead of calling `register()` again from an addon.
 
 ## Dummy app
 

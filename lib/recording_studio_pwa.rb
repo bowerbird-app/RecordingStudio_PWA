@@ -37,6 +37,27 @@ module RecordingStudioPwa
       registry.slices.dup
     end
 
+    # Register a script URL/path for `importScripts(...)` in the host service worker.
+    # Use this from other gems (for example notifications push) — not for host product logic in PWA.
+    def register_service_worker_import_script(url)
+      registry.register_service_worker_import_script(url)
+    end
+
+    # Register a JS partial rendered at the end of the host service worker.
+    # Prefer a partial when the addon needs ERB; prefer import scripts for static SW assets.
+    def register_service_worker_extension(partial)
+      registry.register_service_worker_extension(partial)
+    end
+
+    def service_worker_import_scripts
+      registry.service_worker_import_scripts.dup
+    end
+
+    def service_worker_extensions
+      registry.service_worker_extensions.dup
+    end
+
+
     def normalize_slice_keys(keys)
       Array(keys).compact.map(&:to_s).uniq
     end

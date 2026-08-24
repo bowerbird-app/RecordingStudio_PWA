@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-24
+
+Service worker composition seam for addon scripts (web push and similar). This gem still does not own push product logic.
+
+### Added
+- `RecordingStudioPwa.register_service_worker_import_script` for `importScripts(...)` URLs on the canonical `/service-worker`
+- `RecordingStudioPwa.register_service_worker_extension` for JS partials rendered at the end of that worker
+- `window.RecordingStudioPwa.serviceWorkerReady` so other gems can await the existing registration instead of calling `register()` again
+- Docs in `docs/pwa.md` for the notifications push handoff
+
+### Changed
+- Default service worker remains push-free when no extensions are registered
+
+### Upgrade notes
+- No required host changes for existing installs. Behaviour is unchanged until something registers an import script or extension.
+- Addons that need background handlers (for example `recording_studio_notifications_push`) should register through this seam instead of replacing `/service-worker`.
+- Page JS that needs the active registration should await `window.RecordingStudioPwa.serviceWorkerReady` (or `navigator.serviceWorker.ready`) rather than registering a second worker.
+- Do not put Firebase, VAPID, permission UI, or FCM send logic in this gem.
+
 ## [0.2.0] - 2026-08-22
 
 Host-level PWA foundation. Hosts stay thin; other gems add a slice later.
@@ -54,6 +73,7 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.3.0
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.0
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.1.0

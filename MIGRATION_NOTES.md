@@ -9,6 +9,7 @@
 - Accessible dummy tag `v0.7.0` and Root Switchable dummy tag `v0.5.0` (dummy host only)
 - Public RubyGems and GitHub access for dependency installation
 - Hosts that already ran the 0.1.0 install should add Rails PWA routes and drop any dummy-only `_default_layout_head` workaround. See the 0.2.0 upgrade notes in `CHANGELOG.md`.
+- Hosts on 0.2.x can upgrade to 0.3.0 with no required config changes. The service worker stays push-free until an addon registers an import script or extension. See the 0.3.0 upgrade notes in `CHANGELOG.md`.
 
 ## Verification
 
