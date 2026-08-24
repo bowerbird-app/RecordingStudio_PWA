@@ -57,7 +57,6 @@ module RecordingStudioPwa
       registry.service_worker_extensions.dup
     end
 
-
     def normalize_slice_keys(keys)
       Array(keys).compact.map(&:to_s).uniq
     end
