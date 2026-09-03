@@ -58,7 +58,7 @@ class CursorInstallTest < Minitest::Test
     spec = Gem::Specification.load(File.join(ROOT, "recording_studio_pwa.gemspec"))
 
     refute_nil spec
-    refute spec.files.any? { |path| path.start_with?(".cursor/") }
+    refute(spec.files.any? { |path| path.start_with?(".cursor/") })
   end
 
   def test_gitignore_does_not_vendor_fetched_skills
@@ -108,7 +108,9 @@ class CursorInstallTest < Minitest::Test
 
     parsed["stdout"] = File.read(parsed.fetch("SANDBOX_STDOUT"))
     parsed["log"] = File.read(parsed.fetch("SANDBOX_LOG"))
-    FileUtils.remove_entry(parsed.fetch("SANDBOX_DIR")) if parsed["SANDBOX_DIR"] && File.directory?(parsed["SANDBOX_DIR"])
+    if parsed["SANDBOX_DIR"] && File.directory?(parsed["SANDBOX_DIR"])
+      FileUtils.remove_entry(parsed.fetch("SANDBOX_DIR"))
+    end
     parsed
   end
 end
