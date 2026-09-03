@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-03
+
+Cloud Agents fetch skills at Build.
+
+### Added
+- Tracked Cloud Agent boot files under `.cursor/`. Builds run `install.sh`, then `fetch-skills.sh` last. Generated `.cursor/skills/` and `.cursor/rules/` stay gitignored
+
+### Upgrade notes
+- No host, schema, or UI changes. Rebuild the Cloud Agent environment with Draft off so Build loads the pack
+
 ## [0.2.0] - 2026-08-22
 
 Host-level PWA foundation. Hosts stay thin; other gems add a slice later.
@@ -54,6 +64,7 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.0
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.1.0
