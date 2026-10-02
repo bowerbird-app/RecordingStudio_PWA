@@ -13,7 +13,7 @@ See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, and service-worke
 - **Layout wrap** — `RecordingStudioPwa::UsesPwaLayout` wraps `recording_studio/default_layout` and does not copy PageNav, flash, Open Graph, or FlatPack CSS
 - **Slice API** — register slices globally, enable them per recordable type; installing the gem does not opt a host in
 - **Recording Studio** 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.2.0`)
-- **FlatPack** UI (`~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.197`)
+- **FlatPack** UI (`~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.198`)
 - **Rails** 8.1
 - **Dummy app** (`test/dummy/`) with Devise sign-in, host name **Recording Studio PWA**, charcoal host icons, the Template Demo at `/`, an example install slice at `/pwa/install`, and FlatPack's rounded theme on `<html>`
 
@@ -196,7 +196,7 @@ Recording Studio's default layout still puts `data-theme` on `<body>`. This gem 
 | PostgreSQL      | 16      |
 | TailwindCSS     | 4 (dummy host only) |
 | RecordingStudio | 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.2.0`) |
-| FlatPack        | `~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.197` |
+| FlatPack        | `~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.198` |
 | Accessible      | dummy GitHub tag `v0.7.0` (host demo only) |
 | Root Switchable | dummy GitHub tag `v0.5.0` (host demo only) |
 | Devise          | latest  |
