@@ -6,7 +6,7 @@ source "https://rubygems.org"
 gemspec
 
 # Private GitHub gems are not published to RubyGems; resolve gemspec pins from tags.
-gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.133"
+gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.198"
 gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.2.0"
 
 gem "devise"
