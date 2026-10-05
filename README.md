@@ -39,6 +39,8 @@ This gem does not own web push, notifications, offline-first sync, a second admi
 
 The dummy app is the host-app validation surface for authentication, FlatPack rendering, Tailwind source scanning, PWA chrome, and Recording Studio route wiring.
 
+Dummy credentials (`test/dummy/config/credentials.yml.enc`) are encrypted with the shared RecordingStudio_* development master key. Set `RAILS_MASTER_KEY` or put that key in `test/dummy/config/master.key` (gitignored). Keep the encrypted file; do not generate a per-repo dummy key.
+
 ### Login Credentials
 
 | Field    | Value             |
