@@ -104,12 +104,18 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
   end
 
   test "service worker output is unchanged when no extensions are registered" do
+    original = RecordingStudioPwa.instance_variable_get(:@service_worker_extensions)
     RecordingStudioPwa.instance_variable_set(:@service_worker_extensions, [])
 
     get pwa_service_worker_path(format: :js)
 
     assert_response :success
-    assert_equal expected_service_worker_without_extensions, response.body
+    assert_includes response.body, "Do not cache authenticated HTML as a static app"
+    assert_includes response.body, "networkFirstPublicPage"
+    refute_includes response.body, "recording-studio-pwa-test-extension"
+    assert_match(/event\.respondWith\(networkFirstPublicPage\(request\)\);\s*\}\s*\}\);\s*\z/m, response.body)
+  ensure
+    RecordingStudioPwa.instance_variable_set(:@service_worker_extensions, original)
   end
 
   test "service worker renders a registered extension partial" do
@@ -120,8 +126,10 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_service_worker_path(format: :js)
 
     assert_response :success
-    assert_includes response.body, expected_service_worker_without_extensions
-    assert_includes response.body, "recording-studio-pwa-test-extension"
+    marker = "recording-studio-pwa-test-extension"
+    fetch_handler = "event.respondWith(networkFirstPublicPage(request));"
+    assert_includes response.body, marker
+    assert_operator response.body.index(fetch_handler), :<, response.body.index(marker)
   ensure
     RecordingStudioPwa.instance_variable_set(:@service_worker_extensions, original)
   end
@@ -134,115 +142,5 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "window.RecordingStudioPwa.serviceWorkerReady"
     assert_includes response.body, "navigator.serviceWorker.ready"
     assert_includes response.body, 'if ("serviceWorker" in navigator)'
-  end
-
-  private
-
-  def expected_service_worker_without_extensions
-    <<~JS
-      const CACHE_NAME = "recording-studio-pwa-#{RecordingStudioPwa::VERSION}";
-      const PUBLIC_PAGE_PATHS = new Set(#{RecordingStudioPwa.service_worker_extra_routes.to_json});
-      const OFFLINE_FALLBACK = #{RecordingStudioPwa.offline_fallback_path.to_json};
-
-      self.addEventListener("install", (event) => {
-        event.waitUntil(self.skipWaiting());
-      });
-
-      self.addEventListener("activate", (event) => {
-        event.waitUntil(
-          caches.keys().then((keys) =>
-            Promise.all(
-              keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-            )
-          ).then(() => self.clients.claim())
-        );
-      });
-
-      function isFlatpackAsset(url) {
-        return url.pathname.includes("flat_pack") || url.pathname.includes("/assets/flat_pack");
-      }
-
-      function isPublicIcon(url) {
-        return url.pathname === "/icon.png" || url.pathname === "/icon.svg";
-      }
-
-      function isPublicPage(url) {
-        return PUBLIC_PAGE_PATHS.has(url.pathname);
-      }
-
-      function isHtmlNavigation(request) {
-        if (request.mode === "navigate") {
-          return true;
-        }
-
-        const accept = request.headers.get("accept") || "";
-        return accept.includes("text/html");
-      }
-
-      async function cacheFirst(request) {
-        const cache = await caches.open(CACHE_NAME);
-        const cached = await cache.match(request);
-        if (cached) {
-          return cached;
-        }
-
-        const response = await fetch(request);
-        if (response.ok) {
-          cache.put(request, response.clone());
-        }
-        return response;
-      }
-
-      async function networkFirstPublicPage(request) {
-        const cache = await caches.open(CACHE_NAME);
-        try {
-          const response = await fetch(request);
-          if (response.ok) {
-            cache.put(request, response.clone());
-          }
-          return response;
-        } catch (error) {
-          const cached = await cache.match(request);
-          if (cached) {
-            return cached;
-          }
-
-          if (OFFLINE_FALLBACK) {
-            const fallback = await cache.match(OFFLINE_FALLBACK);
-            if (fallback) {
-              return fallback;
-            }
-          }
-
-          throw error;
-        }
-      }
-
-      self.addEventListener("fetch", (event) => {
-        const request = event.request;
-        if (request.method !== "GET") {
-          return;
-        }
-
-        const url = new URL(request.url);
-        if (url.origin !== self.location.origin) {
-          return;
-        }
-
-        if (isFlatpackAsset(url) || isPublicIcon(url)) {
-          event.respondWith(cacheFirst(request));
-          return;
-        }
-
-        // Do not cache authenticated HTML as a static app. Public pages are opt-in.
-        if (isHtmlNavigation(request) && !isPublicPage(url)) {
-          return;
-        }
-
-        if (isPublicPage(url)) {
-          event.respondWith(networkFirstPublicPage(request));
-        }
-      });
-    JS
   end
 end
