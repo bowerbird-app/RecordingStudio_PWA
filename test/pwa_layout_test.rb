@@ -37,6 +37,7 @@ class PwaLayoutTest < Minitest::Test
     assert_includes head, "apple-mobile-web-app-title"
     assert_includes head, "RecordingStudioPwa.web_app_name"
     assert_includes head, "serviceWorker"
+    assert_includes head, "serviceWorkerReady"
     refute File.exist?(File.expand_path("dummy/app/views/layouts/_default_layout_head.html.erb", __dir__))
     refute File.exist?(File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__))
   end

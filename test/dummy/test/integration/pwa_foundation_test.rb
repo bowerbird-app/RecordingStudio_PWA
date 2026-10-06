@@ -100,5 +100,47 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Do not cache authenticated HTML as a static app"
     assert_includes response.body, "/users/sign_in"
     refute_includes response.body, '"/pwa/install"'
+    refute_includes response.body, "recording-studio-pwa-test-extension"
+  end
+
+  test "service worker output is unchanged when no extensions are registered" do
+    original = RecordingStudioPwa.instance_variable_get(:@service_worker_extensions)
+    RecordingStudioPwa.instance_variable_set(:@service_worker_extensions, [])
+
+    get pwa_service_worker_path(format: :js)
+
+    assert_response :success
+    assert_includes response.body, "Do not cache authenticated HTML as a static app"
+    assert_includes response.body, "networkFirstPublicPage"
+    refute_includes response.body, "recording-studio-pwa-test-extension"
+    assert_match(/event\.respondWith\(networkFirstPublicPage\(request\)\);\s*\}\s*\}\);\s*\z/m, response.body)
+  ensure
+    RecordingStudioPwa.instance_variable_set(:@service_worker_extensions, original)
+  end
+
+  test "service worker renders a registered extension partial" do
+    original = RecordingStudioPwa.instance_variable_get(:@service_worker_extensions)
+    RecordingStudioPwa.instance_variable_set(:@service_worker_extensions, [])
+    RecordingStudioPwa.register_service_worker_extension("pwa/service_worker_extension_test")
+
+    get pwa_service_worker_path(format: :js)
+
+    assert_response :success
+    marker = "recording-studio-pwa-test-extension"
+    fetch_handler = "event.respondWith(networkFirstPublicPage(request));"
+    assert_includes response.body, marker
+    assert_operator response.body.index(fetch_handler), :<, response.body.index(marker)
+  ensure
+    RecordingStudioPwa.instance_variable_set(:@service_worker_extensions, original)
+  end
+
+  test "layout head exposes serviceWorkerReady from the registration promise" do
+    get root_path
+
+    assert_response :success
+    assert_includes response.body, "window.RecordingStudioPwa = window.RecordingStudioPwa || {}"
+    assert_includes response.body, "window.RecordingStudioPwa.serviceWorkerReady"
+    assert_includes response.body, "navigator.serviceWorker.ready"
+    assert_includes response.body, 'if ("serviceWorker" in navigator)'
   end
 end

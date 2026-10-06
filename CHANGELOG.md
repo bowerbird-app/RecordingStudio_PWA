@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-10-06
+
+Service worker extension point for other Recording Studio gems.
+
+### Added
+- `RecordingStudioPwa.register_service_worker_extension(partial_path)` and `service_worker_extensions`, so other gems can append JS to the host service worker without copying it. Registration is idempotent and keeps order
+- Default layout head sets `window.RecordingStudioPwa.serviceWorkerReady` to the `navigator.serviceWorker.register(...).then(() => navigator.serviceWorker.ready)` promise when service workers are supported
+
+### Upgrade notes
+- Hosts that copied this gem's service worker for push can drop that copy. Register a JS partial instead (for example `recording_studio_notifications_push/service_worker_push`)
+- No schema or slice-API changes
+
 ## [0.2.1] - 2026-09-03
 
 Cloud Agents fetch skills at Build.
@@ -64,7 +76,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.5
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.0
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.1.0

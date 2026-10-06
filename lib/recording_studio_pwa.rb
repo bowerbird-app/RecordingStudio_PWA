@@ -29,6 +29,17 @@ module RecordingStudioPwa
       registry.register(klass)
     end
 
+    def register_service_worker_extension(partial_path)
+      path = partial_path.to_s
+      extensions = (@service_worker_extensions ||= [])
+      extensions << path unless extensions.include?(path)
+      path
+    end
+
+    def service_worker_extensions
+      Array(@service_worker_extensions).dup
+    end
+
     def slice_for(key)
       registry.slice_for(key)
     end
