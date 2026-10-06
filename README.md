@@ -6,6 +6,8 @@ Hosts stay thin. This gem owns the host-level shell: manifest, service worker, i
 
 See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, and service-worker rules.
 
+Other gems append to the host service worker through `RecordingStudioPwa.register_service_worker_extension`. Registration is idempotent. The layout head exposes `window.RecordingStudioPwa.serviceWorkerReady` (a Promise of the `ServiceWorkerRegistration`) when service workers are supported.
+
 ## What's Included
 
 - **One PWA per host** — web app manifest, service worker, icons, `theme-color`, `start_url`, and `scope`
@@ -93,6 +95,33 @@ Sign in with `admin@admin.com` / `Password`. Confirm `/` still shows Template De
    ```
 
 Installing the gem does not enable slices. PWA chrome does not need extra tables in v1.
+
+### Service worker extensions
+
+This gem owns `/service-worker`. Other gems (and the host) can append JavaScript by registering a JS partial. The push gem already calls this hook:
+
+```ruby
+Rails.application.config.to_prepare do
+  RecordingStudioPwa.register_service_worker_extension(
+    "recording_studio_notifications_push/service_worker_push"
+  )
+end
+```
+
+`RecordingStudioPwa.service_worker_extensions` returns the registered partial paths in registration order, without duplicates. Re-running `to_prepare` does not insert the same partial twice.
+
+The worker template renders each extension with `formats: [:js]` after the built-in cache/fetch handlers. With no extensions registered, the worker body is unchanged.
+
+The default layout head registers the worker and, when `"serviceWorker" in navigator`, sets:
+
+```js
+window.RecordingStudioPwa = window.RecordingStudioPwa || {};
+window.RecordingStudioPwa.serviceWorkerReady = navigator.serviceWorker
+  .register("/service-worker.js")
+  .then(() => navigator.serviceWorker.ready);
+```
+
+If service workers are not supported, `serviceWorkerReady` is left unset so callers can fall back to `navigator.serviceWorker.getRegistration()`.
 
 ## Architecture
 

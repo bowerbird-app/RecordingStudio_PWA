@@ -79,6 +79,8 @@ The dummy app registers one example slice so the API is real. That slice adds `/
 
 The worker caches FlatPack assets and host-configured public pages only. It does not implement web push. It does not cache signed-in HTML as a static app. It does not sync data offline.
 
+Other gems append to the worker by calling `RecordingStudioPwa.register_service_worker_extension(partial_path)` (idempotent). The layout head sets `window.RecordingStudioPwa.serviceWorkerReady` when service workers are supported.
+
 Add public paths in configuration. Do not list pages that require a signed-in session:
 
 ```ruby
