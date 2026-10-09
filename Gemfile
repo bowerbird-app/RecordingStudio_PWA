@@ -7,7 +7,7 @@ gemspec
 
 # Private GitHub gems are not published to RubyGems; resolve gemspec pins from tags.
 gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.198"
-gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.3.0"
+gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.4.0"
 
 gem "devise"
 gem "puma"
