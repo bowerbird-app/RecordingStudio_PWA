@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-09
+
+English Rails I18n for the gem's own PWA chrome defaults.
+
+### Added
+- English locale file at `config/locales/en.yml` under `recording_studio.pwa`
+- `recording_studio.pwa.web_app.default_name` (`"App"`) for the last-resort installable name when the host has not set `RecordingStudioPwa.configuration.name` or `RecordingStudio.configuration.app_name`
+
+### Changed
+- `RecordingStudioPwa::WebApp.name` resolves the default name through `I18n.t` (rendered English output unchanged)
+
+### Upgrade notes
+- No migration or host code change is required for English
+- To override or translate the default name, set `recording_studio.pwa.web_app.default_name` in the host's locale files
+- This gem does not depend on `recording_studio_internationalization`
+- Dummy example install-slice copy stays on the host (`test/dummy`); it is out of scope for this gem's locale file
+
 ## [0.2.5] - 2026-10-06
 
 Service worker extension point for other Recording Studio gems.
@@ -76,7 +93,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.3.0
 [0.2.5]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.5
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.0
