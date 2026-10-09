@@ -21,7 +21,7 @@ Other gems append to the host service worker through `RecordingStudioPwa.registe
 
 Authenticated dummy pages use the PWA wrap around Recording Studio's shared default layout (`RecordingStudio::UsesDefaultLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout and still receives the PWA head tags. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
 
-The dummy still wires optional host addons that the demo shell uses: Accessible (`v0.7.0`) on Workspace and Root Switchable (`v0.5.0`) for the workspace switcher. Those are dummy-app dependencies, not gemspec dependencies of `recording_studio_pwa`.
+The dummy still wires optional host addons that the demo shell uses: Accessible (`v0.13.0`) on Workspace and Root Switchable (`v0.5.0`) for the workspace switcher. Those are dummy-app dependencies, not gemspec dependencies of `recording_studio_pwa`.
 
 This gem does not own web push, notifications, offline-first sync, a second admin, or per-gem mobile redesigns.
 
@@ -228,7 +228,7 @@ Recording Studio's default layout still puts `data-theme` on `<body>`. This gem 
 | TailwindCSS     | 4 (dummy host only) |
 | RecordingStudio | 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.4.0`) |
 | FlatPack        | `~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.198` |
-| Accessible      | dummy GitHub tag `v0.7.0` (host demo only) |
+| Accessible      | dummy GitHub tag `v0.13.0` (host demo only) |
 | Root Switchable | dummy GitHub tag `v0.5.0` (host demo only) |
 | Devise          | latest  |
 
