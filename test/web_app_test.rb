@@ -54,9 +54,7 @@ class WebAppTest < Minitest::Test
     previous_fallbacks = I18n.respond_to?(:fallbacks) ? I18n.fallbacks : nil
 
     I18n.with_locale(:xx) do
-      if I18n.respond_to?(:fallbacks=)
-        I18n.fallbacks = I18n::Locale::Fallbacks.new({})
-      end
+      I18n.fallbacks = I18n::Locale::Fallbacks.new({}) if I18n.respond_to?(:fallbacks=)
 
       assert_equal "App", RecordingStudioPwa::WebApp.name
       assert_equal "App", RecordingStudioPwa.web_app_manifest.fetch("name")
