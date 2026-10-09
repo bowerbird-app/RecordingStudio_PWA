@@ -44,6 +44,30 @@ class WebAppTest < Minitest::Test
     end
   end
 
+  def test_manifest_name_stays_app_when_locale_has_no_translation
+    RecordingStudioPwa.configuration.name = nil
+    RecordingStudioPwa.configuration.short_name = nil
+    RecordingStudioPwa.configuration.description = nil
+    RecordingStudio.configuration.app_name = nil
+
+    I18n.available_locales += [:xx] unless I18n.available_locales.include?(:xx)
+    previous_fallbacks = I18n.respond_to?(:fallbacks) ? I18n.fallbacks : nil
+
+    I18n.with_locale(:xx) do
+      if I18n.respond_to?(:fallbacks=)
+        I18n.fallbacks = I18n::Locale::Fallbacks.new({})
+      end
+
+      assert_equal "App", RecordingStudioPwa::WebApp.name
+      assert_equal "App", RecordingStudioPwa.web_app_manifest.fetch("name")
+      assert_equal "App", RecordingStudioPwa.web_app_manifest.fetch("short_name")
+      assert_equal "App", RecordingStudioPwa.web_app_manifest.fetch("description")
+      refute_match(/translation missing/i, RecordingStudioPwa.web_app_manifest.fetch("name"))
+    end
+  ensure
+    I18n.fallbacks = previous_fallbacks if previous_fallbacks && I18n.respond_to?(:fallbacks=)
+  end
+
   def test_head_partial_binds_web_app_name_helper
     head = File.read(File.expand_path("../app/views/recording_studio/_default_layout_head.html.erb", __dir__))
 
