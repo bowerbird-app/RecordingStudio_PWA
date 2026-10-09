@@ -36,7 +36,13 @@ include RecordingStudioPwa::UsesPwaLayout
 
 `UsesPwaLayout` includes `UsesDefaultLayout` and sets `layout "recording_studio_pwa"`. That layout only adds head content, then renders Recording Studio's default layout.
 
-The installable name comes from the host. Set `RecordingStudioPwa.configuration.name` (and optionally `short_name`) on the host. If those are blank, the gem reads `RecordingStudio.configuration.app_name`, then `"App"`. It does not ship Addon Template or gem_template as a default name.
+The installable name comes from the host. Set `RecordingStudioPwa.configuration.name` (and optionally `short_name`) on the host. If those are blank, the gem reads `RecordingStudio.configuration.app_name`, then the English I18n key `recording_studio.pwa.web_app.default_name` (`"App"`). It does not ship Addon Template or gem_template as a default name.
+
+### Interface text
+
+Static copy owned by this gem ships as English Rails I18n under `recording_studio.pwa` in `config/locales/en.yml`. Rails engines load that path by default. Hosts can override keys without depending on `recording_studio_internationalization`.
+
+The gem's own views (layout wrap, default-layout head, manifest JSON, service worker) have almost no hard-coded interface strings: names, theme colors, and paths come from host configuration. The only extracted default is the last-resort web app name above. Dummy install-slice titles and accordion steps stay on the host app.
 
 ```erb
 <% content_for :head do %>

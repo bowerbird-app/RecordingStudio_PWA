@@ -23,7 +23,11 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav[aria-label='Page navigation']", count: 1
     assert_select "link[rel='manifest']", count: 1
+    assert_select "meta[name='application-name'][content='Recording Studio PWA']", count: 1
+    assert_select "meta[name='apple-mobile-web-app-title'][content='Recording Studio PWA']", count: 1
+    assert_includes response.body, "Recording Studio PWA"
     assert_includes response.body, 'document.documentElement.setAttribute("data-theme", "rounded")'
+    refute_includes response.body, "Addon Template"
   end
 
   test "install slice page is successful on the same layout" do
@@ -42,12 +46,42 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_select "#android-content", count: 1
     assert_select "#mac-content", count: 1
     assert_select "#pc-content", count: 1
+    assert_includes response.body, "iPhone"
+    assert_includes response.body, "Android"
+    assert_includes response.body, "Mac"
+    assert_includes response.body, "PC"
+    assert_includes response.body, "Open Share in Safari."
+    assert_includes response.body, "Open the Chrome menu."
     refute_includes response.body, "On a phone"
     refute_includes response.body, "On a computer"
     refute_includes response.body, "Addon Template"
     refute_includes response.body, "GemTemplate"
     assert_includes response.body, 'document.documentElement.setAttribute("data-theme", "rounded")'
     assert_includes response.body, "Add to Home Screen"
+  end
+
+  test "gem default web app name is literal english App when host name is blank" do
+    previous_name = RecordingStudioPwa.configuration.name
+    previous_short = RecordingStudioPwa.configuration.short_name
+    previous_description = RecordingStudioPwa.configuration.description
+    previous_app_name = RecordingStudio.configuration.app_name
+    RecordingStudioPwa.configuration.name = nil
+    RecordingStudioPwa.configuration.short_name = nil
+    RecordingStudioPwa.configuration.description = nil
+    RecordingStudio.configuration.app_name = nil if RecordingStudio.configuration.respond_to?(:app_name=)
+
+    get root_path
+
+    assert_response :success
+    assert_select "meta[name='application-name'][content='App']", count: 1
+    assert_select "meta[name='apple-mobile-web-app-title'][content='App']", count: 1
+    assert_includes response.body, 'content="App"'
+    assert_equal "App", RecordingStudioPwa.web_app_name
+  ensure
+    RecordingStudioPwa.configuration.name = previous_name
+    RecordingStudioPwa.configuration.short_name = previous_short
+    RecordingStudioPwa.configuration.description = previous_description
+    RecordingStudio.configuration.app_name = previous_app_name if RecordingStudio.configuration.respond_to?(:app_name=)
   end
 
   test "install slice is enabled on workspace only" do
