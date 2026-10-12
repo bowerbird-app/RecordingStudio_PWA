@@ -40,9 +40,9 @@ The installable name comes from the host. Set `RecordingStudioPwa.configuration.
 
 ### Interface text
 
-Static copy owned by this gem ships as English Rails I18n under `recording_studio.pwa` in `config/locales/en.yml`. Rails engines load that path by default. Hosts can override keys without depending on `recording_studio_internationalization`.
+Static copy owned by this gem ships as English Rails I18n under `recording_studio.pwa` in `config/locales/en.yml`. Rails engines load that path by default — there is no explicit `I18n.load_path` initializer in `lib/`. Hosts override keys by defining the same nested keys in their own `config/locales`, without depending on `recording_studio_internationalization`.
 
-The gem's own views (layout wrap, default-layout head, manifest JSON, service worker) have almost no hard-coded interface strings: names, theme colors, and paths come from host configuration. The only extracted default is the last-resort web app name above. Dummy install-slice titles and accordion steps stay on the host app.
+The gem's own views (layout wrap, default-layout head, manifest JSON, service worker) have almost no hard-coded interface strings: names, theme colors, and paths come from host configuration. The only extracted default is the last-resort web app name above (`RecordingStudioPwa::WebApp.name` resolves it through `I18n.t(..., default: "App")`). Dummy install-slice titles and accordion steps stay on the host app.
 
 ```erb
 <% content_for :head do %>

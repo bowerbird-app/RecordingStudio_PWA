@@ -50,8 +50,11 @@ class WebAppTest < Minitest::Test
     RecordingStudioPwa.configuration.description = nil
     RecordingStudio.configuration.app_name = nil
 
-    I18n.available_locales += [:xx] unless I18n.available_locales.include?(:xx)
+    previous_available_locales = Array(I18n.available_locales).dup
     previous_fallbacks = I18n.respond_to?(:fallbacks) ? I18n.fallbacks : nil
+    previous_translations = i18n_backend_translations_snapshot
+
+    I18n.available_locales = previous_available_locales | %i[xx]
 
     I18n.with_locale(:xx) do
       I18n.fallbacks = I18n::Locale::Fallbacks.new({}) if I18n.respond_to?(:fallbacks=)
@@ -63,7 +66,9 @@ class WebAppTest < Minitest::Test
       refute_match(/translation missing/i, RecordingStudioPwa.web_app_manifest.fetch("name"))
     end
   ensure
-    I18n.fallbacks = previous_fallbacks if previous_fallbacks && I18n.respond_to?(:fallbacks=)
+    I18n.available_locales = previous_available_locales if previous_available_locales
+    I18n.fallbacks = previous_fallbacks if !previous_fallbacks.nil? && I18n.respond_to?(:fallbacks=)
+    restore_i18n_backend_translations(previous_translations) if previous_translations
   end
 
   def test_head_partial_binds_web_app_name_helper
@@ -72,5 +77,38 @@ class WebAppTest < Minitest::Test
     assert_includes head, 'content="<%= RecordingStudioPwa.web_app_name %>"'
     assert_includes head, "apple-mobile-web-app-title"
     assert_includes head, "application-name"
+  end
+
+  private
+
+  def i18n_backend_translations_snapshot
+    backend = I18n.backend
+    backend.send(:init_translations) unless backend.initialized?
+    translations =
+      if backend.respond_to?(:translations)
+        backend.translations
+      else
+        backend.instance_variable_get(:@translations)
+      end
+    return unless translations
+
+    deep_plain_copy(translations)
+  end
+
+  def restore_i18n_backend_translations(snapshot)
+    backend = I18n.backend
+    backend.instance_variable_set(:@translations, snapshot)
+    backend.instance_variable_set(:@initialized, true) if backend.instance_variable_defined?(:@initialized)
+  end
+
+  def deep_plain_copy(value)
+    case value
+    when Hash
+      value.transform_values { |nested| deep_plain_copy(nested) }
+    when Array
+      value.map { |nested| deep_plain_copy(nested) }
+    else
+      value
+    end
   end
 end

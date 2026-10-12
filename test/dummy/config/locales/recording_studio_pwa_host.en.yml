@@ -1,0 +1,8 @@
+# Host override for a rarely shown PWA chrome key (last-resort web app name).
+# Kept out of the default happy-path UI: the dummy sets configuration.name, so
+# other dummy tests still see "Recording Studio PWA" in meta tags and the title.
+en:
+  recording_studio:
+    pwa:
+      web_app:
+        default_name: "HOST App"

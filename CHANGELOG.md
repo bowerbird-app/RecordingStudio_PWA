@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-12
+
+i18n WAVE 2: host-overridable English for the gem's remaining non-view chrome, plus wave-1 leftover fixes. Translation-only — English output stays byte-identical to main when hosts leave defaults alone.
+
+### Added
+- Host English override coverage: always-loaded rarely-shown key under `test/dummy/config/locales/recording_studio_pwa_host.en.yml` (`recording_studio.pwa.web_app.default_name`), plus a test-only fixture at `test/dummy/test/locales/pwa_host_override.en.yml` with an integration test that appends that file last, asserts the host string wins on a real page when the configured name is blank, then restores load path and I18n backend state (no bare `I18n.reload!`)
+- Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`. Unit tests seed gem English via `I18n.backend.store_translations` instead of appending the locale file to the load path
+- Render-level install-page asserts for full accordion titles (`iPhone` / `Android` / `Mac` / `PC`) and each step string (template-grep test kept)
+
+### Changed
+- Version `0.3.1` → `0.4.0`
+- `test_manifest_name_stays_app_when_locale_has_no_translation` snapshots and restores `I18n.available_locales` and backend translations so `:xx` does not leak across tests
+
+### Upgrade notes
+- No migration or host code change is required for English
+- Hosts override by defining the same nested keys in their own `config/locales` (for example `recording_studio.pwa.web_app.default_name`)
+- There is still no dependency on `recording_studio_internationalization`
+- Dummy install-slice titles and accordion steps stay on the host (`test/dummy`); they remain out of scope for this gem's locale file
+
 ## [0.3.1] - 2026-10-09
 
 ### Fixed
@@ -101,7 +120,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.4.0
 [0.3.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.3.1
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.3.0
 [0.2.5]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.5

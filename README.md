@@ -96,6 +96,10 @@ Sign in with `admin@admin.com` / `Password`. Confirm `/` still shows Template De
 
 Installing the gem does not enable slices. PWA chrome does not need extra tables in v1.
 
+### Interface text
+
+English defaults live under `recording_studio.pwa` in this gem's `config/locales/en.yml`. Rails engines load that path automatically; hosts override the same nested keys in their own `config/locales`. The last-resort installable name is `recording_studio.pwa.web_app.default_name` (`"App"`), resolved with an English `default:` so a missing host locale never shows "translation missing". Dummy install-slice copy stays on the host. See [docs/pwa.md](docs/pwa.md).
+
 ### Service worker extensions
 
 This gem owns `/service-worker`. Other gems (and the host) can append JavaScript by registering a JS partial. The push gem already calls this hook:
