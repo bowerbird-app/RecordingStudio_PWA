@@ -223,7 +223,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
   def deep_plain_copy(value)
     case value
     when Hash
-      value.each_with_object({}) { |(key, nested), copy| copy[key] = deep_plain_copy(nested) }
+      value.transform_values { |nested| deep_plain_copy(nested) }
     when Array
       value.map { |nested| deep_plain_copy(nested) }
     else
