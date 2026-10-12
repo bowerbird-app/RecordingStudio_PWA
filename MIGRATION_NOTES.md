@@ -6,7 +6,7 @@
 - Rails 8.1 or newer
 - Recording Studio 4.x (`~> 4.2` in the gemspec; dummy GitHub tag `v4.5.0`)
 - FlatPack `~> 0.1.133` in the gemspec; dummy GitHub tag `v0.1.133`
-- Accessible dummy tag `v0.13.0`, Root Switchable dummy tag `v0.8.0`, and Metrics dummy tag `v0.2.0` (dummy host only; Metrics is required by Root Switchable)
+- Accessible dummy tag `v0.15.0`, Root Switchable dummy tag `v0.8.0`, and Metrics dummy tag `v0.2.0` (dummy host only; Metrics is required by Root Switchable)
 - Public RubyGems and GitHub access for dependency installation
 - Hosts that already ran the 0.1.0 install should add Rails PWA routes and drop any dummy-only `_default_layout_head` workaround. See the 0.2.0 upgrade notes in `CHANGELOG.md`.
 - From 0.3.0 the last-resort installable name (`"App"`) is an English I18n key under `recording_studio.pwa.web_app.default_name`. English hosts need no change; see the 0.3.0 upgrade notes in `CHANGELOG.md`.
