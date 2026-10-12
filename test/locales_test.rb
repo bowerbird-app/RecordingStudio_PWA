@@ -15,9 +15,27 @@ class LocalesTest < Minitest::Test
   end
 
   def test_rails_i18n_load_path_includes_the_gem_english_locale_file
-    locale_path = File.join(engine_locales_dir, "en.yml")
+    # Unit tests seed translations via store_translations (no load_path append).
+    # Put only en.yml on the path and assert that file actually drives lookups.
+    with_gem_english_locale_only do
+      locale_path = File.expand_path(File.join(engine_locales_dir, "en.yml"))
+      assert_equal([locale_path], I18n.load_path.map { |path| File.expand_path(path) })
+      assert_equal "App", I18n.t("recording_studio.pwa.web_app.default_name")
+    end
+  end
 
-    assert_includes I18n.load_path.map { |path| File.expand_path(path) }, File.expand_path(locale_path)
+  def test_lib_sources_do_not_append_i18n_load_path
+    lib_dir = File.expand_path("../lib", __dir__)
+    ruby_files = Dir[File.join(lib_dir, "**", "*.rb")]
+
+    refute_empty ruby_files, "expected lib/**/*.rb files to scan"
+
+    ruby_files.each do |path|
+      source = File.read(path)
+
+      refute_includes source, "i18n.load_path", "#{path} must not touch i18n.load_path"
+      refute_includes source, "I18n.load_path", "#{path} must not touch I18n.load_path"
+    end
   end
 
   def test_english_web_app_keys_resolve_without_missing_translations
@@ -41,6 +59,12 @@ class LocalesTest < Minitest::Test
     assert_equal WEB_APP_KEYS, tree.transform_keys(&:to_s)
   end
 
+  def test_gemspec_does_not_depend_on_internationalization
+    gemspec = File.read(File.expand_path("../recording_studio_pwa.gemspec", __dir__))
+
+    refute_includes gemspec, "recording_studio_internationalization"
+  end
+
   private
 
   def engine_locales_dir
@@ -49,5 +73,47 @@ class LocalesTest < Minitest::Test
 
   def locale_tree(path, locale)
     YAML.safe_load_file(path, aliases: true).fetch(locale)
+  end
+
+  def with_gem_english_locale_only
+    previous_load_path = I18n.load_path.dup
+    previous_translations = i18n_backend_translations_snapshot
+    I18n.load_path = [File.join(engine_locales_dir, "en.yml")]
+    I18n.backend.load_translations
+    yield
+  ensure
+    I18n.load_path.replace(previous_load_path)
+    restore_i18n_backend_translations(previous_translations) if previous_translations
+  end
+
+  def i18n_backend_translations_snapshot
+    backend = I18n.backend
+    backend.send(:init_translations) unless backend.initialized?
+    translations =
+      if backend.respond_to?(:translations)
+        backend.translations
+      else
+        backend.instance_variable_get(:@translations)
+      end
+    return unless translations
+
+    deep_plain_copy(translations)
+  end
+
+  def restore_i18n_backend_translations(snapshot)
+    backend = I18n.backend
+    backend.instance_variable_set(:@translations, snapshot)
+    backend.instance_variable_set(:@initialized, true) if backend.instance_variable_defined?(:@initialized)
+  end
+
+  def deep_plain_copy(value)
+    case value
+    when Hash
+      value.each_with_object({}) { |(key, nested), copy| copy[key] = deep_plain_copy(nested) }
+    when Array
+      value.map { |nested| deep_plain_copy(nested) }
+    else
+      value
+    end
   end
 end

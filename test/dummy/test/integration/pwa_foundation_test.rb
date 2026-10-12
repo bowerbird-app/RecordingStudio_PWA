@@ -46,12 +46,21 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_select "#android-content", count: 1
     assert_select "#mac-content", count: 1
     assert_select "#pc-content", count: 1
-    assert_includes response.body, "iPhone"
-    assert_includes response.body, "Android"
-    assert_includes response.body, "Mac"
-    assert_includes response.body, "PC"
+    # Full accordion titles (stricter than substring Mac/PC/iPhone).
+    assert_select "[aria-controls='iphone-content'] span.font-medium", text: "iPhone", count: 1
+    assert_select "[aria-controls='android-content'] span.font-medium", text: "Android", count: 1
+    assert_select "[aria-controls='mac-content'] span.font-medium", text: "Mac", count: 1
+    assert_select "[aria-controls='pc-content'] span.font-medium", text: "PC", count: 1
     assert_includes response.body, "Open Share in Safari."
+    assert_includes response.body, "Choose Add to Home Screen."
+    assert_includes response.body, "Tap Add. The icon appears on your home screen."
     assert_includes response.body, "Open the Chrome menu."
+    assert_includes response.body, "Choose Install app or Add to Home Screen."
+    assert_includes response.body, "Confirm. The icon appears on your home screen."
+    assert_includes response.body, "Look for the install icon in the toolbar."
+    assert_includes response.body, "Look for the install icon in the address bar."
+    assert_includes response.body, "Choose Install."
+    assert_includes response.body, "The app opens in its own window the next time you launch it."
     refute_includes response.body, "On a phone"
     refute_includes response.body, "On a computer"
     refute_includes response.body, "Addon Template"
@@ -61,10 +70,19 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
   end
 
   test "gem default web app name is literal english App when host name is blank" do
+    # Isolate from the always-loaded dummy host override so this test still
+    # asserts gem English "App" (never rewrite it to expect HOST strings).
+    previous_load_path = I18n.load_path.dup
+    previous_translations = i18n_backend_translations_snapshot
     previous_name = RecordingStudioPwa.configuration.name
     previous_short = RecordingStudioPwa.configuration.short_name
     previous_description = RecordingStudioPwa.configuration.description
     previous_app_name = RecordingStudio.configuration.app_name
+
+    host_locale = Rails.root.join("config/locales/recording_studio_pwa_host.en.yml").to_s
+    I18n.load_path.reject! { |path| File.expand_path(path) == File.expand_path(host_locale) }
+    I18n.backend.load_translations
+
     RecordingStudioPwa.configuration.name = nil
     RecordingStudioPwa.configuration.short_name = nil
     RecordingStudioPwa.configuration.description = nil
@@ -82,6 +100,8 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     RecordingStudioPwa.configuration.short_name = previous_short
     RecordingStudioPwa.configuration.description = previous_description
     RecordingStudio.configuration.app_name = previous_app_name if RecordingStudio.configuration.respond_to?(:app_name=)
+    I18n.load_path.replace(previous_load_path)
+    restore_i18n_backend_translations(previous_translations) if previous_translations
   end
 
   test "install slice is enabled on workspace only" do
@@ -176,5 +196,38 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "window.RecordingStudioPwa.serviceWorkerReady"
     assert_includes response.body, "navigator.serviceWorker.ready"
     assert_includes response.body, 'if ("serviceWorker" in navigator)'
+  end
+
+  private
+
+  def i18n_backend_translations_snapshot
+    backend = I18n.backend
+    backend.send(:init_translations) unless backend.initialized?
+    translations =
+      if backend.respond_to?(:translations)
+        backend.translations
+      else
+        backend.instance_variable_get(:@translations)
+      end
+    return unless translations
+
+    deep_plain_copy(translations)
+  end
+
+  def restore_i18n_backend_translations(snapshot)
+    backend = I18n.backend
+    backend.instance_variable_set(:@translations, snapshot)
+    backend.instance_variable_set(:@initialized, true) if backend.instance_variable_defined?(:@initialized)
+  end
+
+  def deep_plain_copy(value)
+    case value
+    when Hash
+      value.each_with_object({}) { |(key, nested), copy| copy[key] = deep_plain_copy(nested) }
+    when Array
+      value.map { |nested| deep_plain_copy(nested) }
+    else
+      value
+    end
   end
 end
