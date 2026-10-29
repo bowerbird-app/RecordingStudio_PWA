@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `UsesPwaLayout` calls `recording_studio_layout` instead of `RecordingStudio::UsesDefaultLayout`
 - Dummy pages set `content_for :title`, `flat_pack_page_nav`, and `register_page_nav`; cards no longer pass `style:`
 - Test bundle pins `minitest` `< 6` so existing `Object#stub` tests keep working (Minitest 6 extracted mock/stub)
+- Dummy lockfile uses `net-ssh` 7.3.8 (was 7.3.0) so Bundler Audit is clean
 
 ### Upgrade notes
 - Bump to `0.4.1`. No migration
