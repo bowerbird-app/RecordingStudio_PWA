@@ -20,11 +20,12 @@ class PwaLayoutTest < Minitest::Test
     refute_includes gem_views, "og:image"
   end
 
-  def test_uses_pwa_layout_includes_default_layout_and_sets_wrap
+  def test_uses_pwa_layout_declares_recording_studio_layout
     source = File.read(File.expand_path("../lib/recording_studio_pwa/uses_pwa_layout.rb", __dir__))
 
-    assert_includes source, "include RecordingStudio::UsesDefaultLayout"
-    assert_includes source, 'layout "recording_studio_pwa"'
+    assert_includes source, "recording_studio_layout"
+    assert_includes source, "RecordingStudioPwa.configuration.layout"
+    refute_includes source, "UsesDefaultLayout"
   end
 
   def test_gem_head_partial_owns_rounded_theme_and_manifest_link
