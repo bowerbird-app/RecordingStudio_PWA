@@ -7,9 +7,7 @@ module RecordingStudioPwa
     extend ActiveSupport::Concern
 
     included do
-      include RecordingStudio::UsesDefaultLayout
-
-      layout "recording_studio_pwa"
+      recording_studio_layout { RecordingStudioPwa.configuration.layout }
     end
   end
 end

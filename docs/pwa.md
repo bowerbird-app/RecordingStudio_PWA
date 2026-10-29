@@ -30,11 +30,10 @@ Do not copy `recording_studio/default_layout`, PageNav, flash, Open Graph tags, 
 Use one of these:
 
 ```ruby
-include RecordingStudio::UsesDefaultLayout
 include RecordingStudioPwa::UsesPwaLayout
 ```
 
-`UsesPwaLayout` includes `UsesDefaultLayout` and sets `layout "recording_studio_pwa"`. That layout only adds head content, then renders Recording Studio's default layout.
+`UsesPwaLayout` calls `recording_studio_layout { RecordingStudioPwa.configuration.layout }`. That setting defaults to `"recording_studio_pwa"`. That layout only adds head content, then renders Recording Studio's default layout.
 
 The installable name comes from the host. Set `RecordingStudioPwa.configuration.name` (and optionally `short_name`) on the host. If those are blank, the gem reads `RecordingStudio.configuration.app_name`, then the English I18n key `recording_studio.pwa.web_app.default_name` (`"App"`). It does not ship Addon Template or gem_template as a default name.
 

@@ -16,13 +16,14 @@ module RecordingStudioPwa
       scope: "/",
       display: "standalone",
       icon_path: "/icon.png",
-      public_page_paths: []
+      public_page_paths: [],
+      layout: "recording_studio_pwa"
     }.freeze
 
     attr_accessor :api_key, :enable_feature_x, :timeout, :name, :short_name, :description,
                   :theme_color, :background_color, :start_url, :scope, :display, :icon_path,
                   :public_page_paths
-    attr_reader :hooks
+    attr_reader :hooks, :layout
 
     def initialize
       @api_key = ENV.fetch("RECORDING_STUDIO_PWA_API_KEY", nil)
@@ -37,6 +38,10 @@ module RecordingStudioPwa
         api_key: api_key,
         hooks_registered: hooks.instance_variable_get(:@registry).transform_values(&:size)
       )
+    end
+
+    def layout=(value)
+      @layout = RecordingStudio::Layout.accept(value)
     end
 
     def merge!(hash)

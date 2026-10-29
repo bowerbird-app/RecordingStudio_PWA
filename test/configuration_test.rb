@@ -65,6 +65,10 @@ class ConfigurationTest < Minitest::Test
     assert_equal 1, result.fetch(:hooks_registered).fetch(:after_service)
   end
 
+  def test_layout_defaults_to_pwa_wrap
+    assert_equal "recording_studio_pwa", @configuration.layout
+  end
+
   def test_configure_without_block_is_safe
     RecordingStudioPwa.configure
 
