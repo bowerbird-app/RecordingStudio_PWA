@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.4.1] - 2026-10-29
+## [0.5.0] - 2026-10-29
 
 ### Changed
-- Gemspec allows Recording Studio `>= 4.2, < 7` so hosts can run core 6.1+
+- Gemspec requires Recording Studio `>= 6.1.0, < 7`
+- Public `config.layout` option (default `"recording_studio_pwa"`)
 - Dummy and test pins Recording Studio `v6.3.0` and FlatPack `v0.1.329` (`~> 0.1.133` already allows that FlatPack)
 - `UsesPwaLayout` calls `recording_studio_layout` instead of `RecordingStudio::UsesDefaultLayout`
 - Dummy pages set `content_for :title`, `flat_pack_page_nav`, and `register_page_nav`; cards no longer pass `style:`
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dummy lockfile uses `net-ssh` 7.3.8 (was 7.3.0) so Bundler Audit is clean
 
 ### Upgrade notes
-- Bump to `0.4.1`. No migration
+- Bump to `0.5.0`. No migration. Hosts must be on Recording Studio `>= 6.1.0`
 - Hosts on core 6.1+ should replace `include RecordingStudio::UsesDefaultLayout` with `recording_studio_layout` or `include RecordingStudioPwa::UsesPwaLayout`
 - Views should set `content_for :title` (and `:subtitle`) instead of `recording_studio_page_nav`. Use `register_page_nav` for page actions. `recording_studio_page_nav_right` is available again on core 6.1+
 - Pin dummy sibling addons that already allow core 6 (Accessible `v0.24.0`, Root Switchable `v0.11.0`, Cache `v0.6.0`, Metrics `v0.7.0`, Trashable `v0.12.0`)
@@ -136,7 +137,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.4.0
 [0.3.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.3.1
