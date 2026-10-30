@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "active_record"
+require "action_controller"
 
 class EngineTest < Minitest::Test
   MISSING_YAML_CONFIG_MESSAGE = "Could not load configuration. No such file - config/recording_studio_pwa.yml"
@@ -187,7 +189,6 @@ class EngineTest < Minitest::Test
       find_initializer("recording_studio_pwa.apply_model_extensions").block.call
     end
 
-    ensure_active_record_base!
     ActiveRecord::Base.stub(:descendants, [abstract_model, concrete_model]) do
       RecordingStudioPwa::Engine.stub(:apply_model_extensions, ->(model) { applied << model }) do
         to_prepare_blocks.first.call
@@ -212,7 +213,6 @@ class EngineTest < Minitest::Test
       find_initializer("recording_studio_pwa.apply_controller_extensions").block.call
     end
 
-    ensure_action_controller_base!
     ActionController::Base.stub(:descendants, [first_controller, second_controller]) do
       RecordingStudioPwa::Engine.stub(:apply_controller_extensions, ->(controller) { applied << controller }) do
         to_prepare_blocks.first.call
@@ -273,71 +273,74 @@ class EngineTest < Minitest::Test
   end
 
   def test_apply_controller_extensions_matches_plain_and_namespaced_keys_once
-    controller_class = Class.new do
+    apply_count = 0
+    namespaced_class = Class.new do
       def self.name
         "Admin::ReportsController"
       end
     end
 
-    extension = proc do
-      def generated_method
-        :generated
-      end
-    end
+    extension = proc { apply_count += 1 }
 
     RecordingStudioPwa.configuration.hooks.extend_controller(:"Admin::ReportsController", &extension)
     RecordingStudioPwa.configuration.hooks.extend_controller(:ReportsController, &extension)
 
-    RecordingStudioPwa::Engine.apply_controller_extensions(controller_class)
+    RecordingStudioPwa::Engine.apply_controller_extensions(namespaced_class)
+    RecordingStudioPwa::Engine.apply_controller_extensions(namespaced_class)
 
-    assert_equal :generated, controller_class.new.generated_method
+    assert_equal 1, apply_count
+    applied = namespaced_class.instance_variable_get(:@recording_studio_pwa_applied_extensions)
+    assert applied.compare_by_identity?
   end
 
   def test_apply_controller_extensions_plain_name_is_not_duplicated
-    controller_class = Class.new do
+    apply_count = 0
+    plain_class = Class.new do
       def self.name
         "ReportsController"
       end
     end
 
-    RecordingStudioPwa.configuration.hooks.extend_controller(:ReportsController) do
-      def generated_method
-        :generated
+    extension = proc { apply_count += 1 }
+
+    RecordingStudioPwa.configuration.hooks.extend_controller(:ReportsController, &extension)
+    RecordingStudioPwa.configuration.hooks.extend_controller(:ReportsController, &extension)
+
+    RecordingStudioPwa::Engine.apply_controller_extensions(plain_class)
+    RecordingStudioPwa::Engine.apply_controller_extensions(plain_class)
+
+    assert_equal 1, apply_count
+    applied = plain_class.instance_variable_get(:@recording_studio_pwa_applied_extensions)
+    assert applied.compare_by_identity?
+  end
+
+  def test_apply_controller_extensions_names_match_extension_keys
+    namespaced_hits = 0
+    plain_hits = 0
+    namespaced_class = Class.new do
+      def self.name
+        "Admin::ReportsController"
+      end
+    end
+    plain_class = Class.new do
+      def self.name
+        "ReportsController"
       end
     end
 
-    RecordingStudioPwa::Engine.apply_controller_extensions(controller_class)
+    RecordingStudioPwa.configuration.hooks.extend_controller(:"Admin::ReportsController") { namespaced_hits += 1 }
+    RecordingStudioPwa.configuration.hooks.extend_controller(:ReportsController) { plain_hits += 1 }
 
-    assert_equal :generated, controller_class.new.generated_method
-  end
+    RecordingStudioPwa::Engine.apply_controller_extensions(namespaced_class)
+    RecordingStudioPwa::Engine.apply_controller_extensions(plain_class)
 
-  def test_home_controller_exposes_gem_identity
-    source = File.read(File.expand_path("../app/controllers/recording_studio_pwa/home_controller.rb", __dir__))
-
-    refute_includes source, "head :ok"
-    assert_includes source, 'name: "recording_studio_pwa"'
-    assert_includes source, "RecordingStudioPwa::VERSION"
+    assert_equal 1, namespaced_hits
+    assert_equal 2, plain_hits
   end
 
   private
 
   def find_initializer(name)
     RecordingStudioPwa::Engine.initializers.find { |initializer| initializer.name == name }
-  end
-
-  def ensure_active_record_base!
-    Object.const_set(:ActiveRecord, Module.new) unless defined?(::ActiveRecord)
-    ActiveRecord.const_set(:Base, Class.new) unless defined?(::ActiveRecord::Base)
-    return if ActiveRecord::Base.respond_to?(:descendants)
-
-    ActiveRecord::Base.define_singleton_method(:descendants) { [] }
-  end
-
-  def ensure_action_controller_base!
-    Object.const_set(:ActionController, Module.new) unless defined?(::ActionController)
-    ActionController.const_set(:Base, Class.new) unless defined?(::ActionController::Base)
-    return if ActionController::Base.respond_to?(:descendants)
-
-    ActionController::Base.define_singleton_method(:descendants) { [] }
   end
 end
