@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.1] - 2026-10-30
+## [0.6.0] - 2026-10-30
 
 ### Changed
 - YAML config load rescues the missing-file `RuntimeError` only; invalid YAML now raises at boot instead of being swallowed, and `config.x` conversion errors raise
@@ -18,8 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Template `api_key` / `enable_feature_x` / `timeout` settings are removed from configuration and the install generator
 
 ### Upgrade notes
-- Bump to `0.5.1`. No migration
-- Remove `api_key`, `enable_feature_x`, and `timeout` from host YAML, `config.x.recording_studio_pwa`, and `RecordingStudioPwa.configure` blocks. Those keys are ignored after this release because they have no setters
+- Bump to `0.6.0`. No migration
+- Remove `api_key`, `enable_feature_x`, and `timeout` from host YAML, `config.x.recording_studio_pwa`, and `RecordingStudioPwa.configure` blocks. Hosts that still set those options in YAML get the keys silently ignored; they have no setters after this release
 - Dummy Root Switchable only lists workspace roots the current actor can open. Grant Accessible roles on those roots (dummy seeds bootstrap the admin user on Studio Workspace and Client Workspace)
 
 ## [0.5.0] - 2026-10-29
@@ -192,8 +192,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.1...HEAD
-[0.5.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...v0.5.1
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.4.0
