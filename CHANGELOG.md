@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Configuration#to_h` reports hook counts through `RecordingStudio::Hooks#registered_counts`
 - Dummy Root Switchable uses Accessible grants instead of an always-true access check
 - Dummy database defaults are `recording_studio_pwa_development` / `recording_studio_pwa_test`
-- Credential decrypt tests fail when the shared dummy master key is missing instead of skipping
+- Credential decrypt tests still skip when the shared dummy master key is missing (CI has no `RAILS_MASTER_KEY`)
 - Template `api_key` / `enable_feature_x` / `timeout` settings are removed from configuration and the install generator
 - Engine `HomeController#index` returns gem name and version JSON instead of `head :ok`
 
