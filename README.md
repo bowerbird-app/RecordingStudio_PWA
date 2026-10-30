@@ -60,7 +60,7 @@ The login form is prefilled with these credentials for fast access.
 - `/service-worker` — host service worker
 - `/users/sign_in` — Devise sign-in page
 - `/recording_studio` — redirect to `/` while the mounted Recording Studio engine remains data/API-focused
-- `/docs/install`, `/docs/config`, `/docs/recordable_types`, `/docs/recordings_tree`, `/docs/gem_views`, `/docs/methods` — dummy-only starter pages
+- `/docs/install`, `/docs/config`, `/docs/recordable_types`, `/docs/recordings_tree`, `/docs/gem_views`, `/docs/methods` — dummy-only starter pages. The recordings tree includes Workspace, Folder, Page, and Accessible grant rows.
 
 The home page in `test/dummy/app/views/home/index.html.erb` stays a minimal Template Demo. Keep deeper explanations on the dummy docs pages and in [docs/pwa.md](docs/pwa.md), not in a wall of home-page copy.
 
@@ -252,4 +252,4 @@ PostgreSQL on each boot. Rebuild with Draft off to load a new pack. See
 
 ## Documentation
 
-The original gem template documentation is preserved in `docs/gem_template/` as architectural reference material. Use it as background on the engine conventions. This README, [docs/pwa.md](docs/pwa.md), and the dummy app are the source of truth for this addon. Cloud Agent boot is in [docs/cursor-skills.md](docs/cursor-skills.md).
+Host setup lives in this README, [docs/pwa.md](docs/pwa.md), and the dummy app. Cloud Agent boot is in [docs/cursor-skills.md](docs/cursor-skills.md). Leftover engine-template notes under `docs/gem_template/` are not host documentation for this addon.

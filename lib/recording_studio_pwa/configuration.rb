@@ -5,8 +5,6 @@ module RecordingStudioPwa
     ROUNDED_THEME_COLOR = "#333333"
     ROUNDED_BACKGROUND_COLOR = "#f8f9fa"
     DEFAULTS = {
-      enable_feature_x: false,
-      timeout: 5,
       name: nil,
       short_name: nil,
       description: nil,
@@ -20,13 +18,12 @@ module RecordingStudioPwa
       layout: "recording_studio_pwa"
     }.freeze
 
-    attr_accessor :api_key, :enable_feature_x, :timeout, :name, :short_name, :description,
+    attr_accessor :name, :short_name, :description,
                   :theme_color, :background_color, :start_url, :scope, :display, :icon_path,
                   :public_page_paths
     attr_reader :hooks, :layout
 
     def initialize
-      @api_key = ENV.fetch("RECORDING_STUDIO_PWA_API_KEY", nil)
       @hooks = RecordingStudio::Hooks.new
       DEFAULTS.each do |key, value|
         instance_variable_set(:"@#{key}", value.is_a?(Array) || value.is_a?(Hash) ? value.dup : value)
@@ -35,8 +32,7 @@ module RecordingStudioPwa
 
     def to_h
       DEFAULTS.keys.index_with { |key| public_send(key) }.merge(
-        api_key: api_key,
-        hooks_registered: hooks.instance_variable_get(:@registry).transform_values(&:size)
+        hooks_registered: hooks.registered_counts
       )
     end
 

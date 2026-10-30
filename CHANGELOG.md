@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-30
+
+### Changed
+- YAML config load rescues the missing-file `RuntimeError` only; invalid YAML now raises at boot instead of being swallowed, and `config.x` conversion errors raise
+- `Configuration#to_h` reports hook counts through `RecordingStudio::Hooks#registered_counts`
+- Dummy Root Switchable uses Accessible grants instead of an always-true access check
+- Dummy database defaults are `recording_studio_pwa_development` / `recording_studio_pwa_test`
+- Credential decrypt tests still skip when the shared dummy master key is missing (CI has no `RAILS_MASTER_KEY`)
+- Template `api_key` / `enable_feature_x` / `timeout` settings are removed from configuration and the install generator
+
+### Upgrade notes
+- Bump to `0.6.0`. No migration
+- Remove `api_key`, `enable_feature_x`, and `timeout` from host YAML, `config.x.recording_studio_pwa`, and `RecordingStudioPwa.configure` blocks. Hosts that still set those options in YAML get the keys silently ignored; they have no setters after this release
+- Dummy Root Switchable only lists workspace roots the current actor can open. Grant Accessible roles on those roots (dummy seeds bootstrap the admin user on Studio Workspace and Client Workspace)
+
 ## [0.5.0] - 2026-10-29
 
 ### Changed
@@ -23,6 +38,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hosts on core 6.1+ should replace `include RecordingStudio::UsesDefaultLayout` with `recording_studio_layout` or `include RecordingStudioPwa::UsesPwaLayout`
 - Views should set `content_for :title` (and `:subtitle`) instead of `recording_studio_page_nav`. Use `register_page_nav` for page actions. `recording_studio_page_nav_right` is available again on core 6.1+
 - Pin dummy sibling addons that already allow core 6 (Accessible `v0.24.0`, Root Switchable `v0.11.0`, Cache `v0.6.0`, Metrics `v0.7.0`, Trashable `v0.12.0`)
+
+## [0.4.1] - 2026-10-14
+
+### Changed
+- Dummy and test pins Recording Studio `v4.6.0` (English fallback / `RecordingStudio.t`). Gemspec `~> 4.2` already allowed 4.6. English output unchanged
+
+### Upgrade notes
+- No migration or host code change is required
 
 ## [0.4.0] - 2026-10-12
 
@@ -68,6 +91,14 @@ English Rails I18n for the gem's own PWA chrome defaults.
 - This gem does not depend on `recording_studio_internationalization`
 - Dummy example install-slice copy stays on the host (`test/dummy`); it is out of scope for this gem's locale file
 
+## [0.2.6] - 2026-10-08
+
+### Changed
+- Dummy and test pins Recording Studio `v4.3.0`. Gemspec `~> 4.2` unchanged
+
+### Upgrade notes
+- No migration or host code change is required
+
 ## [0.2.5] - 2026-10-06
 
 Service worker extension point for other Recording Studio gems.
@@ -79,6 +110,30 @@ Service worker extension point for other Recording Studio gems.
 ### Upgrade notes
 - Hosts that copied this gem's service worker for push can drop that copy. Register a JS partial instead (for example `recording_studio_notifications_push/service_worker_push`)
 - No schema or slice-API changes
+
+## [0.2.4] - 2026-10-05
+
+### Changed
+- Dummy credentials.yml.enc uses the shared Recording Studio development master key. Set `RAILS_MASTER_KEY` or `test/dummy/config/master.key`. Keep `master.key` gitignored
+
+### Upgrade notes
+- Do not mint a per-repo dummy master key
+
+## [0.2.3] - 2026-10-05
+
+### Changed
+- Dummy and test pins Recording Studio `v4.2.2`. Dummy Brakeman `8.1.0` so Security `--exit-on-warn` stays green
+
+### Upgrade notes
+- No migration or host code change is required
+
+## [0.2.2] - 2026-10-02
+
+### Changed
+- Dummy and test pins FlatPack `v0.1.198`. Gemspec `~> 0.1.133` already allowed that version
+
+### Upgrade notes
+- No migration or host code change is required
 
 ## [0.2.1] - 2026-09-03
 
@@ -137,13 +192,18 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.4.0
 [0.3.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.3.1
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.3.0
+[0.2.6]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.6
 [0.2.5]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.5
+[0.2.4]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.4
+[0.2.3]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.3
+[0.2.2]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.2
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.1
 [0.2.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.2.0
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/releases/tag/v0.1.0

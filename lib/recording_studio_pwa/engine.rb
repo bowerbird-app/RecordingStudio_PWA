@@ -6,10 +6,14 @@ module RecordingStudioPwa
 
     class << self
       def apply_model_extensions(target)
+        return unless target
+
         apply_extensions(target, extensions_for(:model, extension_keys_for(target)))
       end
 
       def apply_controller_extensions(target)
+        return unless target
+
         apply_extensions(target, extensions_for(:controller, extension_keys_for(target)))
       end
 
@@ -57,38 +61,26 @@ module RecordingStudioPwa
     end
 
     initializer "recording_studio_pwa.load_config" do |app|
-      # Load config/recording_studio_pwa.yml via Rails config_for if present
       if app.respond_to?(:config_for)
         begin
-          yaml = begin
-            app.config_for(:recording_studio_pwa)
-          rescue StandardError
-            nil
-          end
+          yaml = app.config_for(:recording_studio_pwa)
           RecordingStudioPwa.configuration.merge!(yaml) if yaml.respond_to?(:each)
-        rescue StandardError => _e
-          # ignore load errors; host app can provide initializer overrides
+        rescue RuntimeError => e
+          raise unless e.message.match?(/Could not load configuration\. No such file/i)
         end
       end
 
-      # Merge Rails.application.config.x.recording_studio_pwa if present
       if app.config.respond_to?(:x) && app.config.x.respond_to?(:recording_studio_pwa)
         xcfg = app.config.x.recording_studio_pwa
         if xcfg.respond_to?(:to_h)
           RecordingStudioPwa.configuration.merge!(xcfg.to_h)
-        else
-          begin
-            # try converting OrderedOptions
-            hash = {}
-            xcfg.each_pair { |k, v| hash[k] = v } if xcfg.respond_to?(:each_pair)
-            RecordingStudioPwa.configuration.merge!(hash) if hash&.any?
-          rescue StandardError => _e
-            # ignore
-          end
+        elsif xcfg.respond_to?(:each_pair)
+          hash = {}
+          xcfg.each_pair { |key, value| hash[key] = value }
+          RecordingStudioPwa.configuration.merge!(hash) if hash.any?
         end
       end
 
-      # Run on_configuration hooks after config is loaded
       RecordingStudioPwa.configuration.hooks.run(:on_configuration, RecordingStudioPwa.configuration)
     end
 
