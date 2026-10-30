@@ -252,4 +252,4 @@ PostgreSQL on each boot. Rebuild with Draft off to load a new pack. See
 
 ## Documentation
 
-The original gem template documentation is preserved in `docs/gem_template/` as architectural reference material. Use it as background on the engine conventions. This README, [docs/pwa.md](docs/pwa.md), and the dummy app are the source of truth for this addon. Cloud Agent boot is in [docs/cursor-skills.md](docs/cursor-skills.md).
+Host setup lives in this README, [docs/pwa.md](docs/pwa.md), and the dummy app. Cloud Agent boot is in [docs/cursor-skills.md](docs/cursor-skills.md). Leftover engine-template notes under `docs/gem_template/` are not host documentation for this addon.

@@ -159,6 +159,22 @@ class InstallGeneratorTest < Minitest::Test
     refute_includes install_guide, "RecordingStudio v3"
   end
 
+  def test_install_templates_keep_pwa_chrome_config_only
+    templates = File.expand_path("../lib/generators/recording_studio_pwa/install/templates", __dir__)
+    yaml = File.read(File.join(templates, "recording_studio_pwa.yml"))
+    initializer = File.read(File.join(templates, "recording_studio_pwa_initializer.rb"))
+
+    assert_includes yaml, "name:"
+    assert_includes yaml, "start_url:"
+    assert_includes yaml, "layout:"
+    refute_includes yaml, "api_key"
+    refute_includes yaml, "enable_feature_x"
+    refute_includes yaml, "timeout"
+    refute_includes initializer, "api_key"
+    refute_includes initializer, "enable_feature_x"
+    refute_includes initializer, "config.timeout"
+  end
+
   private
 
   def assert_tailwind_sources_present(css)

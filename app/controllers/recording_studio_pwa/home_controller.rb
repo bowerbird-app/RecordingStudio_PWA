@@ -3,7 +3,10 @@
 module RecordingStudioPwa
   class HomeController < ApplicationController
     def index
-      head :ok
+      render json: {
+        name: "recording_studio_pwa",
+        version: RecordingStudioPwa::VERSION
+      }
     end
   end
 end

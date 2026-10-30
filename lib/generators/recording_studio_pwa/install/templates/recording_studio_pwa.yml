@@ -1,9 +1,13 @@
 development:
-  api_key: "dev-key"
-  enable_feature_x: true
-  timeout: 5
+  name: "My App"
+  start_url: "/"
+  scope: "/"
+  display: "standalone"
+  layout: "recording_studio_pwa"
 
 production:
-  api_key: <%= ENV["RECORDING_STUDIO_PWA_API_KEY"] %>
-  enable_feature_x: false
-  timeout: 5
+  name: "My App"
+  start_url: "/"
+  scope: "/"
+  display: "standalone"
+  layout: "recording_studio_pwa"

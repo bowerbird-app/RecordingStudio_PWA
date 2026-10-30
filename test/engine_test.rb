@@ -3,6 +3,8 @@
 require "test_helper"
 
 class EngineTest < Minitest::Test
+  MISSING_YAML_CONFIG_MESSAGE = "Could not load configuration. No such file - config/recording_studio_pwa.yml"
+
   def setup
     @original_configuration = RecordingStudioPwa.instance_variable_get(:@configuration)
     RecordingStudioPwa.instance_variable_set(:@configuration, RecordingStudioPwa::Configuration.new)
@@ -35,11 +37,11 @@ class EngineTest < Minitest::Test
       hook_payload = cfg
     end
 
-    xcfg = Struct.new(:recording_studio_pwa).new({ enable_feature_x: true })
+    xcfg = Struct.new(:recording_studio_pwa).new({ name: "From X" })
     app_config = Struct.new(:x).new(xcfg)
     app = Struct.new(:config) do
       def config_for(_name)
-        { api_key: "from_yaml", timeout: 12 }
+        { name: "From YAML", start_url: "/app" }
       end
     end.new(app_config)
 
@@ -47,15 +49,14 @@ class EngineTest < Minitest::Test
 
     assert hook_called
     assert_equal RecordingStudioPwa.configuration, hook_payload
-    assert_equal "from_yaml", RecordingStudioPwa.configuration.api_key
-    assert_equal 12, RecordingStudioPwa.configuration.timeout
-    assert_equal true, RecordingStudioPwa.configuration.enable_feature_x
+    assert_equal "From X", RecordingStudioPwa.configuration.name
+    assert_equal "/app", RecordingStudioPwa.configuration.start_url
   end
 
-  def test_load_config_handles_errors_and_each_pair_fallback
+  def test_load_config_handles_missing_yaml_and_each_pair_fallback
     pair_config = Class.new do
       def each_pair
-        yield(:timeout, 15)
+        yield(:start_url, "/pair")
       end
     end.new
 
@@ -64,16 +65,16 @@ class EngineTest < Minitest::Test
 
     app = Struct.new(:config) do
       def config_for(_name)
-        raise "missing file"
+        raise MISSING_YAML_CONFIG_MESSAGE
       end
     end.new(app_config)
 
     find_initializer("recording_studio_pwa.load_config").block.call(app)
 
-    assert_equal 15, RecordingStudioPwa.configuration.timeout
+    assert_equal "/pair", RecordingStudioPwa.configuration.start_url
   end
 
-  def test_load_config_swallow_each_pair_errors
+  def test_load_config_raises_each_pair_errors
     bad_pair_config = Class.new do
       def each_pair
         raise "bad pair"
@@ -84,14 +85,16 @@ class EngineTest < Minitest::Test
     app_config = Struct.new(:x).new(xcfg)
     app = Struct.new(:config) do
       def config_for(_name)
-        { api_key: "ok" }
+        { name: "ok" }
       end
     end.new(app_config)
 
-    # Should not raise even if xcfg.each_pair fails.
-    find_initializer("recording_studio_pwa.load_config").block.call(app)
+    error = assert_raises(RuntimeError) do
+      find_initializer("recording_studio_pwa.load_config").block.call(app)
+    end
 
-    assert_equal "ok", RecordingStudioPwa.configuration.api_key
+    assert_equal "bad pair", error.message
+    assert_equal "ok", RecordingStudioPwa.configuration.name
   end
 
   def test_load_config_is_noop_without_config_sources
@@ -99,32 +102,51 @@ class EngineTest < Minitest::Test
 
     find_initializer("recording_studio_pwa.load_config").block.call(app)
 
-    assert_nil RecordingStudioPwa.configuration.api_key
-    assert_equal 5, RecordingStudioPwa.configuration.timeout
-    assert_equal false, RecordingStudioPwa.configuration.enable_feature_x
+    assert_nil RecordingStudioPwa.configuration.name
+    assert_equal "/", RecordingStudioPwa.configuration.start_url
+    assert_equal "recording_studio_pwa", RecordingStudioPwa.configuration.layout
   end
 
-  def test_load_config_ignores_non_enumerable_yaml_and_merge_errors
-    yaml = Class.new do
-      def each
-        raise "bad yaml"
-      end
-    end.new
-
-    xcfg = Struct.new(:recording_studio_pwa).new({ timeout: 22 })
+  def test_load_config_ignores_non_enumerable_yaml
+    xcfg = Struct.new(:recording_studio_pwa).new({ start_url: "/from-x" })
     app_config = Struct.new(:x).new(xcfg)
     app = Struct.new(:config) do
-      attr_accessor :yaml
-
       def config_for(_name)
-        @yaml
+        12
       end
     end.new(app_config)
-    app.yaml = yaml
 
     find_initializer("recording_studio_pwa.load_config").block.call(app)
 
-    assert_equal 22, RecordingStudioPwa.configuration.timeout
+    assert_equal "/from-x", RecordingStudioPwa.configuration.start_url
+  end
+
+  def test_load_config_raises_for_invalid_yaml
+    app_config = Struct.new(:x).new(Object.new)
+    app = Struct.new(:config) do
+      def config_for(_name)
+        YAML.safe_load("{invalid")
+      end
+    end.new(app_config)
+
+    assert_raises(Psych::SyntaxError) do
+      find_initializer("recording_studio_pwa.load_config").block.call(app)
+    end
+  end
+
+  def test_load_config_raises_other_runtime_errors
+    app_config = Struct.new(:x).new(Object.new)
+    app = Struct.new(:config) do
+      def config_for(_name)
+        raise "permission denied"
+      end
+    end.new(app_config)
+
+    error = assert_raises(RuntimeError) do
+      find_initializer("recording_studio_pwa.load_config").block.call(app)
+    end
+
+    assert_equal "permission denied", error.message
   end
 
   def test_apply_extension_initializers_register_active_support_on_load_callbacks
@@ -160,14 +182,13 @@ class EngineTest < Minitest::Test
       end
     end
     applied = []
-    active_record_base = Class.new
-    active_record_base.define_singleton_method(:descendants) { [abstract_model, concrete_model] }
 
     RecordingStudioPwa::Engine.stub(:config, config_stub) do
       find_initializer("recording_studio_pwa.apply_model_extensions").block.call
     end
 
-    with_temporary_nested_constant(:ActiveRecord, :Base, active_record_base) do
+    ensure_active_record_base!
+    ActiveRecord::Base.stub(:descendants, [abstract_model, concrete_model]) do
       RecordingStudioPwa::Engine.stub(:apply_model_extensions, ->(model) { applied << model }) do
         to_prepare_blocks.first.call
       end
@@ -186,14 +207,13 @@ class EngineTest < Minitest::Test
     first_controller = Class.new
     second_controller = Class.new
     applied = []
-    action_controller_base = Class.new
-    action_controller_base.define_singleton_method(:descendants) { [first_controller, second_controller] }
 
     RecordingStudioPwa::Engine.stub(:config, config_stub) do
       find_initializer("recording_studio_pwa.apply_controller_extensions").block.call
     end
 
-    with_temporary_nested_constant(:ActionController, :Base, action_controller_base) do
+    ensure_action_controller_base!
+    ActionController::Base.stub(:descendants, [first_controller, second_controller]) do
       RecordingStudioPwa::Engine.stub(:apply_controller_extensions, ->(controller) { applied << controller }) do
         to_prepare_blocks.first.call
       end
@@ -209,11 +229,14 @@ class EngineTest < Minitest::Test
       end
     end
 
-    RecordingStudioPwa.configuration.hooks.extend_model(:ExampleRecord) do
+    extension = proc do
       def template_extension_method
         :applied
       end
     end
+
+    RecordingStudioPwa.configuration.hooks.extend_model(:ExampleRecord, &extension)
+    RecordingStudioPwa.configuration.hooks.extend_model(:ExampleRecord, &extension)
 
     RecordingStudioPwa::Engine.apply_model_extensions(model_class)
     RecordingStudioPwa::Engine.apply_model_extensions(model_class)
@@ -241,64 +264,80 @@ class EngineTest < Minitest::Test
     assert_equal :applied, instance.template_controller_extension
   end
 
-  def test_apply_extensions_flattens_compacts_and_tracks_identity
-    target = Class.new
+  def test_apply_model_extensions_returns_without_target
+    assert_nil RecordingStudioPwa::Engine.apply_model_extensions(nil)
+  end
+
+  def test_apply_controller_extensions_returns_without_target
+    assert_nil RecordingStudioPwa::Engine.apply_controller_extensions(nil)
+  end
+
+  def test_apply_controller_extensions_matches_plain_and_namespaced_keys_once
+    controller_class = Class.new do
+      def self.name
+        "Admin::ReportsController"
+      end
+    end
+
     extension = proc do
       def generated_method
         :generated
       end
     end
 
-    RecordingStudioPwa::Engine.send(:apply_extensions, target, [nil, [extension, extension]])
+    RecordingStudioPwa.configuration.hooks.extend_controller(:"Admin::ReportsController", &extension)
+    RecordingStudioPwa.configuration.hooks.extend_controller(:ReportsController, &extension)
 
-    assert_equal :generated, target.new.generated_method
-    assert_equal true, target.instance_variable_get(:@recording_studio_pwa_applied_extensions).compare_by_identity?
+    RecordingStudioPwa::Engine.apply_controller_extensions(controller_class)
+
+    assert_equal :generated, controller_class.new.generated_method
   end
 
-  def test_apply_extensions_returns_without_target
-    assert_nil RecordingStudioPwa::Engine.send(:apply_extensions, nil, [])
-  end
-
-  def test_extension_keys_for_includes_demodulized_name
-    namespaced = Class.new do
-      def self.name
-        "Admin::ReportsController"
-      end
-    end
-
-    expected_keys = [:"Admin::ReportsController"]
-    expected_keys << :ReportsController
-
-    assert_equal expected_keys, RecordingStudioPwa::Engine.send(:extension_keys_for, namespaced)
-  end
-
-  def test_extension_keys_for_removes_duplicate_names
-    plain = Class.new do
+  def test_apply_controller_extensions_plain_name_is_not_duplicated
+    controller_class = Class.new do
       def self.name
         "ReportsController"
       end
     end
 
-    assert_equal [:ReportsController], RecordingStudioPwa::Engine.send(:extension_keys_for, plain)
+    RecordingStudioPwa.configuration.hooks.extend_controller(:ReportsController) do
+      def generated_method
+        :generated
+      end
+    end
+
+    RecordingStudioPwa::Engine.apply_controller_extensions(controller_class)
+
+    assert_equal :generated, controller_class.new.generated_method
+  end
+
+  def test_home_controller_exposes_gem_identity
+    source = File.read(File.expand_path("../app/controllers/recording_studio_pwa/home_controller.rb", __dir__))
+
+    refute_includes source, "head :ok"
+    assert_includes source, 'name: "recording_studio_pwa"'
+    assert_includes source, "RecordingStudioPwa::VERSION"
   end
 
   private
 
-  def with_temporary_nested_constant(parent_name, child_name, value)
-    parent_defined = Object.const_defined?(parent_name, false)
-    parent = parent_defined ? Object.const_get(parent_name) : Object.const_set(parent_name, Module.new)
-    child_defined = parent.const_defined?(child_name, false)
-    previous_child = parent.const_get(child_name) if child_defined
-
-    parent.const_set(child_name, value)
-    yield
-  ensure
-    parent.send(:remove_const, child_name) if parent.const_defined?(child_name, false)
-    parent.const_set(child_name, previous_child) if child_defined
-    Object.send(:remove_const, parent_name) unless parent_defined
-  end
-
   def find_initializer(name)
     RecordingStudioPwa::Engine.initializers.find { |initializer| initializer.name == name }
+  end
+
+  def ensure_active_record_base!
+    Object.const_set(:ActiveRecord, Module.new) unless defined?(::ActiveRecord)
+    ActiveRecord.const_set(:Base, Class.new) unless defined?(::ActiveRecord::Base)
+    return if ActiveRecord::Base.respond_to?(:descendants)
+
+    ActiveRecord::Base.define_singleton_method(:descendants) { [] }
+  end
+
+  def ensure_action_controller_base!
+    Object.const_set(:ActionController, Module.new) unless defined?(::ActionController)
+    ActionController.const_set(:Base, Class.new) unless defined?(::ActionController::Base)
+    return if ActionController::Base.respond_to?(:descendants)
+
+    ActionController::Base.define_singleton_method(:descendants) { [] }
   end
 end

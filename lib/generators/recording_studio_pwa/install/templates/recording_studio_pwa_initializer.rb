@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 RecordingStudioPwa.configure do |config|
-  # Set your API key (recommended to use ENV or Rails credentials)
-  # config.api_key = ENV["RECORDING_STUDIO_PWA_API_KEY"]
-
-  # Enable optional feature X
-  # config.enable_feature_x = false
-
-  # Timeout in seconds for external calls
-  # config.timeout = 5
-
   # Host-level PWA chrome. One installable app per host, not per workspace.
   # The gem reads this name (then Recording Studio app_name, then I18n "App").
   # It does not default to Addon Template or gem_template.

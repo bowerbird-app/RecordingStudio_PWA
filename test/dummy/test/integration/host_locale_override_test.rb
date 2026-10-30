@@ -97,13 +97,9 @@ class HostLocaleOverrideTest < ActionDispatch::IntegrationTest
 
   def i18n_backend_translations_snapshot
     backend = I18n.backend
-    backend.send(:init_translations) unless backend.initialized?
-    translations =
-      if backend.respond_to?(:translations)
-        backend.translations
-      else
-        backend.instance_variable_get(:@translations)
-      end
+    return unless backend.respond_to?(:translations)
+
+    translations = backend.translations
     return unless translations
 
     deep_plain_copy(translations)
