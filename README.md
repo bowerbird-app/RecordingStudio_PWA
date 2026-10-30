@@ -60,7 +60,7 @@ The login form is prefilled with these credentials for fast access.
 - `/service-worker` — host service worker
 - `/users/sign_in` — Devise sign-in page
 - `/recording_studio` — redirect to `/` while the mounted Recording Studio engine remains data/API-focused
-- `/docs/install`, `/docs/config`, `/docs/recordable_types`, `/docs/recordings_tree`, `/docs/gem_views`, `/docs/methods` — dummy-only starter pages
+- `/docs/install`, `/docs/config`, `/docs/recordable_types`, `/docs/recordings_tree`, `/docs/gem_views`, `/docs/methods` — dummy-only starter pages. The recordings tree includes Workspace, Folder, Page, and Accessible grant rows.
 
 The home page in `test/dummy/app/views/home/index.html.erb` stays a minimal Template Demo. Keep deeper explanations on the dummy docs pages and in [docs/pwa.md](docs/pwa.md), not in a wall of home-page copy.
 
