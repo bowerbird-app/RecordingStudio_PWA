@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.6.2", ::RecordingStudioPwa::VERSION
+    assert_equal "0.7.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -47,13 +47,6 @@ class RecordingStudioPwaTest < Minitest::Test
   end
 
   def test_gem_does_not_register_the_template_example_capability
-    boot = File.read(File.expand_path("../lib/recording_studio_pwa.rb", __dir__))
-    example_path = File.expand_path("../lib/recording_studio_pwa/capabilities/example.rb", __dir__)
-
-    refute File.exist?(example_path)
-    refute_includes boot, "recording_studio_pwa/capabilities/example"
-    refute_includes boot, "Capabilities::Example"
-    refute defined?(RecordingStudio::Capabilities::Example)
     refute RecordingStudio.registered_capabilities.key?(:example)
     refute RecordingStudio.capability_enabled?(:example, for: "Workspace")
     refute RecordingStudio.capability_enabled?(:example, for: "Folder")

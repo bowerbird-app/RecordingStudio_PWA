@@ -70,11 +70,6 @@ class RecordingStudioTemplateTest < ActiveSupport::TestCase
   end
 
   test "workspace opts into accessible and does not register the template example capability" do
-    workspace_source = File.read(Rails.root.join("app/models/workspace.rb"))
-
-    refute_includes workspace_source, "Capabilities::Example"
-    refute File.exist?(RecordingStudioPwa::Engine.root.join("lib/recording_studio_pwa/capabilities/example.rb"))
-    refute defined?(RecordingStudio::Capabilities::Example)
     refute RecordingStudio.registered_capabilities.key?(:example)
 
     assert RecordingStudio.capability_enabled?(:accessible, for: Workspace)

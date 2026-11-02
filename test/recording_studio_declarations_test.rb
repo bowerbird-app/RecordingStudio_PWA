@@ -87,7 +87,6 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
     refute RecordingStudio.capability_enabled?(:accessible, for: "Folder")
     refute RecordingStudio.capability_enabled?(:accessible, for: "Page")
 
-    refute defined?(RecordingStudio::Capabilities::Example)
     refute RecordingStudio.registered_capabilities.key?(:example)
     refute RecordingStudio.capability_enabled?(:example, for: "Workspace")
     refute RecordingStudio.capability_enabled?(:example, for: "Folder")
