@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.6.1", ::RecordingStudioPwa::VERSION
+    assert_equal "0.6.2", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -46,13 +46,16 @@ class RecordingStudioPwaTest < Minitest::Test
     refute File.exist?(File.expand_path("../db/migrate/20250101000001_create_recording_studio_pwa_pages.rb", __dir__))
   end
 
-  def test_example_capability_wraps_include_for_and_is_not_enabled_globally
-    source = File.read(File.expand_path("../lib/recording_studio_pwa/capabilities/example.rb", __dir__))
+  def test_gem_does_not_register_the_template_example_capability
+    boot = File.read(File.expand_path("../lib/recording_studio_pwa.rb", __dir__))
+    example_path = File.expand_path("../lib/recording_studio_pwa/capabilities/example.rb", __dir__)
 
-    assert_includes source, "def self.to(**)"
-    assert_includes source, "RecordingStudio::Capabilities.include_for(:example, **)"
-    refute_includes source, "enable_capability"
-    refute_includes source, "set_capability_options"
+    refute File.exist?(example_path)
+    refute_includes boot, "recording_studio_pwa/capabilities/example"
+    refute_includes boot, "Capabilities::Example"
+    refute defined?(RecordingStudio::Capabilities::Example)
+    refute RecordingStudio.registered_capabilities.key?(:example)
+    refute RecordingStudio.capability_enabled?(:example, for: "Workspace")
     refute RecordingStudio.capability_enabled?(:example, for: "Folder")
     refute RecordingStudio.capability_enabled?(:example, for: "Page")
     assert_empty RecordingStudio.configuration.enabled_recordable_types_for(:example)

@@ -10,6 +10,7 @@
 - Public RubyGems and GitHub access for dependency installation
 - Hosts that already ran the 0.1.0 install should add Rails PWA routes and drop any dummy-only `_default_layout_head` workaround. See the 0.2.0 upgrade notes in `CHANGELOG.md`.
 - From 0.3.0 the last-resort installable name (`"App"`) is an English I18n key under `recording_studio.pwa.web_app.default_name`. English hosts need no change; see the 0.3.0 upgrade notes in `CHANGELOG.md`.
+- From 0.6.2 this gem does not ship `RecordingStudio::Capabilities::Example` and does not register `:example`. Remove that include from host models. See the 0.6.2 upgrade notes in `CHANGELOG.md`.
 
 ## Verification
 
