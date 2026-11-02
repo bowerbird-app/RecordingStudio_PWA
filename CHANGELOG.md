@@ -12,10 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `RecordingStudio::Capabilities::Example` and the global `:example` capability it registered on boot (`lib/recording_studio_pwa/capabilities/example.rb`). The mixin was a gem-template leftover. Every addon that still copied it registered the same `:example` name, so loading this gem next to those addons collided.
 
+### Changed
+- Gem and dummy lockfiles pin `rack` 3.2.8 (was 3.2.7)
+
 ### Upgrade notes
 - Bump to `0.6.2`. No migration
 - Delete `include RecordingStudio::Capabilities::Example.to(...)` from host models. This gem no longer defines that mixin or registers `:example`
 - A host that still wants a sample mixin should register it under its own capability name. Do not register `:example`
+- Update a host lockfile that still pins `rack` 3.2.7 to `>= 3.2.8`
 
 ## [0.6.1] - 2026-11-02
 
