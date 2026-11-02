@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.6.0", ::RecordingStudioPwa::VERSION
+    assert_equal "0.6.1", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -41,6 +41,9 @@ class RecordingStudioPwaTest < Minitest::Test
     refute File.exist?(File.expand_path("../lib/recording_studio_pwa/hooks.rb", __dir__))
     refute File.exist?(File.expand_path("../lib/recording_studio_pwa/services/base_service.rb", __dir__))
     refute File.exist?(File.expand_path("../lib/recording_studio_pwa/services/example_service.rb", __dir__))
+    refute File.exist?(File.expand_path("../docs/gem_template", __dir__))
+    refute File.exist?(File.expand_path("../UPDATE_SUMMARY.md", __dir__))
+    refute File.exist?(File.expand_path("../db/migrate/20250101000001_create_recording_studio_pwa_pages.rb", __dir__))
   end
 
   def test_example_capability_wraps_include_for_and_is_not_enabled_globally
@@ -168,6 +171,8 @@ class RecordingStudioPwaTest < Minitest::Test
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
     refute_includes readme, "recording_studio/v3.0.0"
+    refute_includes readme, "docs/gem_template"
+    refute_includes readme, "RecordingStudio::Capabilities::Example"
   end
 
   def test_dummy_home_page_uses_demo_title_only

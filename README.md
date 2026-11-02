@@ -193,13 +193,7 @@ The dummy Workspace enables Accessible because that host addon is bundled in the
 RecordingStudio.enable_capability(:accessible, on: Workspace)
 ```
 
-The gem also ships one example mixin that uses core 4.2.0's `include_for` factory:
-
-```ruby
-include RecordingStudio::Capabilities::Example.to(label: "dummy workspace")
-```
-
-`.to` wraps `RecordingStudio::Capabilities.include_for`. It does not add a fourth verb and it does not call `enable_capability` / `set_capability_options` itself. Folder and Page stay without the example mixin.
+Capability mixins stay opt-in on each recordable type.
 
 Use core `RecordingStudio::Hooks` and `RecordingStudio::Services::BaseService`. Do not copy those classes into this addon.
 
@@ -252,4 +246,4 @@ PostgreSQL on each boot. Rebuild with Draft off to load a new pack. See
 
 ## Documentation
 
-Host setup lives in this README, [docs/pwa.md](docs/pwa.md), and the dummy app. Cloud Agent boot is in [docs/cursor-skills.md](docs/cursor-skills.md). Leftover engine-template notes under `docs/gem_template/` are not host documentation for this addon.
+Host setup lives in this README, [docs/pwa.md](docs/pwa.md), and the dummy app. Cloud Agent boot is in [docs/cursor-skills.md](docs/cursor-skills.md).
