@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-11-02
+
+### Removed
+- Template leftover docs under `docs/gem_template/`
+- Root `UPDATE_SUMMARY.md`
+- Example `recording_studio_pwa_pages` migration (this gem does not own a pages table)
+- README and copilot notes that pointed hosts at those template files, including the leftover Example capability documentation
+
+### Upgrade notes
+- Bump to `0.6.1`. No host migration. Public PWA hooks, configuration, and runtime code are unchanged
+- Ignore `docs/gem_template/` if a checkout still has it; this addon’s host docs are the README, `docs/pwa.md`, and the dummy app
+- Do not copy `db/migrate/20250101000001_create_recording_studio_pwa_pages.rb` into a host. `rails generate recording_studio_pwa:migrations` copies nothing until this gem ships a real migration
+
 ## [0.6.0] - 2026-10-30
 
 ### Changed
@@ -192,7 +205,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.0...v0.4.1
