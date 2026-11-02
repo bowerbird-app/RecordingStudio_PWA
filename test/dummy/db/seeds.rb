@@ -39,6 +39,14 @@ begin
   accessible_root_recording = RecordingStudio.root_recording_for(accessible_workspace)
   private_root_recording = RecordingStudio.root_recording_for(private_workspace)
 
+  grant_owner_access = lambda do |recording|
+    result = RecordingStudioAccessible.bootstrap_owner_access!(recording: recording, actor: user)
+    raise result.error if result.respond_to?(:failure?) && result.failure?
+  end
+
+  grant_owner_access.call(root_recording)
+  grant_owner_access.call(accessible_root_recording)
+
   folder_recording = find_or_record_child.call(folder, root_recording, root_recording)
 
   find_or_record_child.call(page, root_recording, folder_recording)

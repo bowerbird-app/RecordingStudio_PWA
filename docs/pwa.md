@@ -90,9 +90,14 @@ Add public paths in configuration. Do not list pages that require a signed-in se
 
 ```ruby
 RecordingStudioPwa.configure do |config|
+  config.name = "My App"
+  config.start_url = "/"
+  config.layout = "recording_studio_pwa"
   config.public_page_paths = ["/users/sign_in"]
 end
 ```
+
+Configuration is host PWA chrome only (`name`, `short_name`, `description`, theme colors, `start_url`, `scope`, `display`, `icon_path`, `public_page_paths`, `layout`). There is no `api_key`, `timeout`, or `enable_feature_x`.
 
 ## Dummy app
 

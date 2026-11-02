@@ -4,7 +4,7 @@
 
 - This repository is the `recording_studio_pwa` Rails mountable engine for a Recording Studio Progressive Web App host shell.
 - Preserve engine namespace isolation under `RecordingStudioPwa`.
-- Treat `docs/gem_template/` as architectural reference material from the original template. For current addon workflow, prefer the top-level README and the dummy app.
+- Prefer the top-level README, `docs/pwa.md`, and the dummy app. Leftover engine-template notes under `docs/gem_template/` are not host documentation for this addon.
 - Keep changes small and scoped. The gem already owns host-level PWA chrome (manifest, service worker, layout wrap, slice API). Do not add web push, offline-first sync, or a second admin unless the task asks for them.
 
 ## UI Conventions

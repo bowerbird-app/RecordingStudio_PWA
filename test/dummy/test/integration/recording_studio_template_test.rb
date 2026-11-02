@@ -6,6 +6,8 @@ class RecordingStudioTemplateTest < ActiveSupport::TestCase
   test "dummy app loads root switchable config and controller support" do
     assert_equal [ "all_workspaces" ], RecordingStudioRootSwitchable.configuration.scopes.keys
     assert_nil RecordingStudioRootSwitchable.configuration.layout
+    access_check = RecordingStudioRootSwitchable.configuration.scopes.fetch("all_workspaces").access_check
+    refute access_check.call(actor: nil, recording: nil)
     assert_includes ApplicationController.ancestors, RecordingStudio::RootSwitchable::ControllerSupport
     assert_includes ApplicationController.ancestors, RecordingStudioPwa::UsesPwaLayout
     assert_includes ApplicationController.ancestors, RecordingStudio::ControllerLayout
@@ -50,6 +52,11 @@ class RecordingStudioTemplateTest < ActiveSupport::TestCase
     assert_equal root_recording, folder_recording.root_recording
     assert_equal folder_recording, page_recording.parent_recording
     assert_equal root_recording, page_recording.root_recording
+    admin = User.find_by!(email: "admin@admin.com")
+    assert RecordingStudioAccessible.authorized?(actor: admin, recording: root_recording, role: :admin)
+    assert RecordingStudioAccessible.authorized?(actor: admin, recording: accessible_root_recording, role: :admin)
+    refute RecordingStudioAccessible.authorized?(actor: admin, recording: private_root_recording, role: :view)
+
     assert_equal 3, Workspace.count
 
     assert_no_difference -> { User.count } do
