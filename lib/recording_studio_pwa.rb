@@ -9,7 +9,6 @@ require "recording_studio_pwa/slice"
 require "recording_studio_pwa/allows_pwa_slices"
 require "recording_studio_pwa/uses_pwa_layout"
 require "recording_studio_pwa/web_app"
-require "recording_studio_pwa/capabilities/example"
 
 module RecordingStudioPwa
   class << self

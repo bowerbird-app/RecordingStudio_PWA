@@ -69,23 +69,17 @@ class RecordingStudioTemplateTest < ActiveSupport::TestCase
     Current.actor = nil
   end
 
-  test "workspace opts into accessible and the example mixin without enabling them globally" do
-    workspace_source = File.read(Rails.root.join("app/models/workspace.rb"))
-    example_source = File.read(RecordingStudioPwa::Engine.root.join("lib/recording_studio_pwa/capabilities/example.rb"))
-
-    assert_includes workspace_source, "include RecordingStudio::Capabilities::Example.to(label: \"dummy workspace\")"
-    assert_includes example_source, "RecordingStudio::Capabilities.include_for(:example, **)"
-    refute_includes example_source, "enable_capability"
-    refute_includes example_source, "set_capability_options"
+  test "workspace opts into accessible and does not register the template example capability" do
+    refute RecordingStudio.registered_capabilities.key?(:example)
 
     assert RecordingStudio.capability_enabled?(:accessible, for: Workspace)
-    assert RecordingStudio.capability_enabled?(:example, for: Workspace)
-    assert_equal({ label: "dummy workspace" }, RecordingStudio.capability_options(:example, for: Workspace))
+    refute RecordingStudio.capability_enabled?(:example, for: Workspace)
+    assert_nil RecordingStudio.capability_options(:example, for: Workspace)
     refute RecordingStudio.capability_enabled?(:accessible, for: Folder)
     refute RecordingStudio.capability_enabled?(:accessible, for: Page)
     refute RecordingStudio.capability_enabled?(:example, for: Folder)
     refute RecordingStudio.capability_enabled?(:example, for: Page)
-    assert_equal [ "Workspace" ], RecordingStudio.configuration.enabled_recordable_types_for(:example)
+    assert_empty RecordingStudio.configuration.enabled_recordable_types_for(:example)
     refute ApplicationController.ancestors.any? { |mod| mod.name == "RecordingStudio::UsesDefaultLayout" }
     assert_includes ApplicationController.ancestors, RecordingStudioPwa::UsesPwaLayout
     assert_includes ApplicationController.ancestors, RecordingStudio::ControllerLayout

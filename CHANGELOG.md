@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-02
+
+### Breaking
+- Removed `RecordingStudio::Capabilities::Example` and the global `:example` capability it registered on boot (`lib/recording_studio_pwa/capabilities/example.rb`). The mixin was a gem-template leftover. Every addon that still copied it registered the same `:example` name, so loading this gem next to those addons collided.
+
+### Changed
+- Gem and dummy lockfiles pin `rack` 3.2.8 (was 3.2.7)
+
+### Upgrade notes
+- Delete any `include RecordingStudio::Capabilities::Example`
+- Update a host lockfile that still pins `rack` 3.2.7 to `>= 3.2.8`
+
 ## [0.6.1] - 2026-11-02
 
 ### Removed
@@ -205,7 +217,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.4.1...v0.5.0
