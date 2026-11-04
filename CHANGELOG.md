@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lockfiles pin `rails-html-sanitizer` `>= 1.7.2` (GHSA-cpgf-5mjf-73p7, GHSA-h7wh-q2qr-458c)
 - Configured `start_url` and `scope` must be same-origin relative paths. Absolute URLs, protocol-relative URLs, and non-path values fall back to `/`
 
+### Fixed
+- `GET /manifest` with `Accept: text/html` returns the JSON web app manifest instead of a 500 missing `pwa/manifest` template
+- Dummy Tailwind `@source` paths also scan FlatPack and Recording Studio gems under `/usr/local/lib/ruby/gems`, so accordion chevrons keep `w-5 h-5` at phone width
+
 ### Changed
 - Dummy and test GitHub tags: FlatPack `v0.1.341`, Metrics `v0.7.2`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.4` (core stays `v6.3.0`, Accessible stays `v0.24.0`)
 - Stop tracking SimpleCov output under `coverage/` and `test/dummy/coverage/`

@@ -56,7 +56,7 @@ The login form is prefilled with these credentials for fast access.
 
 - `/` — Template Demo on the shared Recording Studio layout
 - `/pwa/install` — example slice titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC
-- `/manifest` — host web app manifest
+- `/manifest` — host web app manifest (JSON for any `Accept`, including `text/html`)
 - `/service-worker` — host service worker
 - `/users/sign_in` — Devise sign-in page
 - `/recording_studio` — redirect to `/` while the mounted Recording Studio engine remains data/API-focused
