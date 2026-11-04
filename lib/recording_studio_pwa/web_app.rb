@@ -27,11 +27,11 @@ module RecordingStudioPwa
     end
 
     def start_url
-      Configuration.same_origin_relative_path(RecordingStudioPwa.configuration.start_url)
+      RecordingStudioPwa.configuration.start_url
     end
 
     def scope
-      Configuration.same_origin_relative_path(RecordingStudioPwa.configuration.scope)
+      RecordingStudioPwa.configuration.scope
     end
 
     def display

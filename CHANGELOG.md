@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.7.1] - 2026-11-04
+## [0.8.0] - 2026-11-04
 
 ### Security
 - Lockfiles pin `nokogiri` `>= 1.19.5` (GHSA-4p39-36wj-23h4, GHSA-v995-44v6-5fqm, GHSA-3w22-6jfg-527w)
@@ -20,9 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed leftover `MIGRATION_NOTES.md`
 
 ### Upgrade notes
-- Bump to `0.7.1`. No host migration or public API change
+- Bump to `0.8.0`
+- `start_url` and `scope` now keep only same-origin relative paths (they start with `/`). An absolute URL (including a same-origin one such as `https://your.host/app`), a protocol-relative URL, a relative value like `app`, or any other non-path value becomes `/` in config and in the manifest. Change host YAML or `configure` to a path such as `/` or `/app` if you still want a non-root start URL or scope
 - Update a host lockfile that still pins `nokogiri` `< 1.19.5` or `rails-html-sanitizer` `< 1.7.2`
-- If a host set `start_url` or `scope` to an absolute or protocol-relative URL, the manifest now uses `/` instead
 
 ## [0.7.0] - 2026-11-02
 
@@ -234,8 +234,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.1...HEAD
-[0.7.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...v0.7.1
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...v0.6.0

@@ -13,6 +13,9 @@ class ConfigurationTest < Minitest::Test
     assert_equal "Host App", @configuration.name
     assert_equal "/app", @configuration.start_url
     assert_equal ["/sign-in"], @configuration.public_page_paths
+
+    @configuration.merge!(start_url: "https://host.example/app", scope: "app")
+    assert_equal ["/", "/"], [@configuration.start_url, @configuration.scope]
   end
 
   def test_merge_ignores_unknown_keys

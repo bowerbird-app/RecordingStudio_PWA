@@ -93,6 +93,12 @@ class WebAppTest < Minitest::Test
 
     assert_equal "/", RecordingStudioPwa::WebApp.start_url
     assert_equal "/", RecordingStudioPwa::WebApp.scope
+
+    RecordingStudioPwa.configuration.start_url = "/\\evil.com"
+    assert_equal "/", RecordingStudioPwa.configuration.start_url
+
+    RecordingStudioPwa.configuration.scope = "/\t\nevil.com"
+    assert_equal "/", RecordingStudioPwa.configuration.scope
   end
 
   def test_head_partial_binds_web_app_name_helper
