@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configured `start_url` and `scope` must be same-origin relative paths. Absolute URLs, protocol-relative URLs, and non-path values fall back to `/`
 
 ### Fixed
-- `GET /manifest` with `Accept: text/html` returns the JSON web app manifest instead of a 500 missing `pwa/manifest` template
+- `GET /manifest` with `Accept: text/html` returns the JSON web app manifest via `pwa/manifest.html.erb` instead of a 500 missing template
 - Dummy Tailwind `@source` paths also scan FlatPack and Recording Studio gems under `/usr/local/lib/ruby/gems`, so accordion chevrons keep `w-5 h-5` at phone width
 
 ### Changed

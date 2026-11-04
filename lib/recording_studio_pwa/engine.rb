@@ -95,15 +95,6 @@ module RecordingStudioPwa
       end
     end
 
-    initializer "recording_studio_pwa.manifest_json_for_any_accept" do
-      config.to_prepare do
-        next unless defined?(Rails::PwaController)
-        next if Rails::PwaController < RecordingStudioPwa::PwaManifestRenderer
-
-        Rails::PwaController.prepend(RecordingStudioPwa::PwaManifestRenderer)
-      end
-    end
-
     initializer "recording_studio_pwa.active_record" do
       ActiveSupport.on_load(:active_record) do
         include RecordingStudioPwa::AllowsPwaSlices
