@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.7.0", ::RecordingStudioPwa::VERSION
+    assert_equal "0.7.1", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -27,11 +27,11 @@ class RecordingStudioPwaTest < Minitest::Test
 
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.3.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.329"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.4"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.341"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.1.134"'
     refute_includes gemfile, 'tag: "0.3.1"'
@@ -43,6 +43,7 @@ class RecordingStudioPwaTest < Minitest::Test
     refute File.exist?(File.expand_path("../lib/recording_studio_pwa/services/example_service.rb", __dir__))
     refute File.exist?(File.expand_path("../docs/gem_template", __dir__))
     refute File.exist?(File.expand_path("../UPDATE_SUMMARY.md", __dir__))
+    refute File.exist?(File.expand_path("../MIGRATION_NOTES.md", __dir__))
     refute File.exist?(File.expand_path("../db/migrate/20250101000001_create_recording_studio_pwa_pages.rb", __dir__))
   end
 
@@ -162,7 +163,7 @@ class RecordingStudioPwaTest < Minitest::Test
 
     assert_includes readme, "RecordingStudio"
     assert_includes readme, "v6.3.0"
-    assert_includes readme, "v0.1.329"
+    assert_includes readme, "v0.1.341"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"

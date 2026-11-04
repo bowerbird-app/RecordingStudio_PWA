@@ -12,7 +12,7 @@ It does not own web push, offline-first sync, a second admin, or per-gem mobile 
 
 ## One PWA per host
 
-The installable app is host-wide. `start_url` and `scope` default to `/`. Workspaces, folders, and pages are not separate apps.
+The installable app is host-wide. `start_url` and `scope` default to `/` and must be same-origin relative paths (they start with `/`). Absolute URLs, protocol-relative URLs, and other non-path values fall back to `/`. Workspaces, folders, and pages are not separate apps.
 
 Rails 8 already ships `rails/pwa#manifest` and `rails/pwa#service_worker`. This gem owns those views. The host enables the routes:
 

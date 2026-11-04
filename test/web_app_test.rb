@@ -71,6 +71,30 @@ class WebAppTest < Minitest::Test
     restore_i18n_backend_translations(previous_translations) if previous_translations
   end
 
+  def test_start_url_and_scope_reject_absolute_and_non_path_values
+    RecordingStudioPwa.configuration.start_url = "https://evil.example/app"
+    RecordingStudioPwa.configuration.scope = "//evil.example/app"
+
+    assert_equal "/", RecordingStudioPwa.configuration.start_url
+    assert_equal "/", RecordingStudioPwa.configuration.scope
+    assert_equal "/", RecordingStudioPwa::WebApp.start_url
+    assert_equal "/", RecordingStudioPwa::WebApp.scope
+    assert_equal "/", RecordingStudioPwa.web_app_manifest.fetch("start_url")
+    assert_equal "/", RecordingStudioPwa.web_app_manifest.fetch("scope")
+
+    RecordingStudioPwa.configuration.start_url = "/app"
+    RecordingStudioPwa.configuration.scope = "/app/"
+
+    assert_equal "/app", RecordingStudioPwa::WebApp.start_url
+    assert_equal "/app/", RecordingStudioPwa::WebApp.scope
+
+    RecordingStudioPwa.configuration.start_url = "app"
+    RecordingStudioPwa.configuration.scope = "javascript:alert(1)"
+
+    assert_equal "/", RecordingStudioPwa::WebApp.start_url
+    assert_equal "/", RecordingStudioPwa::WebApp.scope
+  end
+
   def test_head_partial_binds_web_app_name_helper
     head = File.read(File.expand_path("../app/views/recording_studio/_default_layout_head.html.erb", __dir__))
 
