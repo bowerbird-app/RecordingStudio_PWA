@@ -27,11 +27,11 @@ module RecordingStudioPwa
     end
 
     def start_url
-      RecordingStudioPwa.configuration.start_url.presence || "/"
+      RecordingStudioPwa.configuration.start_url
     end
 
     def scope
-      RecordingStudioPwa.configuration.scope.presence || "/"
+      RecordingStudioPwa.configuration.scope
     end
 
     def display

@@ -51,6 +51,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_select "[aria-controls='android-content'] span.font-medium", text: "Android", count: 1
     assert_select "[aria-controls='mac-content'] span.font-medium", text: "Mac", count: 1
     assert_select "[aria-controls='pc-content'] span.font-medium", text: "PC", count: 1
+    assert_select "svg.w-5.h-5[data-flat-pack--accordion-target='icon']", count: 4
     assert_includes response.body, "Open Share in Safari."
     assert_includes response.body, "Choose Add to Home Screen."
     assert_includes response.body, "Tap Add. The icon appears on your home screen."
@@ -142,6 +143,16 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert(manifest.fetch("icons").all? { |icon| icon.fetch("src") == "/icon.png" })
     assert(manifest.fetch("shortcuts").any? { |shortcut| shortcut.fetch("url") == "/pwa/install" })
     refute_equal "Addon Template", manifest.fetch("name")
+  end
+
+  test "manifest returns json for a browser html accept" do
+    get "/manifest", headers: { "Accept" => "text/html" }
+
+    assert_response :success
+    assert_equal "application/json", response.media_type
+    manifest = JSON.parse(response.body)
+    assert_equal "Recording Studio PWA", manifest.fetch("name")
+    assert_equal "/", manifest.fetch("start_url")
   end
 
   test "service worker does not register web push and skips authenticated html" do

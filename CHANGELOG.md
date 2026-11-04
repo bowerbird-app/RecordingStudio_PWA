@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-04
+
+### Security
+- Lockfiles pin `nokogiri` `>= 1.19.5` (GHSA-4p39-36wj-23h4, GHSA-v995-44v6-5fqm, GHSA-3w22-6jfg-527w)
+- Lockfiles pin `rails-html-sanitizer` `>= 1.7.2` (GHSA-cpgf-5mjf-73p7, GHSA-h7wh-q2qr-458c)
+- Configured `start_url` and `scope` must be same-origin relative paths. Absolute URLs, protocol-relative URLs, and non-path values fall back to `/`
+
+### Fixed
+- `GET /manifest` with `Accept: text/html` returns the JSON web app manifest via `pwa/manifest.html.erb` instead of a 500 missing template
+- Dummy Tailwind `@source` paths also scan FlatPack and Recording Studio gems under `/usr/local/lib/ruby/gems`, so accordion chevrons keep `w-5 h-5` at phone width
+
+### Changed
+- Dummy and test GitHub tags: FlatPack `v0.1.341`, Metrics `v0.7.2`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.4` (core stays `v6.3.0`, Accessible stays `v0.24.0`)
+- Stop tracking SimpleCov output under `coverage/` and `test/dummy/coverage/`
+- Removed leftover `MIGRATION_NOTES.md`
+
+### Upgrade notes
+- Bump to `0.8.0`
+- `start_url` and `scope` now keep only same-origin relative paths (they start with `/`). An absolute URL (including a same-origin one such as `https://your.host/app`), a protocol-relative URL, a relative value like `app`, or any other non-path value becomes `/` in config and in the manifest. Change host YAML or `configure` to a path such as `/` or `/app` if you still want a non-root start URL or scope
+- Update a host lockfile that still pins `nokogiri` `< 1.19.5` or `rails-html-sanitizer` `< 1.7.2`
+
 ## [0.7.0] - 2026-11-02
 
 ### Breaking
@@ -217,7 +238,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.5.0...v0.6.0

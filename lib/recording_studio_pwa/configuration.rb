@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "uri"
+
 module RecordingStudioPwa
   class Configuration
     ROUNDED_THEME_COLOR = "#333333"
@@ -19,9 +21,21 @@ module RecordingStudioPwa
     }.freeze
 
     attr_accessor :name, :short_name, :description,
-                  :theme_color, :background_color, :start_url, :scope, :display, :icon_path,
+                  :theme_color, :background_color, :display, :icon_path,
                   :public_page_paths
-    attr_reader :hooks, :layout
+    attr_reader :hooks, :layout, :start_url, :scope
+
+    def self.same_origin_relative_path(value)
+      path = value.to_s.strip
+      return "/" if path.empty? || path.start_with?("//") || !path.start_with?("/")
+
+      uri = URI.parse(path)
+      return "/" unless uri.scheme.nil? && uri.host.nil?
+
+      path
+    rescue URI::InvalidURIError, ArgumentError
+      "/"
+    end
 
     def initialize
       @hooks = RecordingStudio::Hooks.new
@@ -38,6 +52,14 @@ module RecordingStudioPwa
 
     def layout=(value)
       @layout = RecordingStudio::Layout.accept(value)
+    end
+
+    def start_url=(value)
+      @start_url = self.class.same_origin_relative_path(value)
+    end
+
+    def scope=(value)
+      @scope = self.class.same_origin_relative_path(value)
     end
 
     def merge!(hash)

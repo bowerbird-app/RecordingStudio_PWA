@@ -12,9 +12,9 @@ It does not own web push, offline-first sync, a second admin, or per-gem mobile 
 
 ## One PWA per host
 
-The installable app is host-wide. `start_url` and `scope` default to `/`. Workspaces, folders, and pages are not separate apps.
+The installable app is host-wide. `start_url` and `scope` default to `/` and must be same-origin relative paths (they start with `/`). Absolute URLs (including same-origin ones), protocol-relative URLs, relative values such as `app`, and other non-path values fall back to `/`. Workspaces, folders, and pages are not separate apps.
 
-Rails 8 already ships `rails/pwa#manifest` and `rails/pwa#service_worker`. This gem owns those views. The host enables the routes:
+Rails 8 already ships `rails/pwa#manifest` and `rails/pwa#service_worker`. This gem owns those views, including `pwa/manifest.html.erb` so a browser `Accept: text/html` still gets the JSON manifest instead of a 500. The host enables the routes:
 
 ```ruby
 get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
@@ -107,7 +107,7 @@ Configuration is host PWA chrome only (`name`, `short_name`, `description`, them
 - Dummy icons are `/icon.png` and `/icon.svg` — a charcoal rounded-theme mark, not the red template circle.
 - `/` is still the Template Demo on Recording Studio's default layout. That page is dummy chrome, not a product screen.
 - `/pwa/install` is the example slice on the same layout. The page title is **Install app**. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC).
-- `/manifest` and `/service-worker` are the Rails PWA endpoints
+- `/manifest` and `/service-worker` are the Rails PWA endpoints. `/manifest` returns JSON, including when the request `Accept` is `text/html` (via the gem's `pwa/manifest.html.erb`)
 - Workspace enables `:install`; Folder and Page do not
 
 Review shots live in `docs/dummy-shots/`. The closed product shot is `pwa-install-slice.png`. Open-panel shots are `pwa-install-iphone.png`, `pwa-install-android.png`, `pwa-install-mac.png`, and `pwa-install-pc.png` (phone-width `/pwa/install`, PageNav cropped). `pwa-beforeinstallprompt.png` is extra browser chrome only when the dialog shows Recording Studio PWA and the charcoal icon.
