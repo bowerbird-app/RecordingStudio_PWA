@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-11-05
+
+### Security
+- Lockfiles pin Rails `8.1.4.1` (was `8.1.4`)
+
+### Upgrade notes
+- Bump to `0.8.1`
+- Update a host lockfile that still pins Rails `8.1.4`
+
 ## [0.8.0] - 2026-11-04
 
 ### Security
@@ -238,7 +247,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.1...HEAD
+[0.8.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.0...v0.6.1
