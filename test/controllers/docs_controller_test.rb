@@ -19,6 +19,11 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
     end
 
     sign_in @user
+    Current.actor = @user
+  end
+
+  teardown do
+    Current.actor = nil
   end
 
   test "install page renders successfully" do
@@ -74,8 +79,7 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
   test "recordings tree page renders successfully" do
     workspace = Workspace.create!(name: "Tree Workspace")
     root_recording = RecordingStudio.root_recording_for(workspace)
-    result = RecordingStudioAccessible.bootstrap_owner_access!(recording: root_recording, actor: @user)
-    raise result.error if result.respond_to?(:failure?) && result.failure?
+    grant_owner!(root_recording)
 
     folder = Folder.create!(name: "Reference")
     folder_recording = record_child(folder, root_recording, root_recording)
@@ -139,6 +143,7 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
     end
 
     root_recording = RecordingStudio.root_recording_for(workspace)
+    grant_owner!(root_recording)
     folder = Folder.create!(name: "Counted Folder")
     record_child(folder, root_recording, root_recording)
 
@@ -157,6 +162,13 @@ class DocsControllerTest < ActionDispatch::IntegrationTest
   def recordable_type_summary(recording_count, recordable_count)
     "#{ActionController::Base.helpers.pluralize(recording_count, 'recording')} point to this type " \
       "• #{ActionController::Base.helpers.pluralize(recordable_count, 'recordable')} in the database"
+  end
+
+  def grant_owner!(root_recording)
+    result = RecordingStudioAccessible.bootstrap_owner_access!(recording: root_recording, actor: @user)
+    raise result.error if result.respond_to?(:failure?) && result.failure?
+
+    result
   end
 
   def record_child(recordable, root_recording, parent_recording)
