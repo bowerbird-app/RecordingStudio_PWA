@@ -29,12 +29,14 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
     root_recording = RecordingStudio.root_recording_for(Workspace.create!(name: unique_name("Child Workspace")))
     folder = Folder.new(name: unique_name("Allowed Folder"))
 
-    event = RecordingStudio.record!(
-      action: "created",
-      recordable: folder,
-      root_recording: root_recording,
-      parent_recording: root_recording
-    )
+    event = as_workspace_owner(root_recording) do
+      RecordingStudio.record!(
+        action: "created",
+        recordable: folder,
+        root_recording: root_recording,
+        parent_recording: root_recording
+      )
+    end
 
     assert_equal folder, event.recording.recordable
     assert_equal root_recording, event.recording.parent_recording
@@ -42,14 +44,23 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
 
   test "page can be recorded under allowed workspace and folder parents" do
     root_recording = RecordingStudio.root_recording_for(Workspace.create!(name: unique_name("Page Workspace")))
-    folder_recording = record_child(Folder.new(name: unique_name("Page Folder")), root_recording, root_recording)
+    folder_recording = nil
+    workspace_page_recording = nil
+    folder_page_recording = nil
 
-    workspace_page_recording = record_child(
-      Page.new(title: unique_name("Workspace Page")),
-      root_recording,
-      root_recording
-    )
-    folder_page_recording = record_child(Page.new(title: unique_name("Folder Page")), root_recording, folder_recording)
+    as_workspace_owner(root_recording) do
+      folder_recording = record_child(Folder.new(name: unique_name("Page Folder")), root_recording, root_recording)
+      workspace_page_recording = record_child(
+        Page.new(title: unique_name("Workspace Page")),
+        root_recording,
+        root_recording
+      )
+      folder_page_recording = record_child(
+        Page.new(title: unique_name("Folder Page")),
+        root_recording,
+        folder_recording
+      )
+    end
 
     assert_equal root_recording, workspace_page_recording.parent_recording
     assert_equal folder_recording, folder_page_recording.parent_recording
@@ -74,11 +85,15 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
 
   test "page cannot be recorded under another page" do
     root_recording = RecordingStudio.root_recording_for(Workspace.create!(name: unique_name("Invalid Page Workspace")))
-    page_recording = record_child(Page.new(title: unique_name("Parent Page")), root_recording, root_recording)
+    error = nil
 
-    error = assert_raises(RecordingStudio::InvalidParent) do
-      record_child(Page.new(title: unique_name("Nested Page")), root_recording, page_recording)
+    as_workspace_owner(root_recording) do
+      page_recording = record_child(Page.new(title: unique_name("Parent Page")), root_recording, root_recording)
+      error = assert_raises(RecordingStudio::InvalidParent) do
+        record_child(Page.new(title: unique_name("Nested Page")), root_recording, page_recording)
+      end
     end
+
     assert_equal "Page cannot be recorded under Page", error.message
   end
 
@@ -103,6 +118,22 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
       root_recording: root_recording,
       parent_recording: parent_recording
     ).recording
+  end
+
+  def as_workspace_owner(root_recording)
+    user = User.create!(
+      email: "writer-#{SecureRandom.hex(4)}@example.com",
+      password: "Password123!",
+      password_confirmation: "Password123!"
+    )
+    previous_actor = Current.actor
+    Current.actor = user
+    result = RecordingStudioAccessible.bootstrap_owner_access!(recording: root_recording, actor: user)
+    raise result.error if result.respond_to?(:failure?) && result.failure?
+
+    yield
+  ensure
+    Current.actor = previous_actor
   end
 
   def unique_name(prefix)

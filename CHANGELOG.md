@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Root and dummy GitHub tags: FlatPack `v0.1.356`, Recording Studio `v6.7.0`, Accessible `v0.31.0`, Metrics `v0.8.0`, Trashable `v0.14.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`
+- Gemspec ranges stay `recording_studio >= 6.1.0, < 7` and `flat_pack >= 0.1.133, < 1.0`
+- Dummy `config.authorize_write` follows Recording Studio 6.5+: a persisted user may write with Accessible edit on the root, and Access rows go through `AccessCreationContext` or an admin grant
+
 ## [0.8.2] - 2026-11-13
 
 ### Changed

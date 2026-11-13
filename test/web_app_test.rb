@@ -115,7 +115,7 @@ class WebAppTest < Minitest::Test
     backend = I18n.backend
     return unless backend.respond_to?(:translations)
 
-    translations = backend.translations
+    translations = backend.translations(do_init: true)
     return unless translations
 
     deep_plain_copy(translations)
