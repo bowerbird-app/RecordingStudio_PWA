@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.8.1", ::RecordingStudioPwa::VERSION
+    assert_equal "0.8.2", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -16,7 +16,8 @@ class RecordingStudioPwaTest < Minitest::Test
 
     assert_includes gemspec, 'spec.add_dependency "rails", "~> 8.1.0"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.1.0", "< 7"'
-    assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.133"'
+    assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.133", "< 1.0"'
+    refute_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.133"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_accessible"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'

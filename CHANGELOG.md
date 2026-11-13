@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-11-13
+
+### Changed
+- Gemspec allows FlatPack `>= 0.1.133, < 1.0` (was `~> 0.1.133`, which stopped before `0.2`)
+- Recording Studio stays `>= 6.1.0, < 7`. Rails stays `~> 8.1.0`
+
+### Upgrade notes
+- Bump to `0.8.2`
+- Hosts can take FlatPack `0.x` releases at or above `0.1.133`, including `0.2` and later, without a gemspec bump in this addon
+
 ## [0.8.1] - 2026-11-05
 
 ### Security
@@ -247,7 +257,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.2...HEAD
+[0.8.2]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.6.1...v0.7.0
