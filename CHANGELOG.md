@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Root and dummy GitHub tags: FlatPack `v0.1.366`, Recording Studio `v6.10.0`, Accessible `v0.37.0`, Metrics `v0.8.0`, Trashable `v0.14.1`, Cache `v0.6.3`, Root Switchable `v0.15.0`
-- Dummy copies Recording Studio 6.9's `20261114090000_add_root_recording_id_to_recording_studio_events` so event writes store `root_recording_id`
+- Root and dummy GitHub tags: FlatPack `v0.1.374`, Recording Studio `v6.14.0`, Accessible `v0.41.0`, Metrics `v0.8.0`, Trashable `v0.15.0`, Cache `v0.6.3`, Root Switchable `v0.15.0`
+- Dummy copies Recording Studio 6.9's `20261114090000_add_root_recording_id_to_recording_studio_events` so event writes store `root_recording_id`. Core 6.11 through 6.14 add no migrations. Accessible 0.40+ needs Recording Studio `>= 6.13.0`, which the `v6.14.0` pin satisfies
 - Gemspec ranges stay `recording_studio >= 6.1.0, < 7` and `flat_pack >= 0.1.133, < 1.0`
 - Dummy `config.authorize_write` follows Recording Studio 6.5+: a persisted user may write with Accessible edit on the root, and Access rows go through `AccessCreationContext` or an admin grant
 
