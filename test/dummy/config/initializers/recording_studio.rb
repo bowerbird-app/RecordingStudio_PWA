@@ -14,12 +14,13 @@ RecordingStudio.configure do |config|
   # Actor resolver for events when no actor is explicitly supplied
   config.actor = -> { Current.actor }
 
-  # Core 6.5+ fails closed. A signed-in user is not a write policy.
+  # Core 7 fails closed. A signed-in user is not a write policy.
+  # Creating a root passes root_recording: nil. A persisted user may create one.
   # Access grant and bootstrap writes go through Accessible's
   # AccessCreationContext. Other writes need edit on the root.
   config.authorize_write = lambda { |actor:, root_recording:, recordable:, **|
     next false unless actor.is_a?(User) && actor.persisted?
-    next false unless root_recording
+    next true if root_recording.nil?
 
     if defined?(RecordingStudio::Access) && recordable.is_a?(RecordingStudio::Access)
       next true if RecordingStudioAccessible::AccessCreationContext.allowed?
