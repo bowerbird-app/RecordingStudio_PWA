@@ -1,6 +1,6 @@
 # Recording Studio PWA
 
-A Recording Studio addon that gives a host app one installable Progressive Web App. This gem is `recording_studio_pwa` (`RecordingStudioPwa`) and works with Recording Studio >= 6.1.0 (dummy runs on core 6.7).
+A Recording Studio addon that gives a host app one installable Progressive Web App. This gem is `recording_studio_pwa` (`RecordingStudioPwa`) and works with Recording Studio >= 6.1.0 (dummy runs on core 6.10).
 
 Hosts stay thin. This gem owns the host-level shell: manifest, service worker, icons, theme color, and a layout wrap around Recording Studio's default layout. Other gems add a slice later.
 
@@ -14,14 +14,14 @@ Other gems append to the host service worker through `RecordingStudioPwa.registe
 - **Rails 8 PWA routes** — this gem owns the `rails/pwa#manifest` and `#service_worker` views; hosts enable the routes
 - **Layout wrap** — `RecordingStudioPwa::UsesPwaLayout` wraps `recording_studio/default_layout` and does not copy PageNav, flash, Open Graph, or FlatPack CSS
 - **Slice API** — register slices globally, enable them per recordable type; installing the gem does not opt a host in
-- **Recording Studio** (`>= 6.1.0, < 7` in the gemspec; dummy GitHub tag `v6.7.0`)
-- **FlatPack** UI (`>= 0.1.133, < 1.0` in the gemspec; dummy GitHub tag `v0.1.356`)
+- **Recording Studio** (`>= 6.1.0, < 7` in the gemspec; dummy GitHub tag `v6.10.0`)
+- **FlatPack** UI (`>= 0.1.133, < 1.0` in the gemspec; dummy GitHub tag `v0.1.366`)
 - **Rails** 8.1
 - **Dummy app** (`test/dummy/`) with Devise sign-in, host name **Recording Studio PWA**, charcoal host icons, the Template Demo at `/`, an example install slice at `/pwa/install`, and FlatPack's rounded theme on `<html>`
 
 Authenticated dummy pages use the PWA wrap around Recording Studio's shared default layout (`recording_studio_layout` via `RecordingStudioPwa::UsesPwaLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout and still receives the PWA head tags. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
 
-The dummy still wires optional host addons that the demo shell uses: Accessible (`v0.31.0`) on Workspace, Root Switchable (`v0.15.0`) for the workspace switcher, Cache (`v0.6.3`) and Metrics (`v0.8.0`) because Root Switchable requires them, and Trashable (`v0.14.0`, query-only) because Accessible requires it. Those are dummy-app dependencies, not gemspec dependencies of `recording_studio_pwa`.
+The dummy still wires optional host addons that the demo shell uses: Accessible (`v0.37.0`) on Workspace, Root Switchable (`v0.15.0`) for the workspace switcher, Cache (`v0.6.3`) and Metrics (`v0.8.0`) because Root Switchable requires them, and Trashable (`v0.14.1`, query-only) because Accessible requires it. Those are dummy-app dependencies, not gemspec dependencies of `recording_studio_pwa`. The dummy copies Recording Studio 6.9's events migration so `recording_studio_events.root_recording_id` is present before writes.
 
 This gem does not own web push, notifications, offline-first sync, a second admin, or per-gem mobile redesigns.
 
@@ -225,13 +225,13 @@ Recording Studio's default layout still puts `data-theme` on `<body>`. This gem 
 | Rails           | 8.1+ (`~> 8.1.0` in the gemspec) |
 | PostgreSQL      | 16      |
 | TailwindCSS     | 4 (dummy host only) |
-| RecordingStudio | `>= 6.1.0, < 7` in the gemspec; dummy GitHub tag `v6.7.0` |
-| FlatPack        | `>= 0.1.133, < 1.0` in the gemspec; dummy GitHub tag `v0.1.356` |
-| Accessible      | dummy GitHub tag `v0.31.0` (host demo only) |
+| RecordingStudio | `>= 6.1.0, < 7` in the gemspec; dummy GitHub tag `v6.10.0` |
+| FlatPack        | `>= 0.1.133, < 1.0` in the gemspec; dummy GitHub tag `v0.1.366` |
+| Accessible      | dummy GitHub tag `v0.37.0` (host demo only) |
 | Root Switchable | dummy GitHub tag `v0.15.0` (host demo only) |
 | Cache | dummy GitHub tag `v0.6.3` (required by Root Switchable) |
 | Metrics | dummy GitHub tag `v0.8.0` (required by Root Switchable) |
-| Trashable | dummy GitHub tag `v0.14.0` (query-only; required by Accessible) |
+| Trashable | dummy GitHub tag `v0.14.1` (query-only; required by Accessible) |
 | Devise          | latest  |
 
 The dummy Gemfile keeps `github:` sources so Bundler can fetch those gems. The gemspec declares `recording_studio` and `flat_pack` so host apps get those runtime dependencies even when GitHub is the fetch source. The gemspec does not depend on `recording_studio_admin`.
