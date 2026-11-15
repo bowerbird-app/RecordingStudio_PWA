@@ -114,7 +114,7 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     granted = Workspace.create!(name: "Granted Switch Workspace")
     hidden = Workspace.create!(name: "Hidden Switch Workspace")
     grant_workspace_access!(actor: user, workspace: granted)
-    RecordingStudio.root_recording_for(hidden)
+    RecordingStudio.create_root_recording!(hidden, actor: user)
 
     get "/recording_studio_root_switchable/v1/root_switch?scope=all_workspaces"
 

@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.8.3", ::RecordingStudioPwa::VERSION
+    assert_equal "0.9.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -15,7 +15,8 @@ class RecordingStudioPwaTest < Minitest::Test
     gemspec = File.read(File.expand_path("../recording_studio_pwa.gemspec", __dir__))
 
     assert_includes gemspec, 'spec.add_dependency "rails", "~> 8.1.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.1.0", "< 8.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 7.0", "< 8.0"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio", "~>'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.133", "< 1.0"'
     refute_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.133"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_accessible"'
@@ -28,14 +29,14 @@ class RecordingStudioPwaTest < Minitest::Test
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.10.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.37.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.15.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.43.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.15.1"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.3"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.8.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.14.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.16.1"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.366"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.10.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.366"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.1.134"'
@@ -147,6 +148,7 @@ class RecordingStudioPwaTest < Minitest::Test
     assert_includes initializer_source, "config.recordable_types = [ \"Workspace\", \"Folder\", \"Page\" ]"
     assert_includes initializer_source, 'config.app_name = "Recording Studio PWA"'
     assert_includes initializer_source, "config.authorize_write"
+    assert_includes initializer_source, "root_recording.nil?"
     assert_includes initializer_source, "RecordingStudioAccessible.authorized?"
     assert_includes initializer_source, "AccessCreationContext.allowed?"
     refute_match(/authorize_write\s*=\s*->\(actor:, \*\*\) \{ actor\.present\? \}/, initializer_source)
@@ -173,10 +175,10 @@ class RecordingStudioPwaTest < Minitest::Test
     readme = File.read(File.expand_path("../README.md", __dir__))
 
     assert_includes readme, "RecordingStudio"
-    assert_includes readme, "v6.10.0"
+    assert_includes readme, "v7.0.0"
     assert_includes readme, "v0.1.366"
-    assert_includes readme, "v0.37.0"
-    assert_includes readme, "v0.14.1"
+    assert_includes readme, "v0.43.1"
+    assert_includes readme, "v0.16.1"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
