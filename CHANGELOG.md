@@ -10,8 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Root and dummy GitHub tags: FlatPack `v0.1.366`, Recording Studio `v6.10.0`, Accessible `v0.37.0`, Metrics `v0.8.0`, Trashable `v0.14.1`, Cache `v0.6.3`, Root Switchable `v0.15.0`
 - Dummy copies Recording Studio 6.9's `20261114090000_add_root_recording_id_to_recording_studio_events` so event writes store `root_recording_id`
-- Gemspec ranges stay `recording_studio >= 6.1.0, < 7` and `flat_pack >= 0.1.133, < 1.0`
 - Dummy `config.authorize_write` follows Recording Studio 6.5+: a persisted user may write with Accessible edit on the root, and Access rows go through `AccessCreationContext` or an admin grant
+
+## [0.8.3] - 2026-11-15
+
+### Changed
+- Allow recording_studio < 8.0 (core 7 phase 1)
 
 ## [0.8.2] - 2026-11-13
 
@@ -263,7 +267,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.2...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.3...HEAD
+[0.8.3]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.7.0...v0.8.0
