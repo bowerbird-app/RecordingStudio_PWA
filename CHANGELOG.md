@@ -20,8 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dummy seeds look up kept children with `Recording.kept`. Trashable 0.16 removed `recording_studio_trashable_kept_sql`
 - Dummy copies Recording Studio 6.9's `20261114090000_add_root_recording_id_to_recording_studio_events` so event writes store `root_recording_id`
 
+### Security
+- Dummy lockfile pins `msgpack` `>= 1.8.7` (GHSA-73v3-wf97-vpgj)
+
 ### Upgrade notes
 - Bump to `0.9.0`
+- Update a host lockfile that still pins `msgpack` `< 1.8.7`
 - Install Recording Studio `>= 7.0`, `< 8.0`
 - Replace root-creating `root_recording_for` calls with `create_root_recording!(recordable, actor:)`
 - Allow root creation in `authorize_write` when `root_recording` is nil. Core 7 authorizes that write before the root exists

@@ -64,6 +64,7 @@ gem "image_processing", "~> 1.2"
 
 gem "nokogiri", ">= 1.19.5"
 gem "rails-html-sanitizer", ">= 1.7.2"
+gem "msgpack", ">= 1.8.7"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

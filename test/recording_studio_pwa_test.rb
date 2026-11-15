@@ -36,6 +36,7 @@ class RecordingStudioPwaTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.8.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.16.1"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.366"'
+    assert_includes gemfile, 'gem "msgpack", ">= 1.8.7"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.366"'
     refute_includes gemfile, "recording_studio/v3.0.0"
