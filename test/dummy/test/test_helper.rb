@@ -7,7 +7,7 @@ require "rails/test_help"
 
 module DummyAccessGrants
   def grant_workspace_access!(actor:, workspace:)
-    recording = RecordingStudio.create_root_recording!(workspace, actor: actor)
+    recording = RecordingStudio.root_recording_for(workspace)
     result = RecordingStudioAccessible.bootstrap_owner_access!(recording: recording, actor: actor)
     raise result.error if result.respond_to?(:failure?) && result.failure?
 

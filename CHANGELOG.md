@@ -7,22 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.8.3] - 2026-11-14
+### Changed
+- Root and dummy GitHub tags: FlatPack `v0.1.366`, Recording Studio `v6.10.0`, Accessible `v0.37.0`, Metrics `v0.8.0`, Trashable `v0.14.1`, Cache `v0.6.3`, Root Switchable `v0.15.0`
+- Dummy copies Recording Studio 6.9's `20261114090000_add_root_recording_id_to_recording_studio_events` so event writes store `root_recording_id`
+- Dummy `config.authorize_write` follows Recording Studio 6.5+: a persisted user may write with Accessible edit on the root, and Access rows go through `AccessCreationContext` or an admin grant
+
+## [0.8.3] - 2026-11-15
 
 ### Changed
-- Gemspec requires `recording_studio` `>= 7.0`, `< 8.0`. `flat_pack` stays `>= 0.1.133`, `< 1.0`. Rails stays `~> 8.1.0`
-- Root and dummy GitHub tags: Recording Studio `v7.0.0`, FlatPack `v0.1.376`, Accessible `v0.43.0`, Trashable `v0.16.0`. Metrics stays `v0.8.0`, Cache stays `v0.6.3`, Root Switchable stays `v0.15.0`
-- Dummy seeds create workspace roots with `RecordingStudio.create_root_recording!`. `root_recording_for` only finds an existing root
-- Dummy `config.authorize_write` allows a persisted user to create a root. Later writes still need Accessible edit on that root. Access rows still go through `AccessCreationContext` or an admin grant
-- Dummy seed lookup of an existing child uses `Recording.kept`
-- Dummy already includes `20261114090000_add_root_recording_id_to_recording_studio_events`. Core 7.0.0 adds no further migration
-
-### Upgrade notes
-- Bump to `0.8.3`
-- Hosts need Recording Studio `>= 7.0`, `< 8.0`
-- A call that used `RecordingStudio.root_recording_for` to create a missing root now gets `nil`. Create that root with `RecordingStudio.create_root_recording!(recordable, actor:)`. A second call returns the same root and does not append another event
-- `authorize_write` runs for that create with `root_recording: nil`. Allow the actors who may open a root, then keep the existing edit check for later writes
-- No new core migration in 7.0.0. Hosts that are not already on Recording Studio 6.9+ still need `20261114090000_add_root_recording_id_to_recording_studio_events` before event writes
+- Allow recording_studio < 8.0 (core 7 phase 1)
 
 ## [0.8.2] - 2026-11-13
 

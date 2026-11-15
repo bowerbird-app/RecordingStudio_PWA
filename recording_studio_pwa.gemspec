@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.homepage    = "https://github.com/bowerbird-app/RecordingStudio_PWA"
   spec.summary     = "Progressive Web App addon for Recording Studio"
   spec.description = "A Recording Studio addon engine for host apps that need a Progressive Web App shell, " \
-                     "compatible with Recording Studio >= 7.0, Rails 8.1, and FlatPack."
+                     "compatible with Recording Studio >= 6.1.0, Rails 8.1, and FlatPack."
   spec.license     = "MIT"
   spec.required_ruby_version = ">= 3.3.0"
 
@@ -24,5 +24,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "flat_pack", ">= 0.1.133", "< 1.0"
   spec.add_dependency "rails", "~> 8.1.0"
-  spec.add_dependency "recording_studio", ">= 7.0", "< 8.0"
+  spec.add_dependency "recording_studio", ">= 6.14.0", "< 8.0"
 end
