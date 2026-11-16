@@ -9,12 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.9.1] - 2026-11-16
 
+### Security
+- Dummy lockfile pins `puma` `>= 8.0.3`. `8.0.2` is the version in GHSA-86xc-wrr9-xmmq, GHSA-jm4r-w4xx-qxw7, GHSA-m5xw-3hrw-qcmf, GHSA-r885-m39c-939g, GHSA-rf6g-xhmp-gm7v, GHSA-x646-wp7c-h9mg, and GHSA-xw3h-pgr9-3vg7
+
 ### Changed
 - Dummy GitHub tags move to the latest releases: Recording Studio `v7.3.0` (was `v7.0.0`), FlatPack `v0.1.377` (was `v0.1.366`), Accessible `v0.45.1` (was `v0.43.1`), Metrics `v0.9.0` (was `v0.8.0`), Trashable `v1.0.0` (was `v0.16.1`), Cache `v0.7.0` (was `v0.6.3`), Root Switchable `v0.16.0` (was `v0.15.1`)
 - The gemspec stays `recording_studio` `>= 7.0`, `< 8.0`. The root Gemfile stays on Recording Studio `v7.0.0` and FlatPack `v0.1.366` for the gem suite
 
 ### Upgrade notes
 - Bump to `0.9.1`
+- Update a host lockfile that still pins `puma` `< 8.0.3`
 - No migration. Root creation stays `RecordingStudio.create_root_recording!`. `root_recording_for` still only finds a root
 - Hosts that copy the dummy addon pins need the tags above. Root Switchable `v0.16.0` requires Accessible `>= 0.44.0`, `< 1.0`, Metrics `>= 0.9.0`, `< 1.0`, and Cache `>= 0.5`, `< 1.0`. Accessible `v0.45.1` accepts Trashable `>= 0.17.0`, `< 2.0`, including Trashable `v1.0.0`
 - Trashable `v1.0.0` removes `RecordingStudioTrashable::Hooks`. This dummy does not call that API. Register leftover hooks on `RecordingStudio.configuration.hooks`
