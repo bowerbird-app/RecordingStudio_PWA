@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Root and dummy GitHub tags: FlatPack `v0.1.377` (root was `v0.1.366`; dummy was already `v0.1.377`), Recording Studio `v7.4.0` (root was `v7.0.0`; dummy was `v7.3.0`)
+- The gemspec stays `recording_studio` `>= 7.0`, `< 8.0` and `flat_pack` `>= 0.1.133`, `< 1.0`
+
 ## [0.9.1] - 2026-11-16
 
 ### Security
