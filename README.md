@@ -1,6 +1,6 @@
 # Recording Studio PWA
 
-A Recording Studio addon that gives a host app one installable Progressive Web App. This gem is `recording_studio_pwa` (`RecordingStudioPwa`) and works with Recording Studio >= 7.0 (dummy runs on core 7.3.0).
+A Recording Studio addon that gives a host app one installable Progressive Web App. This gem is `recording_studio_pwa` (`RecordingStudioPwa`) and works with Recording Studio >= 7.0 (dummy runs on core 7.4.0).
 
 Hosts stay thin. This gem owns the host-level shell: manifest, service worker, icons, theme color, and a layout wrap around Recording Studio's default layout. Other gems add a slice later.
 
@@ -14,7 +14,7 @@ Other gems append to the host service worker through `RecordingStudioPwa.registe
 - **Rails 8 PWA routes** — this gem owns the `rails/pwa#manifest` and `#service_worker` views; hosts enable the routes
 - **Layout wrap** — `RecordingStudioPwa::UsesPwaLayout` wraps `recording_studio/default_layout` and does not copy PageNav, flash, Open Graph, or FlatPack CSS
 - **Slice API** — register slices globally, enable them per recordable type; installing the gem does not opt a host in
-- **Recording Studio** (`>= 7.0, < 8.0` in the gemspec; dummy GitHub tag `v7.3.0`)
+- **Recording Studio** (`>= 7.0, < 8.0` in the gemspec; dummy GitHub tag `v7.4.0`)
 - **FlatPack** UI (`>= 0.1.133, < 1.0` in the gemspec; dummy GitHub tag `v0.1.377`)
 - **Rails** 8.1
 - **Dummy app** (`test/dummy/`) with Devise sign-in, host name **Recording Studio PWA**, charcoal host icons, the Template Demo at `/`, an example install slice at `/pwa/install`, and FlatPack's rounded theme on `<html>`
@@ -225,7 +225,7 @@ Recording Studio's default layout still puts `data-theme` on `<body>`. This gem 
 | Rails           | 8.1+ (`~> 8.1.0` in the gemspec) |
 | PostgreSQL      | 16      |
 | TailwindCSS     | 4 (dummy host only) |
-| RecordingStudio | `>= 7.0, < 8.0` in the gemspec; dummy GitHub tag `v7.3.0` |
+| RecordingStudio | `>= 7.0, < 8.0` in the gemspec; dummy GitHub tag `v7.4.0` |
 | FlatPack        | `>= 0.1.133, < 1.0` in the gemspec; dummy GitHub tag `v0.1.377` |
 | Accessible      | dummy GitHub tag `v0.45.1` (host demo only) |
 | Root Switchable | dummy GitHub tag `v0.16.0` (host demo only) |

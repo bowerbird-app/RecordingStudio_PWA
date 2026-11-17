@@ -29,7 +29,7 @@ class RecordingStudioPwaTest < Minitest::Test
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.3.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.4.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.45.1"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.0"'
@@ -38,8 +38,8 @@ class RecordingStudioPwaTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.377"'
     assert_includes gemfile, 'gem "msgpack", ">= 1.8.7"'
     assert_includes gemfile, 'gem "puma", ">= 8.0.3"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.366"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.4.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.377"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.1.134"'
     refute_includes gemfile, 'tag: "0.3.1"'
@@ -177,7 +177,7 @@ class RecordingStudioPwaTest < Minitest::Test
     readme = File.read(File.expand_path("../README.md", __dir__))
 
     assert_includes readme, "RecordingStudio"
-    assert_includes readme, "v7.3.0"
+    assert_includes readme, "v7.4.0"
     assert_includes readme, "v0.1.377"
     assert_includes readme, "v0.45.1"
     assert_includes readme, "v1.0.0"
