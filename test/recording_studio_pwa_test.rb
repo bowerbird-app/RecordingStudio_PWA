@@ -181,6 +181,8 @@ class RecordingStudioPwaTest < Minitest::Test
     assert_includes readme, "v0.1.378"
     assert_includes readme, "v0.54.0"
     assert_includes readme, "v1.2.0"
+    assert_includes readme, "the dummy bundles it directly"
+    assert_includes readme, "Accessible 0.54 does not require"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
