@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-11-18
+
 ### Changed
-- Root and dummy GitHub tags: FlatPack `v0.1.377` (root was `v0.1.366`; dummy was already `v0.1.377`), Recording Studio `v7.4.0` (root was `v7.0.0`; dummy was `v7.3.0`)
+- Root and dummy GitHub tags: FlatPack `v0.1.378` (root was `v0.1.366` in 0.9.1, then `v0.1.377`; dummy was `v0.1.377`), Recording Studio `v7.7.1` (root was `v7.0.0` in 0.9.1, then `v7.4.0`; dummy was `v7.3.0` in 0.9.1, then `v7.4.0`)
+- Dummy GitHub tags: Accessible `v0.54.0` (was `v0.45.1`), Metrics `v0.9.1` (was `v0.9.0`), Trashable `v1.2.0` (was `v1.0.0`). Cache stays `v0.7.0`. Root Switchable stays `v0.16.0`
 - The gemspec stays `recording_studio` `>= 7.0`, `< 8.0` and `flat_pack` `>= 0.1.133`, `< 1.0`
+
+### Upgrade notes
+- Bump to `0.9.2`
+- Hosts that copy the dummy addon pins need Recording Studio `v7.7.1`, FlatPack `v0.1.378`, Accessible `v0.54.0`, Metrics `v0.9.1`, and Trashable `v1.2.0`. Cache stays `v0.7.0`. Root Switchable stays `v0.16.0`
+- Accessible `v0.54.0` requires Recording Studio `>= 7.7.0`
+- The dummy does not copy Recording Studio 7.4, 7.5, or 7.7 root-index migrations
 
 ## [0.9.1] - 2026-11-16
 
@@ -306,7 +315,8 @@ First release of `recording_studio_pwa` after renaming the copied Recording Stud
 - If the dummy-style host still uses Accessible, pin `recording_studio_accessible` to `v0.7.0`
 - Keep `data-theme="rounded"` on the `<html>` element. If you use Recording Studio's default layout, render the `recording_studio/default_layout_head` hook so the theme is copied onto `<html>`
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.9.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.9.2...HEAD
+[0.9.2]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.3...v0.9.0
 [0.8.3]: https://github.com/bowerbird-app/RecordingStudio_PWA/compare/v0.8.2...v0.8.3
