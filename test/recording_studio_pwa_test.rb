@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.9.2", ::RecordingStudioPwa::VERSION
+    assert_equal "0.10.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -29,20 +29,33 @@ class RecordingStudioPwaTest < Minitest::Test
 
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.7.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.54.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.2.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.378"'
+    assert_includes gemfile, 'gem "recording_studio", "~> 7.8", github: "bowerbird-app/RecordingStudio", tag: "v7.8.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.55.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.2.3"'
+    assert_includes gemfile, 'gem "flat_pack", "~> 0.2", github: "bowerbird-app/flatpack", tag: "v0.2.0"'
     assert_includes gemfile, 'gem "msgpack", ">= 1.8.7"'
     assert_includes gemfile, 'gem "puma", ">= 8.0.3"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.7.1"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.378"'
+    assert_includes root_gemfile, 'gem "recording_studio", "~> 7.8", github: "bowerbird-app/RecordingStudio", tag: "v7.8.0"'
+    assert_includes root_gemfile, 'gem "flat_pack", "~> 0.2", github: "bowerbird-app/flatpack", tag: "v0.2.0"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.1.134"'
     refute_includes gemfile, 'tag: "0.3.1"'
+    refute_includes gemfile, 'tag: "v7.7.1"'
+    refute_includes gemfile, 'tag: "v0.1.378"'
+  end
+
+  def test_dummy_drops_flat_pack_heroicons_pin_and_icon_controller
+    importmap = File.read(File.expand_path("dummy/config/importmap.rb", __dir__))
+    install_page = File.read(File.expand_path("dummy/install_page.html", __dir__))
+
+    refute_includes importmap, "flat_pack/heroicons"
+    refute_includes importmap, "icon_controller"
+    refute_includes install_page, "flat_pack/heroicons"
+    refute_includes install_page, "icon_controller"
+    assert_includes importmap, "controllers/flat_pack"
   end
 
   def test_template_does_not_ship_copied_core_hooks_or_base_service
@@ -177,12 +190,13 @@ class RecordingStudioPwaTest < Minitest::Test
     readme = File.read(File.expand_path("../README.md", __dir__))
 
     assert_includes readme, "RecordingStudio"
-    assert_includes readme, "v7.7.1"
-    assert_includes readme, "v0.1.378"
-    assert_includes readme, "v0.54.0"
-    assert_includes readme, "v1.2.0"
+    assert_includes readme, "v7.8.0"
+    assert_includes readme, "v0.2.0"
+    assert_includes readme, "v0.55.0"
+    assert_includes readme, "v1.2.3"
     assert_includes readme, "the dummy bundles it directly"
-    assert_includes readme, "Accessible 0.54 does not require"
+    assert_includes readme, "Accessible 0.55 does not require"
+    assert_includes readme, "flat_pack/heroicons"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
