@@ -7,7 +7,3 @@ RecordingStudioPwa.configure do |config|
   config.description = "Recording Studio PWA"
   config.public_page_paths = ["/users/sign_in"]
 end
-
-Rails.application.config.to_prepare do
-  RecordingStudioPwa.register_slice(InstallSlice)
-end

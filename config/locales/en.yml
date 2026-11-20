@@ -3,3 +3,39 @@ en:
     pwa:
       web_app:
         default_name: "App"
+      install:
+        title: "Install App"
+        subtitle: "Install the %{site_name} app on your home screen. It opens like an app, no app store needed."
+        back: "Home"
+        button: "Install"
+        installed: "This app is already on this device."
+        plugin_name: "Install app"
+        plugin_description: "Save this app on your phone or computer."
+        shortcut_name: "Add to home screen"
+        shortcut_short_name: "Install"
+        shortcut_description: "Save this app on your phone or computer"
+        devices:
+          iphone:
+            title: "iPhone"
+            steps:
+              - "Open this page in Safari."
+              - "Tap the Share button (the square with an up arrow)."
+              - "Scroll down and tap Add to Home Screen."
+              - "Tap Add. The app appears on your home screen."
+          android:
+            title: "Android"
+            steps:
+              - "Open this page in Chrome."
+              - "Tap Install above. If you don't see it, open the Chrome menu and tap Add to Home Screen."
+          mac:
+            title: "Mac"
+            steps:
+              - "Open this page in Safari."
+              - "Choose File, then Add to Dock."
+              - "Click Add. The app opens from your Dock."
+            note: "In Chrome or Edge, click Install above."
+          pc:
+            title: "PC"
+            steps:
+              - "Open this page in Chrome or Edge."
+              - "Tap Install above. If you don't see it, use the install icon in the address bar."

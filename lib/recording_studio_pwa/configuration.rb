@@ -17,13 +17,15 @@ module RecordingStudioPwa
       display: "standalone",
       icon_path: "/icon.png",
       public_page_paths: [],
-      layout: "recording_studio_pwa"
+      layout: "recording_studio_pwa",
+      plugin_directory: false
     }.freeze
+    FALSEY = [nil, false, "", "0", "false", "off", "no"].freeze
 
     attr_accessor :name, :short_name, :description,
                   :theme_color, :background_color, :display, :icon_path,
                   :public_page_paths
-    attr_reader :hooks, :layout, :start_url, :scope
+    attr_reader :hooks, :layout, :start_url, :scope, :plugin_directory
 
     def self.same_origin_relative_path(value)
       path = value.to_s.strip
@@ -60,6 +62,11 @@ module RecordingStudioPwa
 
     def scope=(value)
       @scope = self.class.same_origin_relative_path(value)
+    end
+
+    def plugin_directory=(value)
+      normalized = value.is_a?(String) ? value.strip.downcase : value
+      @plugin_directory = !FALSEY.include?(normalized)
     end
 
     def merge!(hash)

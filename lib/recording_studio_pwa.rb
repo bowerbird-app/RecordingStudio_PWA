@@ -9,8 +9,14 @@ require "recording_studio_pwa/slice"
 require "recording_studio_pwa/allows_pwa_slices"
 require "recording_studio_pwa/uses_pwa_layout"
 require "recording_studio_pwa/web_app"
+require "recording_studio_pwa/install_slice"
+require "recording_studio_pwa/install_copy"
+require "recording_studio_pwa/plugin_directory"
+require "recording_studio_pwa/host_install"
 
 module RecordingStudioPwa
+  INSTALL_PATH = "/pwa/install"
+
   class << self
     def configuration
       @configuration ||= Configuration.new
@@ -26,6 +32,11 @@ module RecordingStudioPwa
 
     def register_slice(klass)
       registry.register(klass)
+    end
+
+    def prepare
+      register_slice(InstallSlice)
+      PluginDirectory.sync
     end
 
     def register_service_worker_extension(partial_path)

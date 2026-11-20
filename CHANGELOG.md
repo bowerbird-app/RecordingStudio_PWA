@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-20
+
+### Added
+- Gem-owned install page at `/pwa/install`, titled **Install App**, with the subtitle “Install the {site name} app on your home screen” (the Site Settings name when that gem is loaded, otherwise the PWA name) and a FlatPack accordion for iPhone, Android, Mac, and PC. The accordion is the fallback when the Install button does not appear, and the steps follow the browser.
+- Install button that calls the browser install prompt when `beforeinstallprompt` fires, and an already-installed state in standalone mode
+- English copy under `recording_studio.pwa.install` so hosts can override it
+- `config.plugin_directory` (default `false`). When true, and `recording_studio_plugins` is loaded, the gem registers a Plugins directory row whose action opens the install page
+
+### Upgrade notes
+- Bump to `0.11.0`. No migration
+- Hosts that copied an install slice delete that slice class, its `register_slice` call, the host `GET /pwa/install` route, controller, and view. Keep `recording_studio_pwa_slices { slice :install }` on types that should offer the page and the manifest shortcut
+- Installing the gem does not add the page or the shortcut. A recordable type has to enable `:install`
+- Do not add `/pwa/install` to `public_page_paths`. The service worker does not cache that page
+- Set `config.plugin_directory = true` only when the host loads `recording_studio_plugins`. This gem does not depend on that gem
+- The Plugins row's Install action shows only for workspace members who can edit. That limit belongs to Plugins
+- Override install-page copy under `recording_studio.pwa.install` in the host locale
+
 ## [0.10.0] - 2026-11-19
 
 ### Changed

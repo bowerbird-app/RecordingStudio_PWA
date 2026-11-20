@@ -1,0 +1,41 @@
+<% content_for :title, t("recording_studio.pwa.install.title") %>
+<% content_for :subtitle, RecordingStudioPwa::InstallCopy.subtitle(controller) %>
+<% flat_pack_page_nav(
+     round: true,
+     style: :default,
+     back_href: RecordingStudioPwa.start_url,
+     back_tooltip: t("recording_studio.pwa.install.back")
+   ) %>
+
+<div class="flex w-full flex-col gap-6" data-controller="recording-studio-pwa--install">
+  <div data-recording-studio-pwa--install-target="install" hidden>
+    <%= render FlatPack::Button::Component.new(
+          text: t("recording_studio.pwa.install.button"),
+          style: :primary,
+          data: { action: "recording-studio-pwa--install#install" }
+        ) %>
+  </div>
+
+  <div data-recording-studio-pwa--install-target="installed" hidden>
+    <%= render FlatPack::Alert::Component.new(
+          description: t("recording_studio.pwa.install.installed"),
+          style: :success
+        ) %>
+  </div>
+
+  <%= render FlatPack::Accordion::Component.new do |accordion| %>
+    <% RecordingStudioPwa::InstallSlice::DEVICES.each do |device| %>
+      <% accordion.item(id: device, title: t("recording_studio.pwa.install.devices.#{device}.title")) do %>
+        <ol class="space-y-3 text-sm leading-6 list-decimal pl-5">
+          <% t("recording_studio.pwa.install.devices.#{device}.steps").each do |step| %>
+            <li><%= step %></li>
+          <% end %>
+        </ol>
+        <% note = t("recording_studio.pwa.install.devices.#{device}.note", default: "").presence %>
+        <% if note %>
+          <p class="mt-3 text-sm leading-6"><%= note %></p>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

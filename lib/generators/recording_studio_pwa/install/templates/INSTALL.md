@@ -9,5 +9,5 @@ Next steps:
 5. PWA chrome does not need extra database tables. Only run `bin/rails generate recording_studio_pwa:migrations` if you still want the sample engine tables.
 6. Apply any pending migrations with `bin/rails db:migrate`.
 7. Run `bin/rails tailwindcss:build` if you use Tailwind CSS.
-8. Installing the gem does not enable slices. On the types that should offer extra PWA pages, add `recording_studio_pwa_slices { slice :install }` (or another registered slice).
+8. The gem owns `/pwa/install`. Enable it with `recording_studio_pwa_slices { slice :install }` on the types that should offer the page and the manifest shortcut. Delete any host copy of that page. Do not add `/pwa/install` to `public_page_paths`. Set `config.plugin_directory = true` only when `recording_studio_plugins` is loaded.
 9. Keep strict recordable declarations enabled and add `recording_studio_recordable(...)` to every configured recordable before running `RecordingStudio.validate_recordable_declarations!`.

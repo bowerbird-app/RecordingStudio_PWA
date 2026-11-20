@@ -34,8 +34,9 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Install app"
-    assert_select "title", text: "Install app"
+    assert_select "h1", text: "Install App"
+    assert_select "title", text: "Install App"
+    assert_select "p", text: "Install the Recording Studio PWA app on your home screen. It opens like an app, no app store needed.", count: 1
     refute_includes response.body, "Open it in its own window"
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav[aria-label='Page navigation']", count: 1
@@ -52,22 +53,45 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_select "[aria-controls='mac-content'] span.font-medium", text: "Mac", count: 1
     assert_select "[aria-controls='pc-content'] span.font-medium", text: "PC", count: 1
     assert_select "svg.w-5.h-5[data-flat-pack--accordion-target='icon']", count: 4
-    assert_includes response.body, "Open Share in Safari."
-    assert_includes response.body, "Choose Add to Home Screen."
-    assert_includes response.body, "Tap Add. The icon appears on your home screen."
-    assert_includes response.body, "Open the Chrome menu."
-    assert_includes response.body, "Choose Install app or Add to Home Screen."
-    assert_includes response.body, "Confirm. The icon appears on your home screen."
-    assert_includes response.body, "Look for the install icon in the toolbar."
-    assert_includes response.body, "Look for the install icon in the address bar."
-    assert_includes response.body, "Choose Install."
-    assert_includes response.body, "The app opens in its own window the next time you launch it."
+    assert_includes response.body, "Open this page in Safari."
+    assert_includes response.body, "Tap the Share button (the square with an up arrow)."
+    assert_includes response.body, "Scroll down and tap Add to Home Screen."
+    assert_includes response.body, "Tap Add. The app appears on your home screen."
+    refute_includes response.body, "Open Share in Safari."
+    assert_includes response.body, "Open this page in Chrome."
+    assert_includes response.body, "Tap Install above. If you don&#39;t see it, open the Chrome menu and tap Add to Home Screen."
+    assert_includes response.body, "Choose File, then Add to Dock."
+    assert_includes response.body, "Click Add. The app opens from your Dock."
+    assert_includes response.body, "In Chrome or Edge, click Install above."
+    assert_includes response.body, "Open this page in Chrome or Edge."
+    assert_includes response.body, "Tap Install above. If you don&#39;t see it, use the install icon in the address bar."
+    refute_includes response.body, "Open the Chrome menu."
+    refute_includes response.body, "Choose Install app or Add to Home Screen."
+    refute_includes response.body, "Look for the install icon in the toolbar."
+    refute_includes response.body, "Choose Install."
+    refute_includes response.body, "The app opens in its own window the next time you launch it."
     refute_includes response.body, "On a phone"
     refute_includes response.body, "On a computer"
     refute_includes response.body, "Addon Template"
     refute_includes response.body, "GemTemplate"
     assert_includes response.body, 'document.documentElement.setAttribute("data-theme", "rounded")'
     assert_includes response.body, "Add to Home Screen"
+    assert_select "h1", count: 1
+    assert_select "[data-controller='recording-studio-pwa--install']", count: 1
+    assert_includes response.body, "recording_studio_pwa/install_controller"
+    assert_select "[data-recording-studio-pwa--install-target='install'][hidden]", count: 1
+    assert_select "[data-recording-studio-pwa--install-target='installed'][hidden]", count: 1
+    assert_select "[data-recording-studio-pwa--install-target='install'] button", text: "Install", count: 1
+    assert_includes response.body, "This app is already on this device."
+  end
+
+  test "install page is public" do
+    sign_out @user
+
+    get pwa_install_path
+
+    assert_response :success
+    assert_select "h1", text: "Install App"
   end
 
   test "gem default web app name is literal english App when host name is blank" do
@@ -121,6 +145,11 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_response :not_found
 
     sign_in @user
+    get pwa_manifest_path(format: :json)
+    manifest = JSON.parse(response.body)
+    shortcuts = Array(manifest["shortcuts"])
+    refute(shortcuts.any? { |shortcut| shortcut["url"] == "/pwa/install" })
+
     get root_path
     assert_response :success
     assert_select "h1", text: "Template Demo"
@@ -166,6 +195,15 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "/users/sign_in"
     refute_includes response.body, '"/pwa/install"'
     refute_includes response.body, "recording-studio-pwa-test-extension"
+  end
+
+  test "service worker template body is unchanged" do
+    template = RecordingStudioPwa::Engine.root.join("app/views/pwa/service-worker.js.erb")
+    digest = Digest::SHA256.file(template).hexdigest
+
+    assert_equal "f27ea454e820d1ed9525ce77c697d2da39e75da0e68aafa6681de898de2576a7", digest
+    assert_empty RecordingStudioPwa::InstallSlice.service_worker_routes
+    refute_includes RecordingStudioPwa::Configuration::DEFAULTS.fetch(:public_page_paths), RecordingStudioPwa::INSTALL_PATH
   end
 
   test "service worker output is unchanged when no extensions are registered" do

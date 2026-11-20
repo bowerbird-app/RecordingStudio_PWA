@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioPwaTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.10.0", ::RecordingStudioPwa::VERSION
+    assert_equal "0.11.0", ::RecordingStudioPwa::VERSION
   end
 
   def test_engine_exists
@@ -22,6 +22,8 @@ class RecordingStudioPwaTest < Minitest::Test
     refute_includes gemspec, 'spec.add_dependency "recording_studio_accessible"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
+    refute_includes gemspec, "recording_studio_plugins"
+    refute_includes gemspec, "recording_studio_site_settings"
   end
 
   def test_dummy_gemfile_pins_verified_6x_github_tags
@@ -109,23 +111,25 @@ class RecordingStudioPwaTest < Minitest::Test
 
   def test_dummy_host_owns_pwa_name_and_charcoal_icons
     pwa_initializer = File.read(File.expand_path("dummy/config/initializers/recording_studio_pwa.rb", __dir__))
-    install_view = File.read(File.expand_path("dummy/app/views/pwa/installs/show.html.erb", __dir__))
+    install_view = File.read(File.expand_path("../app/views/recording_studio_pwa/installs/show.html.erb", __dir__))
     icon_svg = File.read(File.expand_path("dummy/public/icon.svg", __dir__))
 
     assert_includes pwa_initializer, 'config.name = "Recording Studio PWA"'
     assert_includes pwa_initializer, 'config.short_name = "Recording Studio PWA"'
     refute_includes pwa_initializer, "Addon Template"
-    assert_includes install_view, 'dummy_page_nav(title: "Install app"'
-    assert_includes install_view, 'title: "Install app"'
+    refute_includes pwa_initializer, "register_slice"
+    refute File.exist?(File.expand_path("dummy/app/views/pwa/installs/show.html.erb", __dir__))
+    refute File.exist?(File.expand_path("dummy/app/slices/install_slice.rb", __dir__))
+    refute File.exist?(File.expand_path("dummy/app/controllers/pwa/installs_controller.rb", __dir__))
+    assert_includes install_view, 't("recording_studio.pwa.install.title")'
+    assert_includes install_view, "content_for :subtitle"
     refute_includes install_view, "subtitle:"
     assert_includes install_view, "FlatPack::Accordion::Component.new"
-    assert_includes install_view, 'accordion.item(id: "iphone", title: "iPhone")'
-    assert_includes install_view, 'accordion.item(id: "android", title: "Android")'
-    assert_includes install_view, 'accordion.item(id: "mac", title: "Mac")'
-    assert_includes install_view, 'accordion.item(id: "pc", title: "PC")'
+    assert_includes install_view, "RecordingStudioPwa::InstallSlice::DEVICES"
     refute_includes install_view, "FlatPack::Card::Component"
     refute_includes install_view, "Add to home screen"
     refute_includes install_view, "allow_multiple: true"
+    refute_includes install_view, "dummy_page_nav"
     assert_includes icon_svg, 'fill="#333333"'
     refute_includes icon_svg, 'fill="red"'
     assert_nil RecordingStudioPwa::Configuration::DEFAULTS.fetch(:name)

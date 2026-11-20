@@ -14,8 +14,10 @@ To use the engine:
 2. Start your Rails server
 3. Visit http://localhost:3000/recording_studio_pwa
 
-Installing the gem does not enable PWA slices. Add them per recordable type:
+The gem owns `/pwa/install`. Installing the gem does not enable it. Add this on the types that should offer the page and the shortcut:
 
     recording_studio_pwa_slices { slice :install }
+
+Delete a host copy of that page, route, and slice class. Do not add `/pwa/install` to `public_page_paths`. Set `config.plugin_directory = true` only when `recording_studio_plugins` is loaded. The Plugins row's Install action shows only for workspace members who can edit.
 
 ===============================================================================
