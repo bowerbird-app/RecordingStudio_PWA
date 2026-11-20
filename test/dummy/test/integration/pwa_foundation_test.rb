@@ -34,8 +34,9 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Install app"
-    assert_select "title", text: "Install app"
+    assert_select "h1", text: "Install mobile app"
+    assert_select "title", text: "Install mobile app"
+    assert_select "p", text: "Add this site to your home screen. It opens like an app, no app store needed.", count: 1
     refute_includes response.body, "Open it in its own window"
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav[aria-label='Page navigation']", count: 1
@@ -52,9 +53,11 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_select "[aria-controls='mac-content'] span.font-medium", text: "Mac", count: 1
     assert_select "[aria-controls='pc-content'] span.font-medium", text: "PC", count: 1
     assert_select "svg.w-5.h-5[data-flat-pack--accordion-target='icon']", count: 4
-    assert_includes response.body, "Open Share in Safari."
-    assert_includes response.body, "Choose Add to Home Screen."
-    assert_includes response.body, "Tap Add. The icon appears on your home screen."
+    assert_includes response.body, "Open this page in Safari."
+    assert_includes response.body, "Tap the Share button (the square with an up arrow)."
+    assert_includes response.body, "Scroll down and tap Add to Home Screen."
+    assert_includes response.body, "Tap Add. The app appears on your home screen."
+    refute_includes response.body, "Open Share in Safari."
     assert_includes response.body, "Open the Chrome menu."
     assert_includes response.body, "Choose Install app or Add to Home Screen."
     assert_includes response.body, "Confirm. The icon appears on your home screen."
@@ -83,7 +86,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Install app"
+    assert_select "h1", text: "Install mobile app"
   end
 
   test "gem default web app name is literal english App when host name is blank" do

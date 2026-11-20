@@ -31,7 +31,7 @@ Then open the app and sign in with:
 ## Useful Routes
 
 - `/` - Template Demo on the shared Recording Studio layout
-- `/pwa/install` - gem install page titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC. Public, including when signed out
+- `/pwa/install` - gem install page titled **Install mobile app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC. Public, including when signed out
 - `/manifest` - host web app manifest (`name` / `short_name` are Recording Studio PWA). JSON for any Accept, including `text/html`
 - `/service-worker` - host service worker
 - `/recording_studio` - redirects to `/` while the mounted Recording Studio engine stays available under that prefix for non-root routes

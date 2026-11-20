@@ -28,7 +28,7 @@ module RecordingStudioPwa
 
     def attributes
       {
-        name: text("title"),
+        name: text("plugin_name"),
         description: text("plugin_description"),
         category: :other,
         icon: "arrow-down-tray",

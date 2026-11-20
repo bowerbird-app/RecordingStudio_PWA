@@ -121,6 +121,7 @@ class RecordingStudioPwaTest < Minitest::Test
     refute File.exist?(File.expand_path("dummy/app/slices/install_slice.rb", __dir__))
     refute File.exist?(File.expand_path("dummy/app/controllers/pwa/installs_controller.rb", __dir__))
     assert_includes install_view, 't("recording_studio.pwa.install.title")'
+    assert_includes install_view, "content_for :subtitle"
     refute_includes install_view, "subtitle:"
     assert_includes install_view, "FlatPack::Accordion::Component.new"
     assert_includes install_view, "RecordingStudioPwa::InstallSlice::DEVICES"
