@@ -4,7 +4,7 @@ en:
       web_app:
         default_name: "App"
       install:
-        title: "Install PWA Mobile App"
+        title: "Install App"
         subtitle: "Add %{site_name} to your home screen. It opens like an app, no app store needed."
         back: "Home"
         button: "Install"
@@ -33,7 +33,7 @@ en:
               - "Open this page in Safari."
               - "Choose File, then Add to Dock."
               - "Click Add. The app opens from your Dock."
-            note: "In Chrome or Edge, tap Install above."
+            note: "In Chrome or Edge, click Install above."
           pc:
             title: "PC"
             steps:

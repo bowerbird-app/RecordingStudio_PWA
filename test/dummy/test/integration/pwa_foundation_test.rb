@@ -34,8 +34,8 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Install PWA Mobile App"
-    assert_select "title", text: "Install PWA Mobile App"
+    assert_select "h1", text: "Install App"
+    assert_select "title", text: "Install App"
     assert_select "p", text: "Add Recording Studio PWA to your home screen. It opens like an app, no app store needed.", count: 1
     refute_includes response.body, "Open it in its own window"
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
@@ -62,7 +62,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Tap Install above. If you don&#39;t see it, open the Chrome menu and tap Add to Home Screen."
     assert_includes response.body, "Choose File, then Add to Dock."
     assert_includes response.body, "Click Add. The app opens from your Dock."
-    assert_includes response.body, "In Chrome or Edge, tap Install above."
+    assert_includes response.body, "In Chrome or Edge, click Install above."
     assert_includes response.body, "Open this page in Chrome or Edge."
     assert_includes response.body, "Tap Install above. If you don&#39;t see it, use the install icon in the address bar."
     refute_includes response.body, "Open the Chrome menu."
@@ -91,7 +91,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Install PWA Mobile App"
+    assert_select "h1", text: "Install App"
   end
 
   test "gem default web app name is literal english App when host name is blank" do

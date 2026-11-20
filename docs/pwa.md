@@ -77,7 +77,7 @@ While some recordable type enables `:install`, the gem draws `GET /pwa/install` 
 
 ## Install page
 
-`/pwa/install` is a public static page. It does not require a signed-in session. The title is **Install PWA Mobile App**, with a one-sentence subtitle under it. The subtitle names the site from `RecordingStudioSiteSettings.name_for` and `site_root_for` when that gem is loaded and the name is present. Otherwise it uses the PWA name. This gem does not depend on Site Settings. A FlatPack accordion (iPhone, Android, Mac, PC) is the fallback when the Install button does not appear. The steps follow the browser. The page uses `UsesPwaLayout`.
+`/pwa/install` is a public static page. It does not require a signed-in session. The title is **Install App**, with a one-sentence subtitle under it. The subtitle names the site from `RecordingStudioSiteSettings.name_for` and `site_root_for` when that gem is loaded and the name is present. Otherwise it uses the PWA name. This gem does not depend on Site Settings. A FlatPack accordion (iPhone, Android, Mac, PC) is the fallback when the Install button does not appear. The steps follow the browser. The page uses `UsesPwaLayout`.
 
 A Stimulus controller (`recording-studio-pwa--install`) listens for `beforeinstallprompt`. When the browser offers one, a primary **Install** button calls `prompt()`. `appinstalled` hides the button. If the app is already running `display-mode: standalone`, the page says the app is already on this device. Browsers that never fire the prompt (iPhone Safari, Mac Safari, Firefox) leave the button hidden and open the accordion for that device. Without JavaScript the accordion is closed and the steps are still in the page.
 
@@ -123,7 +123,7 @@ Configuration is host PWA chrome plus `plugin_directory` (default `false`). The 
 - The dummy host name is **Recording Studio PWA**. That value is what `/manifest`, `apple-mobile-web-app-title`, and the browser install prompt should show.
 - Dummy icons are `/icon.png` and `/icon.svg` — a charcoal rounded-theme mark, not the red template circle.
 - `/` is still the Template Demo on Recording Studio's default layout. That page is dummy chrome, not a product screen.
-- `/pwa/install` is the gem install page on the same layout. The page title is **Install PWA Mobile App**. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC). Signed-out visitors can open it. The **Install** button stays hidden until the browser fires `beforeinstallprompt`.
+- `/pwa/install` is the gem install page on the same layout. The page title is **Install App**. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC). Signed-out visitors can open it. The **Install** button stays hidden until the browser fires `beforeinstallprompt`.
 - `/manifest` and `/service-worker` are the Rails PWA endpoints. `/manifest` returns JSON, including when the request `Accept` is `text/html` (via the gem's `pwa/manifest.html.erb`)
 - Workspace enables `:install`; Folder and Page do not
 
