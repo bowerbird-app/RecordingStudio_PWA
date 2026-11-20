@@ -25,18 +25,17 @@ en:
           android:
             title: "Android"
             steps:
-              - "Open the Chrome menu."
-              - "Choose Install app or Add to Home Screen."
-              - "Confirm. The icon appears on your home screen."
+              - "Open this page in Chrome."
+              - "Tap Install above. If you don't see it, open the Chrome menu and tap Add to Home Screen."
           mac:
             title: "Mac"
             steps:
-              - "Look for the install icon in the toolbar."
-              - "Choose Install."
-              - "The app opens in its own window the next time you launch it."
+              - "Open this page in Safari."
+              - "Choose File, then Add to Dock."
+              - "Click Add. The app opens from your Dock."
+            note: "In Chrome or Edge, tap Install above."
           pc:
             title: "PC"
             steps:
-              - "Look for the install icon in the address bar."
-              - "Choose Install."
-              - "The app opens in its own window the next time you launch it."
+              - "Open this page in Chrome or Edge."
+              - "Tap Install above. If you don't see it, use the install icon in the address bar."

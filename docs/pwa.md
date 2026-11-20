@@ -77,7 +77,7 @@ While some recordable type enables `:install`, the gem draws `GET /pwa/install` 
 
 ## Install page
 
-`/pwa/install` is a public static page. It does not require a signed-in session. The title is **Install PWA Mobile App**, with a one-sentence subtitle under it. The subtitle names the site from `RecordingStudioSiteSettings.name_for` and `site_root_for` when that gem is loaded and the name is present. Otherwise it uses the PWA name. This gem does not depend on Site Settings. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC). The page uses `UsesPwaLayout`.
+`/pwa/install` is a public static page. It does not require a signed-in session. The title is **Install PWA Mobile App**, with a one-sentence subtitle under it. The subtitle names the site from `RecordingStudioSiteSettings.name_for` and `site_root_for` when that gem is loaded and the name is present. Otherwise it uses the PWA name. This gem does not depend on Site Settings. A FlatPack accordion (iPhone, Android, Mac, PC) is the fallback when the Install button does not appear. The steps follow the browser. The page uses `UsesPwaLayout`.
 
 A Stimulus controller (`recording-studio-pwa--install`) listens for `beforeinstallprompt`. When the browser offers one, a primary **Install** button calls `prompt()`. `appinstalled` hides the button. If the app is already running `display-mode: standalone`, the page says the app is already on this device. Browsers that never fire the prompt (iPhone Safari, Mac Safari, Firefox) leave the button hidden and open the accordion for that device. Without JavaScript the accordion is closed and the steps are still in the page.
 
