@@ -89,6 +89,13 @@ module RecordingStudioPwa
       RecordingStudioPwa.configuration.hooks.run(:after_initialize, self)
     end
 
+    initializer "recording_studio_pwa.install_page", before: "importmap" do |app|
+      HostInstall.pin_importmap(app)
+      HostInstall.expose_javascript(app)
+      HostInstall.draw(app)
+      config.to_prepare { HostInstall.prepare }
+    end
+
     initializer "recording_studio_pwa.host_view_paths" do
       ActiveSupport.on_load(:action_controller) do
         append_view_path RecordingStudioPwa::Engine.root.join("app/views")

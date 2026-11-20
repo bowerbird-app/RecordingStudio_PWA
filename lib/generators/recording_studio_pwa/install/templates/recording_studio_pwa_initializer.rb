@@ -13,11 +13,16 @@ RecordingStudioPwa.configure do |config|
   # config.scope = "/"
   # config.icon_path = "/icon.png"
   # Public HTML the service worker may cache. Do not list signed-in pages.
+  # Do not add /pwa/install. The install page stays out of the worker cache.
   # config.public_page_paths = ["/users/sign_in"]
+  # Lists this gem in the Plugins directory when recording_studio_plugins is loaded.
+  # config.plugin_directory = true
 end
 
-# Register slices from this host or from other gems in to_prepare.
-# Installing this gem does not enable slices on any recordable type.
+# The gem registers RecordingStudioPwa::InstallSlice. Enable it per type:
+#   recording_studio_pwa_slices { slice :install }
+# That draws GET /pwa/install and the manifest shortcut. Installing the gem does not.
+# Register other slices from this host or from other gems in to_prepare.
 # Rails.application.config.to_prepare do
 #   RecordingStudioPwa.register_slice(SomeSlice)
 # end

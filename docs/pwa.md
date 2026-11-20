@@ -6,6 +6,7 @@ This gem owns host-level chrome only:
 
 - Web app manifest, service worker, icons, and theme color
 - A layout wrap around Recording Studio's default layout
+- The install page at `/pwa/install`, gated by the `:install` slice
 - A slice registry other gems can register into
 
 It does not own web push, offline-first sync, a second admin, or per-gem mobile redesigns.
@@ -41,7 +42,7 @@ The installable name comes from the host. Set `RecordingStudioPwa.configuration.
 
 Static copy owned by this gem ships as English Rails I18n under `recording_studio.pwa` in `config/locales/en.yml`. Rails engines load that path by default — there is no explicit `I18n.load_path` initializer in `lib/`. Hosts override keys by defining the same nested keys in their own `config/locales`, without depending on `recording_studio_internationalization`.
 
-The gem's own views (layout wrap, default-layout head, manifest JSON, service worker) have almost no hard-coded interface strings: names, theme colors, and paths come from host configuration. The only extracted default is the last-resort web app name above (`RecordingStudioPwa::WebApp.name` resolves it through `I18n.t(..., default: "App")`). Dummy install-slice titles and accordion steps stay on the host app.
+The gem's own views (layout wrap, default-layout head, manifest JSON, service worker, install page) have no hard-coded interface strings: names, theme colors, and paths come from host configuration. The last-resort web app name is `recording_studio.pwa.web_app.default_name` (`"App"`). Install-page copy lives under `recording_studio.pwa.install` (title, button, device steps, shortcut labels). Hosts override those keys in their own locale files.
 
 ```erb
 <% content_for :head do %>
@@ -55,15 +56,7 @@ Core still themes `<body>`. This gem puts FlatPack's `rounded` theme on `<html>`
 
 Slices follow the same shape as Recording Studio Admin sections, without depending on `recording_studio_admin`.
 
-Register globally in `to_prepare`:
-
-```ruby
-Rails.application.config.to_prepare do
-  RecordingStudioPwa.register_slice(InstallSlice)
-end
-```
-
-Enable per recordable type. The dummy Workspace opts in; Folder and Page do not:
+The gem registers `RecordingStudioPwa::InstallSlice` (`:install`) when the app prepares. That registration does not turn the page on. Enable it per recordable type. The dummy Workspace opts in; Folder and Page do not:
 
 ```ruby
 class Workspace < ApplicationRecord
@@ -78,7 +71,31 @@ A registered slice can contribute:
 - Extra public service-worker routes
 - An offline fallback path
 
-The dummy app registers one example slice so the API is real. That slice adds `/pwa/install` and a home-screen shortcut. Disabling the slice on Workspace removes the extra path. Home stays available.
+Other gems still register their own slices in `to_prepare` with `RecordingStudioPwa.register_slice`. Do not register a second class under the key `install`.
+
+While some recordable type enables `:install`, the gem draws `GET /pwa/install` on the host (not under the engine mount) and adds one manifest shortcut to that path. Turning the slice off removes the route and the shortcut. Home stays available. Installing the gem alone does neither.
+
+## Install page
+
+`/pwa/install` is a public static page. It does not require a signed-in session. The title is **Install app**. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC). The page uses `UsesPwaLayout`.
+
+A Stimulus controller (`recording-studio-pwa--install`) listens for `beforeinstallprompt`. When the browser offers one, a primary **Install** button calls `prompt()`. `appinstalled` hides the button. If the app is already running `display-mode: standalone`, the page says the app is already on this device. Browsers that never fire the prompt (iPhone Safari, Mac Safari, Firefox) leave the button hidden and open the accordion for that device. Without JavaScript the accordion is closed and the steps are still in the page.
+
+The install page is not a public service-worker path. Do not add `/pwa/install` to `public_page_paths`. The worker must not cache it.
+
+Hosts that already shipped their own install slice delete that slice class, its `register_slice` call, the host route, controller, and view. Keep `recording_studio_pwa_slices { slice :install }` on the types that should offer the page and the shortcut. Leave `/manifest` and `/service-worker` as the Rails PWA routes.
+
+## Plugins directory
+
+`recording_studio_plugins` is optional and is not a gemspec dependency. When a host sets the flag and the Plugins gem is loaded, this gem lists itself in the directory:
+
+```ruby
+RecordingStudioPwa.configure do |config|
+  config.plugin_directory = true
+end
+```
+
+The default is `false`. The row key is `:pwa`, the name is **Install app**, the owner is `recording_studio_pwa`, and the action is **Install** pointing at `/pwa/install`. Registration runs in `to_prepare` and replaces the same row on reload. Turning the flag off removes that row. The directory shows the action only to workspace members who can edit. That is a Plugins limitation.
 
 ## Service worker
 
@@ -97,7 +114,7 @@ RecordingStudioPwa.configure do |config|
 end
 ```
 
-Configuration is host PWA chrome only (`name`, `short_name`, `description`, theme colors, `start_url`, `scope`, `display`, `icon_path`, `public_page_paths`, `layout`). There is no `api_key`, `timeout`, or `enable_feature_x`.
+Configuration is host PWA chrome plus `plugin_directory` (default `false`). The chrome keys are `name`, `short_name`, `description`, theme colors, `start_url`, `scope`, `display`, `icon_path`, `public_page_paths`, and `layout`. There is no `api_key`, `timeout`, or `enable_feature_x`.
 
 ## Dummy app
 
@@ -106,8 +123,8 @@ Configuration is host PWA chrome only (`name`, `short_name`, `description`, them
 - The dummy host name is **Recording Studio PWA**. That value is what `/manifest`, `apple-mobile-web-app-title`, and the browser install prompt should show.
 - Dummy icons are `/icon.png` and `/icon.svg` — a charcoal rounded-theme mark, not the red template circle.
 - `/` is still the Template Demo on Recording Studio's default layout. That page is dummy chrome, not a product screen.
-- `/pwa/install` is the example slice on the same layout. The page title is **Install app**. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC).
+- `/pwa/install` is the gem install page on the same layout. The page title is **Install app**. Device steps live in a FlatPack accordion (iPhone, Android, Mac, PC). Signed-out visitors can open it. The **Install** button stays hidden until the browser fires `beforeinstallprompt`.
 - `/manifest` and `/service-worker` are the Rails PWA endpoints. `/manifest` returns JSON, including when the request `Accept` is `text/html` (via the gem's `pwa/manifest.html.erb`)
 - Workspace enables `:install`; Folder and Page do not
 
-Review shots live in `docs/dummy-shots/`. The closed product shot is `pwa-install-slice.png`. Open-panel shots are `pwa-install-iphone.png`, `pwa-install-android.png`, `pwa-install-mac.png`, and `pwa-install-pc.png` (phone-width `/pwa/install`, PageNav cropped). `pwa-beforeinstallprompt.png` is extra browser chrome only when the dialog shows Recording Studio PWA and the charcoal icon.
+Review shots live in `docs/dummy-shots/`. The closed product shot is `pwa-install-slice.png`. The iPhone steps are `pwa-install-iphone.png`. The Chrome Install button is `pwa-install-android.png`. Mac and PC open-panel shots are `pwa-install-mac.png` and `pwa-install-pc.png` (phone-width `/pwa/install`, PageNav cropped). `pwa-beforeinstallprompt.png` is extra browser chrome only when the dialog shows Recording Studio PWA and the charcoal icon.

@@ -68,6 +68,22 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "GemTemplate"
     assert_includes response.body, 'document.documentElement.setAttribute("data-theme", "rounded")'
     assert_includes response.body, "Add to Home Screen"
+    assert_select "h1", count: 1
+    assert_select "[data-controller='recording-studio-pwa--install']", count: 1
+    assert_includes response.body, "recording_studio_pwa/install_controller"
+    assert_select "[data-recording-studio-pwa--install-target='install'][hidden]", count: 1
+    assert_select "[data-recording-studio-pwa--install-target='installed'][hidden]", count: 1
+    assert_select "[data-recording-studio-pwa--install-target='install'] button", text: "Install", count: 1
+    assert_includes response.body, "This app is already on this device."
+  end
+
+  test "install page is public" do
+    sign_out @user
+
+    get pwa_install_path
+
+    assert_response :success
+    assert_select "h1", text: "Install app"
   end
 
   test "gem default web app name is literal english App when host name is blank" do
@@ -121,6 +137,11 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_response :not_found
 
     sign_in @user
+    get pwa_manifest_path(format: :json)
+    manifest = JSON.parse(response.body)
+    shortcuts = Array(manifest["shortcuts"])
+    refute(shortcuts.any? { |shortcut| shortcut["url"] == "/pwa/install" })
+
     get root_path
     assert_response :success
     assert_select "h1", text: "Template Demo"
@@ -166,6 +187,15 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "/users/sign_in"
     refute_includes response.body, '"/pwa/install"'
     refute_includes response.body, "recording-studio-pwa-test-extension"
+  end
+
+  test "service worker template body is unchanged" do
+    template = RecordingStudioPwa::Engine.root.join("app/views/pwa/service-worker.js.erb")
+    digest = Digest::SHA256.file(template).hexdigest
+
+    assert_equal "f27ea454e820d1ed9525ce77c697d2da39e75da0e68aafa6681de898de2576a7", digest
+    assert_empty RecordingStudioPwa::InstallSlice.service_worker_routes
+    refute_includes RecordingStudioPwa::Configuration::DEFAULTS.fetch(:public_page_paths), RecordingStudioPwa::INSTALL_PATH
   end
 
   test "service worker output is unchanged when no extensions are registered" do

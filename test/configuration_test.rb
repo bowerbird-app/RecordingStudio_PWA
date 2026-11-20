@@ -47,6 +47,7 @@ class ConfigurationTest < Minitest::Test
     assert_equal "/", configuration.scope
     assert_equal "standalone", configuration.display
     assert_equal "recording_studio_pwa", configuration.layout
+    assert_equal false, configuration.plugin_directory
     assert_instance_of RecordingStudio::Hooks, configuration.hooks
     refute_respond_to configuration, :api_key
     refute_respond_to configuration, :enable_feature_x
@@ -70,6 +71,17 @@ class ConfigurationTest < Minitest::Test
     assert_equal 2, result.fetch(:hooks_registered).fetch(:before_initialize)
     assert_equal 1, result.fetch(:hooks_registered).fetch(:after_service)
     assert_equal @configuration.hooks.registered_counts, result.fetch(:hooks_registered)
+  end
+
+  def test_plugin_directory_coerces_falsey_strings
+    @configuration.plugin_directory = "false"
+    assert_equal false, @configuration.plugin_directory
+
+    @configuration.merge!(plugin_directory: "off")
+    assert_equal false, @configuration.plugin_directory
+
+    @configuration.plugin_directory = "true"
+    assert_equal true, @configuration.plugin_directory
   end
 
   def test_layout_defaults_to_pwa_wrap

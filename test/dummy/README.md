@@ -8,7 +8,7 @@ This Rails app exists to validate the Recording Studio PWA addon in a real host 
 - `Current.actor` wiring for Recording Studio events
 - Root workspace plus seeded folder and page recordables
 - Recording Studio default layout wrapped by the PWA layout, FlatPack assets, and Tailwind source scanning
-- Host-level `/manifest` and `/service-worker` routes named **Recording Studio PWA**, with charcoal `/icon.png` / `/icon.svg` and an example `/pwa/install` slice on Workspace only
+- Host-level `/manifest` and `/service-worker` routes named **Recording Studio PWA**, with charcoal `/icon.png` / `/icon.svg`, and the gem install page at `/pwa/install` because Workspace enables `:install`
 - Mounted `RecordingStudio::Engine` route behavior inside a host app
 - Dummy-only `/docs/*` pages for gem-specific onboarding
 
@@ -31,7 +31,7 @@ Then open the app and sign in with:
 ## Useful Routes
 
 - `/` - Template Demo on the shared Recording Studio layout
-- `/pwa/install` - example slice titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC
+- `/pwa/install` - gem install page titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC. Public, including when signed out
 - `/manifest` - host web app manifest (`name` / `short_name` are Recording Studio PWA). JSON for any Accept, including `text/html`
 - `/service-worker` - host service worker
 - `/recording_studio` - redirects to `/` while the mounted Recording Studio engine stays available under that prefix for non-root routes

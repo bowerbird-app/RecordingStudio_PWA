@@ -2,7 +2,7 @@
 
 A Recording Studio addon that gives a host app one installable Progressive Web App. This gem is `recording_studio_pwa` (`RecordingStudioPwa`) and works with Recording Studio >= 7.0 (dummy runs on core 7.8.0).
 
-Hosts stay thin. This gem owns the host-level shell: manifest, service worker, icons, theme color, and a layout wrap around Recording Studio's default layout. Other gems add a slice later.
+Hosts stay thin. This gem owns the host-level shell: manifest, service worker, icons, theme color, the install page, and a layout wrap around Recording Studio's default layout. Other gems add a slice later.
 
 See [docs/pwa.md](docs/pwa.md) for the layout wrap, slice API, and service-worker rules.
 
@@ -13,11 +13,12 @@ Other gems append to the host service worker through `RecordingStudioPwa.registe
 - **One PWA per host** — web app manifest, service worker, icons, `theme-color`, `start_url`, and `scope`
 - **Rails 8 PWA routes** — this gem owns the `rails/pwa#manifest` and `#service_worker` views; hosts enable the routes
 - **Layout wrap** — `RecordingStudioPwa::UsesPwaLayout` wraps `recording_studio/default_layout` and does not copy PageNav, flash, Open Graph, or FlatPack CSS
-- **Slice API** — register slices globally, enable them per recordable type; installing the gem does not opt a host in
+- **Install page** — `GET /pwa/install` when a recordable type enables the `:install` slice, with an Install button when the browser can prompt
+- **Slice API** — the gem registers the install slice; hosts enable it per recordable type. Installing the gem does not opt a host in
 - **Recording Studio** (`>= 7.0, < 8.0` in the gemspec; dummy GitHub tag `v7.8.0`)
 - **FlatPack** UI (`>= 0.1.133, < 1.0` in the gemspec; dummy GitHub tag `v0.2.0`)
 - **Rails** 8.1
-- **Dummy app** (`test/dummy/`) with Devise sign-in, host name **Recording Studio PWA**, charcoal host icons, the Template Demo at `/`, an example install slice at `/pwa/install`, and FlatPack's rounded theme on `<html>`
+- **Dummy app** (`test/dummy/`) with Devise sign-in, host name **Recording Studio PWA**, charcoal host icons, the Template Demo at `/`, the gem install page at `/pwa/install` (Workspace enables `:install`), and FlatPack's rounded theme on `<html>`
 
 Authenticated dummy pages use the PWA wrap around Recording Studio's shared default layout (`recording_studio_layout` via `RecordingStudioPwa::UsesPwaLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout and still receives the PWA head tags. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
 
@@ -55,7 +56,7 @@ The login form is prefilled with these credentials for fast access.
 ### Useful Routes
 
 - `/` — Template Demo on the shared Recording Studio layout
-- `/pwa/install` — example slice titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC
+- `/pwa/install` — gem install page titled **Install app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC. Public. The Install button appears when the browser offers a prompt
 - `/manifest` — host web app manifest (JSON for any `Accept`, including `text/html`)
 - `/service-worker` — host service worker
 - `/users/sign_in` — Devise sign-in page
@@ -68,8 +69,10 @@ The home page in `test/dummy/app/views/home/index.html.erb` stays a minimal Temp
 
 Phone-width review shots live in `docs/dummy-shots/`. Crop PageNav so Sign out / Root Switchable is not in the slot.
 
-1. **Install (product)** — `pwa-install-slice.png` is `GET /pwa/install`
-2. **Install dialog (extra)** — `pwa-beforeinstallprompt.png` only when Chrome shows **Recording Studio PWA** and the charcoal icon
+1. **Install (product)** — `pwa-install-slice.png` is `GET /pwa/install` with the accordion closed
+2. **Install steps** — `pwa-install-iphone.png` is the iPhone panel open
+3. **Install button** — `pwa-install-android.png` is the same page after the browser offers an install prompt
+4. **Install dialog (extra)** — `pwa-beforeinstallprompt.png` only when Chrome shows **Recording Studio PWA** and the charcoal icon
 
 Do not treat the Template Demo home page as a product screen.
 
@@ -98,7 +101,9 @@ Installing the gem does not enable slices. PWA chrome does not need extra tables
 
 ### Interface text
 
-English defaults live under `recording_studio.pwa` in this gem's `config/locales/en.yml`. Rails engines load that path automatically; hosts override the same nested keys in their own `config/locales`. The last-resort installable name is `recording_studio.pwa.web_app.default_name` (`"App"`), resolved with an English `default:` so a missing host locale never shows "translation missing". Dummy install-slice copy stays on the host. See [docs/pwa.md](docs/pwa.md).
+English defaults live under `recording_studio.pwa` in this gem's `config/locales/en.yml`. Rails engines load that path automatically; hosts override the same nested keys in their own `config/locales`. The last-resort installable name is `recording_studio.pwa.web_app.default_name` (`"App"`). Install-page copy is `recording_studio.pwa.install`. See [docs/pwa.md](docs/pwa.md).
+
+To list this gem in the Recording Studio Plugins directory, set `config.plugin_directory = true` after `recording_studio_plugins` is loaded. The default is off. The directory shows the Install action only to workspace members who can edit.
 
 ### Service worker extensions
 

@@ -3,3 +3,37 @@ en:
     pwa:
       web_app:
         default_name: "App"
+      install:
+        title: "Install app"
+        back: "Home"
+        button: "Install"
+        installed: "This app is already on this device."
+        plugin_description: "Save this app on your phone or computer."
+        shortcut_name: "Add to home screen"
+        shortcut_short_name: "Install"
+        shortcut_description: "Save this app on your phone or computer"
+        devices:
+          iphone:
+            title: "iPhone"
+            steps:
+              - "Open Share in Safari."
+              - "Choose Add to Home Screen."
+              - "Tap Add. The icon appears on your home screen."
+          android:
+            title: "Android"
+            steps:
+              - "Open the Chrome menu."
+              - "Choose Install app or Add to Home Screen."
+              - "Confirm. The icon appears on your home screen."
+          mac:
+            title: "Mac"
+            steps:
+              - "Look for the install icon in the toolbar."
+              - "Choose Install."
+              - "The app opens in its own window the next time you launch it."
+          pc:
+            title: "PC"
+            steps:
+              - "Look for the install icon in the address bar."
+              - "Choose Install."
+              - "The app opens in its own window the next time you launch it."
