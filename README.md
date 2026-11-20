@@ -56,7 +56,7 @@ The login form is prefilled with these credentials for fast access.
 ### Useful Routes
 
 - `/` — Template Demo on the shared Recording Studio layout
-- `/pwa/install` — gem install page titled **Install mobile app**, with FlatPack accordion steps for iPhone, Android, Mac, and PC. Public. The Install button appears when the browser offers a prompt
+- `/pwa/install` — gem install page titled **Install PWA Mobile App**, with FlatPack accordion steps for iPhone, Android, Mac, and PC. Public. The Install button appears when the browser offers a prompt
 - `/manifest` — host web app manifest (JSON for any `Accept`, including `text/html`)
 - `/service-worker` — host service worker
 - `/users/sign_in` — Devise sign-in page

@@ -10,6 +10,7 @@ require "recording_studio_pwa/allows_pwa_slices"
 require "recording_studio_pwa/uses_pwa_layout"
 require "recording_studio_pwa/web_app"
 require "recording_studio_pwa/install_slice"
+require "recording_studio_pwa/install_copy"
 require "recording_studio_pwa/plugin_directory"
 require "recording_studio_pwa/host_install"
 

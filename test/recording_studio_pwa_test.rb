@@ -23,6 +23,7 @@ class RecordingStudioPwaTest < Minitest::Test
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
     refute_includes gemspec, "recording_studio_plugins"
+    refute_includes gemspec, "recording_studio_site_settings"
   end
 
   def test_dummy_gemfile_pins_verified_6x_github_tags

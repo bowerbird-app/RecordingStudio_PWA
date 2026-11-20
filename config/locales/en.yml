@@ -4,8 +4,8 @@ en:
       web_app:
         default_name: "App"
       install:
-        title: "Install mobile app"
-        subtitle: "Add this site to your home screen. It opens like an app, no app store needed."
+        title: "Install PWA Mobile App"
+        subtitle: "Add %{site_name} to your home screen. It opens like an app, no app store needed."
         back: "Home"
         button: "Install"
         installed: "This app is already on this device."

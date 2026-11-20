@@ -34,9 +34,9 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Install mobile app"
-    assert_select "title", text: "Install mobile app"
-    assert_select "p", text: "Add this site to your home screen. It opens like an app, no app store needed.", count: 1
+    assert_select "h1", text: "Install PWA Mobile App"
+    assert_select "title", text: "Install PWA Mobile App"
+    assert_select "p", text: "Add Recording Studio PWA to your home screen. It opens like an app, no app store needed.", count: 1
     refute_includes response.body, "Open it in its own window"
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav[aria-label='Page navigation']", count: 1
@@ -86,7 +86,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     get pwa_install_path
 
     assert_response :success
-    assert_select "h1", text: "Install mobile app"
+    assert_select "h1", text: "Install PWA Mobile App"
   end
 
   test "gem default web app name is literal english App when host name is blank" do

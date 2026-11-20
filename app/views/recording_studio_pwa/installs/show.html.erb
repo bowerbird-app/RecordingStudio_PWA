@@ -1,5 +1,5 @@
 <% content_for :title, t("recording_studio.pwa.install.title") %>
-<% content_for :subtitle, t("recording_studio.pwa.install.subtitle") %>
+<% content_for :subtitle, RecordingStudioPwa::InstallCopy.subtitle(controller) %>
 <% flat_pack_page_nav(
      round: true,
      style: :default,
