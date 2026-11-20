@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.11.0] - 2026-11-20
 
 ### Added
-- Gem-owned install page at `/pwa/install`, titled **Install App**, with a one-sentence subtitle (the Site Settings name when that gem is loaded, otherwise the PWA name) and a FlatPack accordion for iPhone, Android, Mac, and PC. The accordion is the fallback when the Install button does not appear, and the steps follow the browser.
+- Gem-owned install page at `/pwa/install`, titled **Install App**, with the subtitle “Install the {site name} app on your home screen” (the Site Settings name when that gem is loaded, otherwise the PWA name) and a FlatPack accordion for iPhone, Android, Mac, and PC. The accordion is the fallback when the Install button does not appear, and the steps follow the browser.
 - Install button that calls the browser install prompt when `beforeinstallprompt` fires, and an already-installed state in standalone mode
 - English copy under `recording_studio.pwa.install` so hosts can override it
 - `config.plugin_directory` (default `false`). When true, and `recording_studio_plugins` is loaded, the gem registers a Plugins directory row whose action opens the install page

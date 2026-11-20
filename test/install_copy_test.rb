@@ -18,21 +18,21 @@ class InstallCopyTest < Minitest::Test
     install_site_settings("North Studio")
 
     assert_equal "North Studio", RecordingStudioPwa::InstallCopy.site_name(Object.new)
-    assert_includes subtitle, "Add North Studio to your home screen."
+    assert_includes subtitle, "Install the North Studio app on your home screen."
   end
 
   def test_blank_site_settings_name_falls_back_to_the_pwa_name
     install_site_settings("  ")
 
     assert_equal "Fallback App", RecordingStudioPwa::InstallCopy.site_name(Object.new)
-    assert_includes subtitle, "Add Fallback App to your home screen."
+    assert_includes subtitle, "Install the Fallback App app on your home screen."
   end
 
   def test_missing_site_settings_falls_back_to_the_pwa_name
     remove_site_settings
 
     assert_equal "Fallback App", RecordingStudioPwa::InstallCopy.site_name(Object.new)
-    assert_includes subtitle, "Add Fallback App to your home screen."
+    assert_includes subtitle, "Install the Fallback App app on your home screen."
   end
 
   def test_site_name_is_escaped
@@ -40,8 +40,8 @@ class InstallCopyTest < Minitest::Test
 
     text = subtitle
 
-    assert_includes text, "Add &lt;Studio&gt; to your home screen."
-    refute_includes text, "Add <Studio>"
+    assert_includes text, "Install the &lt;Studio&gt; app on your home screen."
+    refute_includes text, "Install the <Studio>"
   end
 
   private

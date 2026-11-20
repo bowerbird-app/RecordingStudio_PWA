@@ -36,7 +36,7 @@ class PwaFoundationTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: "Install App"
     assert_select "title", text: "Install App"
-    assert_select "p", text: "Add Recording Studio PWA to your home screen. It opens like an app, no app store needed.", count: 1
+    assert_select "p", text: "Install the Recording Studio PWA app on your home screen. It opens like an app, no app store needed.", count: 1
     refute_includes response.body, "Open it in its own window"
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav[aria-label='Page navigation']", count: 1

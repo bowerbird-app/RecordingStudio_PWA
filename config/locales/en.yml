@@ -5,7 +5,7 @@ en:
         default_name: "App"
       install:
         title: "Install App"
-        subtitle: "Add %{site_name} to your home screen. It opens like an app, no app store needed."
+        subtitle: "Install the %{site_name} app on your home screen. It opens like an app, no app store needed."
         back: "Home"
         button: "Install"
         installed: "This app is already on this device."
